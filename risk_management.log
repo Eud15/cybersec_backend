@@ -8830,3 +8830,1318 @@ Watching for file changes with StatReloader
 "GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 89281
 "OPTIONS /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 0
 "GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 89281
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 1640
+"GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+"GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+"GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+"GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+"GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+"GET /?format=openapi HTTP/1.1" 200 75554
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4248
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+"GET /static/admin/css/base.css HTTP/1.1" 200 22120
+"GET /static/admin/css/login.css HTTP/1.1" 200 951
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 3243
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 15847
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+Internal Server Error: /admin/api/architecture/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'tolerance_status'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Architecture has no field named 'tolerance_status'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 55, in tolerance_status
+    return format_html(
+        '<span style="color: {}; font-weight: bold;">{:.1f}%</span>',
+        color, obj.pourcentage_tolerance_utilise
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/architecture/ HTTP/1.1" 500 404361
+"GET /admin/ HTTP/1.1" 200 15847
+"GET /admin/api/attributsecurite/b7df5861-5bf6-4ff6-9b34-ac052f6e7485/change/ HTTP/1.1" 200 33827
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/js/inlines.js HTTP/1.1" 200 15628
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 655
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /admin/ HTTP/1.1" 200 15847
+"GET /admin/api/actif/ HTTP/1.1" 200 33775
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+"GET /static/admin/img/search.svg HTTP/1.1" 200 458
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+"GET /admin/ HTTP/1.1" 200 15847
+Internal Server Error: /admin/api/architecture/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'tolerance_status'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Architecture has no field named 'tolerance_status'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 55, in tolerance_status
+    return format_html(
+        '<span style="color: {}; font-weight: bold;">{:.1f}%</span>',
+        color, obj.pourcentage_tolerance_utilise
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/architecture/ HTTP/1.1" 500 404361
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 751
+C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /admin/api/architecture/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'risque_tolere_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Architecture has no field named 'risque_tolere_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 49, in risque_tolere_formatted
+    return format_html('{:,.2f} €', float(obj.risque_tolere))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/architecture/ HTTP/1.1" 500 385887
+"GET /admin/ HTTP/1.1" 200 11429
+"GET /static/admin/css/base.css HTTP/1.1" 200 22120
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+"GET /admin/ HTTP/1.1" 200 11429
+Internal Server Error: /admin/api/architecture/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'risque_tolere_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Architecture has no field named 'risque_tolere_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 49, in risque_tolere_formatted
+    return format_html('{:,.2f} €', float(obj.risque_tolere))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/architecture/ HTTP/1.1" 500 385750
+"GET /admin/ HTTP/1.1" 200 11429
+Internal Server Error: /admin/api/attributsecurite/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'cout_compromission_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: AttributSecurite has no field named 'cout_compromission_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 259, in cout_compromission_formatted
+    return format_html('{:,.2f} €', float(obj.cout_compromission))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/attributsecurite/ HTTP/1.1" 500 387253
+"GET /admin/ HTTP/1.1" 200 11429
+Internal Server Error: /admin/api/actif/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'cout_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Actif has no field named 'cout_formatted'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 150, in cout_formatted
+    return format_html('{:,.2f} €', float(obj.cout))
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/actif/ HTTP/1.1" 500 385634
+"GET /admin/ HTTP/1.1" 200 11429
+"GET /admin/api/typeactif/ HTTP/1.1" 200 20007
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/img/search.svg HTTP/1.1" 200 458
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+Internal Server Error: /admin/api/menace/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'attributs_count'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: Menace has no field named 'attributs_count'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 395, in attributs_count
+    url = reverse('admin:api_attributmenace_changelist') + f'?menace__id__exact={obj.id}'
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'api_attributmenace_changelist' not found. 'api_attributmenace_changelist' is not a valid view function or pattern name.
+"GET /admin/api/menace/ HTTP/1.1" 500 393341
+"GET /admin/api/typeactif/ HTTP/1.1" 200 20007
+"GET /admin/api/typeactif/ HTTP/1.1" 200 20007
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/ HTTP/1.1" 200 11429
+C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 15847
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+"GET /admin/api/attributsecurite/ HTTP/1.1" 200 64194
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/attributsecurite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/change/ HTTP/1.1" 200 43441
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+"GET /static/admin/js/inlines.js HTTP/1.1" 200 15628
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+"GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 655
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"OPTIONS /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1061
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 1572
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1061
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/ HTTP/1.1" 200 0
+Bad Request: /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/
+"POST /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/ HTTP/1.1" 400 91
+Bad Request: /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/
+"POST /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/ HTTP/1.1" 400 91
+"POST /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ajouter_attribut/ HTTP/1.1" 201 347
+"OPTIONS /api/v1/attributs-securite/2fc1cf19-d600-4045-98d2-9697b26e4d0c/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/ HTTP/1.1" 200 4131
+"GET /api/v1/attributs-securite/2fc1cf19-d600-4045-98d2-9697b26e4d0c/ HTTP/1.1" 200 553
+"OPTIONS /api/v1/attributs-securite/2fc1cf19-d600-4045-98d2-9697b26e4d0c/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/2fc1cf19-d600-4045-98d2-9697b26e4d0c/menaces/ HTTP/1.1" 200 2
+"GET /api/v1/menaces/ HTTP/1.1" 200 4131
+Internal Server Error: /admin/api/attributmenace/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'niveau_risque_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: AttributMenace has no field named 'niveau_risque_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 271, in niveau_risque_display
+    return format_html(
+        '<span style="color: {}; font-weight: bold;">{:.2f}</span>',
+        color, risk_level
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/attributmenace/ HTTP/1.1" 500 405409
+"GET /admin/api/attributsecurite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/change/ HTTP/1.1" 200 43441
+"GET /admin/api/attributsecurite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/history/ HTTP/1.1" 200 13400
+"GET /admin/api/attributsecurite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/change/ HTTP/1.1" 200 43441
+Internal Server Error: /admin/api/attributmenace/
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 683, in get_field
+    return self.fields_map[field_name]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'niveau_risque_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+        "%s has no field named '%s'" % (self.object_name, field_name)
+    )
+django.core.exceptions.FieldDoesNotExist: AttributMenace has no field named 'niveau_risque_display'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\base.py", line 45, in render
+    return super().render(context)
+           ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\template\library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+               ~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 321, in __init__
+    super().__init__(*items)
+    ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\templatetags\admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\contrib\admin\utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\admin.py", line 271, in niveau_risque_display
+    return format_html(
+        '<span style="color: {}; font-weight: bold;">{:.2f}</span>',
+        color, risk_level
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\utils\html.py", line 145, in format_html
+    return mark_safe(format_string.format(*args_safe, **kwargs_safe))
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Unknown format code 'f' for object of type 'SafeString'
+"GET /admin/api/attributmenace/ HTTP/1.1" 500 405409
+"GET /admin/api/attributsecurite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/change/ HTTP/1.1" 200 43441
+"GET /admin/api/menace/ HTTP/1.1" 200 28090
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/menace/add/ HTTP/1.1" 200 32196
+"GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 751
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"OPTIONS /api/v1/controles-nist/ HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 6086
+"OPTIONS /api/v1/techniques/ HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 6086
+"GET /api/v1/techniques/ HTTP/1.1" 200 63981
+"OPTIONS /api/v1/mesures-controle/ HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/ HTTP/1.1" 200 16300
+"GET /api/v1/techniques/ HTTP/1.1" 200 63981
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 751
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 751
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"OPTIONS /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"OPTIONS /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/architectures/ HTTP/1.1" 200 1810
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 751
+"OPTIONS /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 3704
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"OPTIONS /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"OPTIONS /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"OPTIONS /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 200 0
+Not Found: /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/
+"POST /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 404 45850
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\serializers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+Erreur lors de la création de menace simple: name 'transaction' is not defined
+Internal Server Error: /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/
+"POST /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 500 83
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+Bad Request: /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/
+"POST /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 400 37
+- Broken pipe from ('127.0.0.1', 54671)
+- Broken pipe from ('127.0.0.1', 52002)
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+Erreur lors de la création de menace simple: name 'transaction' is not defined
+Internal Server Error: /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/
+"POST /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 500 83
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 135701
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 135115
+"POST /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/creer_menace/ HTTP/1.1" 201 733
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 136222
+"OPTIONS /api/v1/menaces/947be90c-91f7-4fe1-b630-5908bd85a400/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/947be90c-91f7-4fe1-b630-5908bd85a400/vue_complete/ HTTP/1.1" 200 603
+"GET /api/v1/actifs/ HTTP/1.1" 200 7651
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 136808
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 136222
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 43389

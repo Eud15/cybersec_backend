@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Sum, Avg, Q
 from django.utils import timezone
 from decimal import Decimal
-import logging
+from django.db import transaction        
+import logging  
 
 from .models import (
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
@@ -25,7 +26,7 @@ from .serializers import (
     MesureDeControleSerializer, MesureDeControleCreateSerializer,
     ImplementationMesureSerializer, MenaceListSerializer, MenaceSerializer, 
     ControleNISTListSerializer, ControleNISTSerializer,
-    LogActiviteSerializer, UserSerializer, DashboardStatsSerializer
+    LogActiviteSerializer, UserSerializer, DashboardStatsSerializer, MenaceSimpleCreateSerializer
 )
 from .utils import log_activity
 
@@ -514,6 +515,134 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
         attributs_critiques.sort(key=lambda x: x['ratio_risque_cout'], reverse=True)
         
         return Response(attributs_critiques)
+
+    @action(detail=True, methods=['post'])
+    def creer_menace(self, request, pk=None):
+        """
+        Crée et associe une menace simplifiée avec seulement 3 champs :
+        - nom : nom de la menace
+        - description : description de la menace  
+        - probabilite : probabilité d'occurrence (%)
+        
+        L'impact et le coût d'impact sont calculés automatiquement
+        basés sur le coût de compromission de l'attribut.
+        """
+        attribut = self.get_object()
+        
+        # Validation avec le serializer
+        serializer = MenaceSimpleCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        validated_data = serializer.validated_data
+        nom = validated_data['nom']
+        description = validated_data.get('description', '')
+        probabilite = validated_data['probabilite']
+        
+        try:
+            with transaction.atomic():
+                # 1. Créer ou récupérer la menace
+                menace, created = Menace.objects.get_or_create(
+                    nom=nom,
+                    defaults={
+                        'description': description,
+                        'type_menace': 'AUTRE',  # Valeur par défaut
+                        'severite': 'MOYEN',     # Valeur par défaut
+                        'attribut_securite_principal': attribut
+                    }
+                )
+                
+                # Si la menace existe déjà, vérifier qu'elle n'est pas déjà associée
+                if not created:
+                    existing_association = AttributMenace.objects.filter(
+                        attribut_securite=attribut, 
+                        menace=menace
+                    ).first()
+                    
+                    if existing_association:
+                        return Response({
+                            'error': f'La menace "{nom}" est déjà associée à cet attribut',
+                            'existing_association_id': existing_association.id
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    # Mettre à jour la description si fournie et différente
+                    if description and description != menace.description:
+                        menace.description = description
+                        menace.save()
+                
+                # 2. Créer l'association AttributMenace
+                association = AttributMenace.objects.create(
+                    attribut_securite=attribut,
+                    menace=menace,
+                    probabilite=probabilite,
+                    impact=Decimal('100.0'),  # 100% car basé sur le coût de compromission
+                    cout_impact=attribut.cout_compromission
+                )
+                
+                # 3. Préparer la réponse avec les données complètes
+                response_data = {
+                    'id': association.id,
+                    'menace': menace.id,
+                    'menace_nom': menace.nom,
+                    'menace_severite': menace.severite,
+                    'menace_detail': {
+                        'id': menace.id,
+                        'nom': menace.nom,
+                        'description': menace.description,
+                        'type_menace': menace.type_menace,
+                        'severite': menace.severite,
+                        'total_controles': menace.controles_nist.count(),
+                        'total_techniques': sum(
+                            controle.controle_nist.techniques.count() 
+                            for controle in menace.controles_nist.all()
+                        ),
+                        'total_mesures': sum(
+                            technique.mesures_controle.count()
+                            for controle in menace.controles_nist.all()
+                            for technique in controle.controle_nist.techniques.all()
+                        )
+                    },
+                    'attribut_securite': attribut.id,
+                    'attribut_nom': attribut.actif.nom,
+                    'attribut_type': attribut.type_attribut,
+                    'probabilite': float(association.probabilite),
+                    'impact': float(association.impact),
+                    'cout_impact': float(association.cout_impact),
+                    'niveau_risque_calculated': association.niveau_risque,
+                    'risque_financier_calculated': association.risque_financier,
+                    'created_at': association.created_at.isoformat(),
+                    
+                    # Informations calculées
+                    'calculs': {
+                        'cout_compromission_attribut': float(attribut.cout_compromission),
+                        'formule_risque': f"{probabilite}% × {float(attribut.cout_compromission)}€",
+                        'menace_creee': created
+                    }
+                }
+                
+                # 4. Log de l'activité
+                log_activity(
+                    request.user, 
+                    'CREATE_MENACE_SIMPLE', 
+                    'AttributSecurite', 
+                    str(attribut.id),
+                    {
+                        'menace_nom': menace.nom,
+                        'menace_id': str(menace.id),
+                        'probabilite': float(probabilite),
+                        'risque_financier': association.risque_financier,
+                        'menace_creee': created
+                    }
+                )
+                
+                return Response(response_data, status=status.HTTP_201_CREATED)
+                
+        except Exception as e:
+            logger.error(f"Erreur lors de la création de menace simple: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne lors de la création : {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # ============================================================================
 # NIVEAU 4: GESTION DES ASSOCIATIONS ATTRIBUT-MENACE
