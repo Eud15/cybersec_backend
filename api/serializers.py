@@ -763,3 +763,13 @@ class DashboardStatsSerializer(serializers.Serializer):
     menaces_par_severite = serializers.DictField()
     implementations_par_statut = serializers.DictField()
     risque_par_architecture = serializers.DictField()
+
+class MenaceSimpleCreateSerializer(serializers.Serializer):
+    nom = serializers.CharField(max_length=200)
+    description = serializers.CharField(required=False, allow_blank=True)
+    probabilite = serializers.DecimalField(max_digits=5, decimal_places=2, min_value=0, max_value=100)
+    
+    def validate_nom(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Le nom de la menace ne peut pas être vide")
+        return value.strip()
