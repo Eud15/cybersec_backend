@@ -668,6 +668,100 @@ class AttributMenaceViewSet(viewsets.ModelViewSet):
         log_activity(self.request.user, 'CREATE', 'AttributMenace', str(instance.id), 
                     {'menace_nom': instance.menace.nom})
     
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_activity(self.request.user, 'UPDATE', 'AttributMenace', str(instance.id), 
+                    {'menace_nom': instance.menace.nom})
+    def get_object(self):
+        """Override pour débugger les problèmes d'ID"""
+        obj = super().get_object()
+        print(f"DEBUG: Objet trouvé avec ID {obj.id}")
+        return obj
+    
+    # NOUVELLE MÉTHODE : Update spécialisé pour les menaces
+    @action(detail=True, methods=['put', 'patch'])
+    def update_menace_data(self, request, pk=None):
+        """
+        Méthode spécialisée pour mettre à jour une association menace
+        avec mise à jour des données de la menace elle-même
+        """
+        try:
+            association = self.get_object()
+            
+            # Données de l'association (probabilité)
+            if 'probabilite' in request.data:
+                association.probabilite = request.data['probabilite']
+                association.save()
+            
+            # Données de la menace (nom, description, type_menace)
+            menace = association.menace
+            menace_updated = False
+            
+            if 'nom' in request.data and request.data['nom'] != menace.nom:
+                # Vérifier que le nouveau nom n'existe pas déjà
+                if Menace.objects.filter(nom=request.data['nom']).exclude(id=menace.id).exists():
+                    return Response(
+                        {'error': 'Une menace avec ce nom existe déjà'}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                menace.nom = request.data['nom']
+                menace_updated = True
+            
+            if 'description' in request.data:
+                menace.description = request.data['description']
+                menace_updated = True
+            
+            if 'type_menace' in request.data:
+                menace.type_menace = request.data['type_menace']
+                menace_updated = True
+            
+            if menace_updated:
+                menace.save()
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'UPDATE_MENACE_ASSOCIATION', 
+                'AttributMenace', 
+                str(association.id),
+                {
+                    'menace_nom': menace.nom,
+                    'probabilite': float(association.probabilite),
+                    'menace_updated': menace_updated
+                }
+            )
+            
+            # Retourner les données mises à jour
+            return Response({
+                'id': association.id,
+                'menace': menace.id,
+                'menace_nom': menace.nom,
+                'menace_detail': {
+                    'id': menace.id,
+                    'nom': menace.nom,
+                    'description': menace.description,
+                    'type_menace': menace.type_menace,
+                    'severite': menace.severite
+                },
+                'probabilite': float(association.probabilite),
+                'impact': float(association.impact),
+                'cout_impact': float(association.cout_impact),
+                'niveau_risque_calculated': association.niveau_risque,
+                'risque_financier_calculated': association.risque_financier,
+                'updated_at': association.updated_at.isoformat()
+            })
+            
+        except AttributMenace.DoesNotExist:
+            return Response(
+                {'error': 'Association menace non trouvée'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            logger.error(f"Erreur lors de la mise à jour de l'association menace: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     @action(detail=True, methods=['get'])
     def plan_mitigation(self, request, pk=None):
         """Génère un plan de mitigation complet pour ce risque"""
