@@ -2117,3 +2117,42 @@ Watching for file changes with StatReloader
 "GET /api/v1/controles-nist/?page=2&page_size=10 HTTP/1.1" 200 5385
 Watching for file changes with StatReloader
 >>>>>>> 139ccadacc8d2d8770cc4acbce6e6af9b44b6b09
+Watching for file changes with StatReloader
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 10820
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 13202
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 10820
+"GET /api/v1/mesures-controle/?page=1&page_size=10&ordering=-nom HTTP/1.1" 200 13036
+"POST /api/v1/mesures-controle/import_mesures/ HTTP/1.1" 201 10481
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 12726
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10&ordering=nom HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/?page=1&page_size=10&ordering=nom HTTP/1.1" 200 13433
+"GET /api/v1/mesures-controle/?page=1&page_size=10&ordering=-nom HTTP/1.1" 200 13030
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 12792
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 22719
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 22719
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 22719
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 12792
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 22719
+"GET /api/v1/mesures-controle/?page=1&page_size=10&ordering=-nom HTTP/1.1" 200 12897
+"GET /api/v1/architectures/ HTTP/1.1" 200 643
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 541
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/?architecture=bcf66a9a-925b-4a8e-86a7-e81f8e84fc28 HTTP/1.1" 200 1233
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"OPTIONS /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/ HTTP/1.1" 200 1574
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 1233
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/ HTTP/1.1" 200 5404
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/menaces/ HTTP/1.1" 200 4798
+"GET /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 657
+"GET /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 657
