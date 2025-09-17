@@ -1747,7 +1747,7 @@ class MesureDeControleViewSet(viewsets.ModelViewSet):
                         })
                         continue
                     
-                    # Vérifier que la technique existe
+                   
                     try:
                         technique = Technique.objects.get(technique_code=technique_code)
                     except Technique.DoesNotExist:
@@ -1758,12 +1758,12 @@ class MesureDeControleViewSet(viewsets.ModelViewSet):
                         continue
                     
                     # Vérifier l'unicité du mesure_code
-                    if MesureDeControle.objects.filter(mesure_code=mesure_code).exists():
-                        mesures_errors.append({
-                            'ligne': index + 2,
-                            'erreur': f'Une mesure avec le code {mesure_code} existe déjà'
-                        })
-                        continue
+                    # if MesureDeControle.objects.filter(nom=nom).exists():
+                    #     mesures_errors.append({
+                    #         'ligne': index + 2,
+                    #         'erreur': f'Une mesure avec le code {nom} existe déjà'
+                    #     })
+                    #     continue
                     
                     # Traitement des champs optionnels
                     # Description (optionnel)

@@ -536,7 +536,7 @@ class MesureDeControle(BaseModel):
     description = models.TextField()
     mesure_code = models.CharField(
         max_length=30, 
-        unique=True, 
+        
         null=True, 
         blank=True, 
         help_text="Code unique de la mesure (ex: AC-2.1.01, SI-4.a.01)"
