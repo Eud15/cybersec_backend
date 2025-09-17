@@ -430,10 +430,14 @@ class AttributMenace(BaseModel):
 
 class ControleNIST(BaseModel):
     """Contrôles NIST"""
-    code = models.CharField(max_length=20, unique=True)  # ex: AC-2, SI-4
+    code = models.CharField(max_length=20, unique=True)  
     nom = models.CharField(max_length=200)
-    description = models.TextField()
-    famille = models.CharField(max_length=100)  # Access Control, System Information
+    description = models.TextField(
+        null=True, 
+        blank=True,
+        help_text="Description détaillée du contrôle NIST"
+    )
+    famille = models.CharField(max_length=100)  
     priorite = models.CharField(
         max_length=10,
         choices=[
@@ -442,7 +446,9 @@ class ControleNIST(BaseModel):
             ('P2', 'P2 - Moyenne'),
             ('P3', 'P3 - Basse')
         ],
-        default='P2'
+        default='P2',
+        null=True,  
+        blank=True  
     )
     
     class Meta:
@@ -452,7 +458,6 @@ class ControleNIST(BaseModel):
     
     def __str__(self):
         return f"{self.code} - {self.nom}"
-
 class MenaceControle(BaseModel):
     """Association entre une menace et les contrôles NIST qui la traitent"""
     menace = models.ForeignKey(Menace, on_delete=models.CASCADE, related_name='controles_nist')
