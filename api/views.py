@@ -1597,6 +1597,535 @@ class MesureDeControleViewSet(viewsets.ModelViewSet):
                     {'nom': instance.nom, 'mesure_code': instance.mesure_code})  # mesure_code ajouté au log
 
 
+    @action(detail=False, methods=['post'])
+    def import_mesures(self, request):
+        """Import de mesures de contrôle depuis un fichier CSV/Excel"""
+        
+        if 'file' not in request.FILES:
+            return Response(
+                {'error': 'Fichier requis'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        uploaded_file = request.FILES['file']
+        
+        # Vérifier l'extension du fichier
+        file_extension = uploaded_file.name.split('.')[-1].lower()
+        if file_extension not in ['csv', 'xlsx', 'xls']:
+            return Response(
+                {'error': 'Format de fichier non supporté. Utilisez CSV, XLSX ou XLS'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Import selon le type de fichier
+            if file_extension == 'csv':
+                import_result = self._import_mesures_from_csv(uploaded_file, request.user)
+            else:
+                import_result = self._import_mesures_from_excel(uploaded_file, request.user)
+            
+            return Response(import_result, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'import de mesures de contrôle: {str(e)}")
+            return Response(
+                {'error': f'Erreur lors de l\'import: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def _import_mesures_from_excel(self, excel_file, user):
+        """Import de mesures de contrôle depuis un fichier Excel"""
+        import pandas as pd
+        from decimal import Decimal
+        
+        try:
+            # Lire le fichier Excel
+            df = pd.read_excel(excel_file)
+            
+            # Mapping flexible des noms de colonnes
+            column_mapping = {
+                # Variations pour 'technique_code'
+                'technique_code': 'technique_code',
+                'code_technique': 'technique_code',
+                'technique': 'technique_code',
+                
+                # Variations pour 'mesure_code'
+                'mesure_code': 'mesure_code',
+                'code_mesure': 'mesure_code',
+                'code': 'mesure_code',
+                
+                # Variations pour 'nom'
+                'nom': 'nom',
+                'name': 'nom',
+                'titre': 'nom',
+                
+                # Variations pour 'description'
+                'description': 'description',
+                'desc': 'description',
+                
+                # Variations pour 'nature_mesure'
+                'nature_mesure': 'nature_mesure',
+                'nature': 'nature_mesure',
+                'type_mesure': 'nature_mesure',
+                'categorie': 'nature_mesure',
+                
+                # Variations pour les coûts
+                'cout_mise_en_oeuvre': 'cout_mise_en_oeuvre',
+                'cout_implementation': 'cout_mise_en_oeuvre',
+                'cout_initial': 'cout_mise_en_oeuvre',
+                'cout_maintenance_annuel': 'cout_maintenance_annuel',
+                'cout_maintenance': 'cout_maintenance_annuel',
+                
+                # Variations pour 'efficacite'
+                'efficacite': 'efficacite',
+                'efficacity': 'efficacite',
+                'effectiveness': 'efficacite',
+                
+                # Variations pour 'duree_implementation'
+                'duree_implementation': 'duree_implementation',
+                'duree': 'duree_implementation',
+                'duration': 'duree_implementation',
+                
+                # Variations pour 'ressources_necessaires'
+                'ressources_necessaires': 'ressources_necessaires',
+                'ressources': 'ressources_necessaires',
+                'resources': 'ressources_necessaires'
+            }
+            
+            # Renommer les colonnes selon le mapping
+            df = df.rename(columns=column_mapping)
+            
+            # Vérifier les colonnes OBLIGATOIRES
+            required_columns = ['technique_code', 'nom', 'mesure_code']
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            
+            if missing_columns:
+                return {
+                    'message': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}',
+                    'mesures_creees': 0,
+                    'erreurs': [{
+                        'ligne': 1,
+                        'erreur': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}. Colonnes disponibles: {", ".join(df.columns.tolist())}'
+                    }],
+                    'total_erreurs': 1,
+                    'colonnes_disponibles': df.columns.tolist(),
+                    'colonnes_obligatoires': required_columns
+                }
+            
+            mesures_creees = 0
+            mesures_errors = []
+            
+            # Nettoyer les données avant traitement
+            df = df.fillna('')  # Remplacer NaN par chaîne vide
+            
+            for index, row in df.iterrows():
+                try:
+                    # Récupérer les champs obligatoires
+                    technique_code = str(row.get('technique_code', '')).strip()
+                    mesure_code = str(row.get('mesure_code', '')).strip()
+                    nom = str(row.get('nom', '')).strip()
+                    
+                    # Récupérer les champs optionnels
+                    description = str(row.get('description', '')).strip()
+                    nature_mesure = str(row.get('nature_mesure', '')).strip()
+                    cout_mise_en_oeuvre = str(row.get('cout_mise_en_oeuvre', '0')).strip()
+                    cout_maintenance_annuel = str(row.get('cout_maintenance_annuel', '0')).strip()
+                    efficacite = str(row.get('efficacite', '0')).strip()
+                    duree_implementation = str(row.get('duree_implementation', '30')).strip()
+                    ressources_necessaires = str(row.get('ressources_necessaires', '')).strip()
+                    
+                    # Validation des champs obligatoires
+                    if not all([technique_code, nom, mesure_code]):
+                        mesures_errors.append({
+                            'ligne': index + 2,
+                            'erreur': 'Champs obligatoires manquants: technique_code, nom, mesure_code',
+                            'donnees_recues': {
+                                'technique_code': technique_code,
+                                'nom': nom,
+                                'mesure_code': mesure_code
+                            }
+                        })
+                        continue
+                    
+                    # Vérifier que la technique existe
+                    try:
+                        technique = Technique.objects.get(technique_code=technique_code)
+                    except Technique.DoesNotExist:
+                        mesures_errors.append({
+                            'ligne': index + 2,
+                            'erreur': f'Technique avec le code {technique_code} non trouvée'
+                        })
+                        continue
+                    
+                    # Vérifier l'unicité du mesure_code
+                    if MesureDeControle.objects.filter(mesure_code=mesure_code).exists():
+                        mesures_errors.append({
+                            'ligne': index + 2,
+                            'erreur': f'Une mesure avec le code {mesure_code} existe déjà'
+                        })
+                        continue
+                    
+                    # Traitement des champs optionnels
+                    # Description (optionnel)
+                    if not description or description.lower() in ['', 'nan', 'null', 'none']:
+                        description = f"Mesure de contrôle {mesure_code}: {nom}"
+                    
+                    # Nature de mesure (optionnel)
+                    valid_natures = ['ORGANISATIONNEL', 'TECHNIQUE', 'PHYSIQUE', 'JURIDIQUE']
+                    if not nature_mesure or nature_mesure.upper() not in valid_natures:
+                        nature_mesure = 'TECHNIQUE'  # Valeur par défaut
+                    else:
+                        nature_mesure = nature_mesure.upper()
+                    
+                    # Traitement des coûts (optionnel)
+                    try:
+                        cout_mise_en_oeuvre_val = Decimal(cout_mise_en_oeuvre.replace(',', '.')) if cout_mise_en_oeuvre and cout_mise_en_oeuvre != '' else Decimal('0.00')
+                    except (ValueError, TypeError):
+                        cout_mise_en_oeuvre_val = Decimal('0.00')
+                    
+                    try:
+                        cout_maintenance_val = Decimal(cout_maintenance_annuel.replace(',', '.')) if cout_maintenance_annuel and cout_maintenance_annuel != '' else Decimal('0.00')
+                    except (ValueError, TypeError):
+                        cout_maintenance_val = Decimal('0.00')
+                    
+                    # Traitement de l'efficacité (optionnel)
+                    try:
+                        efficacite_val = Decimal(efficacite.replace(',', '.')) if efficacite and efficacite != '' else Decimal('0.00')
+                        if efficacite_val < 0 or efficacite_val > 100:
+                            efficacite_val = Decimal('0.00')
+                    except (ValueError, TypeError):
+                        efficacite_val = Decimal('0.00')
+                    
+                    # Traitement de la durée (optionnel)
+                    try:
+                        duree_val = int(duree_implementation) if duree_implementation and duree_implementation != '' else 30
+                        if duree_val < 1:
+                            duree_val = 30
+                    except (ValueError, TypeError):
+                        duree_val = 30
+                    
+                    # Ressources nécessaires (optionnel)
+                    if not ressources_necessaires or ressources_necessaires.lower() in ['', 'nan', 'null', 'none']:
+                        ressources_necessaires = None
+                    
+                    # Préparer les données
+                    data = {
+                        'technique': technique,
+                        'mesure_code': mesure_code,
+                        'nom': nom,
+                        'description': description,
+                        'nature_mesure': nature_mesure,
+                        'cout_mise_en_oeuvre': cout_mise_en_oeuvre_val,
+                        'cout_maintenance_annuel': cout_maintenance_val,
+                        'efficacite': efficacite_val,
+                        'duree_implementation': duree_val,
+                        'ressources_necessaires': ressources_necessaires
+                    }
+                    
+                    # Créer la mesure de contrôle
+                    mesure = MesureDeControle.objects.create(**data)
+                    mesures_creees += 1
+                    
+                    # Log de l'activité
+                    log_activity(
+                        user, 
+                        'IMPORT_MESURE', 
+                        'MesureDeControle', 
+                        str(mesure.id),
+                        {
+                            'nom': mesure.nom,
+                            'mesure_code': mesure.mesure_code,
+                            'technique_code': technique_code,
+                            'ligne': index + 2
+                        }
+                    )
+                    
+                except Exception as e:
+                    mesures_errors.append({
+                        'ligne': index + 2,
+                        'erreur': str(e)
+                    })
+            
+            return {
+                'message': f'Import terminé: {mesures_creees} mesures créées',
+                'mesures_creees': mesures_creees,
+                'erreurs': mesures_errors,
+                'total_erreurs': len(mesures_errors),
+                'colonnes_detectees': df.columns.tolist()
+            }
+            
+        except Exception as e:
+            raise Exception(f'Erreur lors de la lecture du fichier Excel: {str(e)}')
+
+    def _import_mesures_from_csv(self, csv_file, user):
+        """Import de mesures de contrôle depuis un fichier CSV"""
+        import csv
+        import io
+        from decimal import Decimal
+        
+        # Lire le fichier CSV
+        file_content = csv_file.read().decode('utf-8')
+        csv_data = csv.DictReader(io.StringIO(file_content))
+        
+        mesures_creees = 0
+        mesures_errors = []
+        
+        for row_num, row in enumerate(csv_data, start=2):
+            try:
+                # Récupérer les champs obligatoires
+                technique_code = row.get('technique_code', '').strip()
+                mesure_code = row.get('mesure_code', '').strip()
+                nom = row.get('nom', '').strip()
+                
+                # Validation des champs requis
+                if not all([technique_code, nom, mesure_code]):
+                    mesures_errors.append({
+                        'ligne': row_num,
+                        'erreur': 'Champs requis manquants: technique_code, nom, mesure_code'
+                    })
+                    continue
+                
+                # Vérifier que la technique existe
+                try:
+                    technique = Technique.objects.get(technique_code=technique_code)
+                except Technique.DoesNotExist:
+                    mesures_errors.append({
+                        'ligne': row_num,
+                        'erreur': f'Technique avec le code {technique_code} non trouvée'
+                    })
+                    continue
+                
+                # Vérifier l'unicité du mesure_code
+                if MesureDeControle.objects.filter(mesure_code=mesure_code).exists():
+                    mesures_errors.append({
+                        'ligne': row_num,
+                        'erreur': f'Une mesure avec le code {mesure_code} existe déjà'
+                    })
+                    continue
+                
+                # Traitement des champs optionnels
+                description = row.get('description', '').strip()
+                if not description:
+                    description = f"Mesure de contrôle {mesure_code}: {nom}"
+                
+                nature_mesure = row.get('nature_mesure', 'TECHNIQUE').strip().upper()
+                if nature_mesure not in ['ORGANISATIONNEL', 'TECHNIQUE', 'PHYSIQUE', 'JURIDIQUE']:
+                    nature_mesure = 'TECHNIQUE'
+                
+                # Traitement des valeurs numériques
+                try:
+                    cout_mise_en_oeuvre = Decimal(row.get('cout_mise_en_oeuvre', '0').replace(',', '.'))
+                except:
+                    cout_mise_en_oeuvre = Decimal('0.00')
+                
+                try:
+                    cout_maintenance = Decimal(row.get('cout_maintenance_annuel', '0').replace(',', '.'))
+                except:
+                    cout_maintenance = Decimal('0.00')
+                
+                try:
+                    efficacite = Decimal(row.get('efficacite', '0').replace(',', '.'))
+                    if efficacite < 0 or efficacite > 100:
+                        efficacite = Decimal('0.00')
+                except:
+                    efficacite = Decimal('0.00')
+                
+                try:
+                    duree = int(row.get('duree_implementation', '30'))
+                    if duree < 1:
+                        duree = 30
+                except:
+                    duree = 30
+                
+                # Créer la mesure
+                data = {
+                    'technique': technique,
+                    'mesure_code': mesure_code,
+                    'nom': nom,
+                    'description': description,
+                    'nature_mesure': nature_mesure,
+                    'cout_mise_en_oeuvre': cout_mise_en_oeuvre,
+                    'cout_maintenance_annuel': cout_maintenance,
+                    'efficacite': efficacite,
+                    'duree_implementation': duree,
+                    'ressources_necessaires': row.get('ressources_necessaires', None)
+                }
+                
+                mesure = MesureDeControle.objects.create(**data)
+                mesures_creees += 1
+                
+                # Log de l'activité
+                log_activity(
+                    user, 
+                    'IMPORT_MESURE', 
+                    'MesureDeControle', 
+                    str(mesure.id),
+                    {'nom': mesure.nom, 'ligne': row_num}
+                )
+                
+            except Exception as e:
+                mesures_errors.append({
+                    'ligne': row_num,
+                    'erreur': str(e)
+                })
+        
+        return {
+            'message': f'Import terminé: {mesures_creees} mesures créées',
+            'mesures_creees': mesures_creees,
+            'erreurs': mesures_errors,
+            'total_erreurs': len(mesures_errors)
+        }
+
+    @action(detail=False, methods=['get'])
+    def export_mesures(self, request):
+        """Export des mesures de contrôle au format CSV ou Excel"""
+        
+        format_export = request.query_params.get('format', 'csv').lower()
+        technique_code = request.query_params.get('technique_code')
+        nature_mesure = request.query_params.get('nature_mesure')
+        
+        # Filtrer les mesures
+        queryset = self.get_queryset()
+        if technique_code:
+            queryset = queryset.filter(technique__technique_code=technique_code)
+        if nature_mesure:
+            queryset = queryset.filter(nature_mesure=nature_mesure)
+        
+        if format_export == 'excel' or format_export == 'xlsx':
+            return self._export_mesures_to_excel(queryset)
+        else:
+            return self._export_mesures_to_csv(queryset)
+
+    def _export_mesures_to_csv(self, queryset):
+        """Export mesures au format CSV"""
+        import csv
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="mesures_controle.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow([
+            'technique_code', 'mesure_code', 'nom', 'description', 'nature_mesure',
+            'cout_mise_en_oeuvre', 'cout_maintenance_annuel', 'efficacite',
+            'duree_implementation', 'ressources_necessaires'
+        ])
+        
+        for mesure in queryset:
+            writer.writerow([
+                mesure.technique.technique_code,
+                mesure.mesure_code,
+                mesure.nom,
+                mesure.description,
+                mesure.nature_mesure,
+                float(mesure.cout_mise_en_oeuvre),
+                float(mesure.cout_maintenance_annuel),
+                float(mesure.efficacite),
+                mesure.duree_implementation,
+                mesure.ressources_necessaires or ''
+            ])
+        
+        return response
+
+    def _export_mesures_to_excel(self, queryset):
+        """Export mesures au format Excel"""
+        import pandas as pd
+        from django.http import HttpResponse
+        import io
+        
+        # Préparer les données
+        data = []
+        for mesure in queryset:
+            data.append({
+                'technique_code': mesure.technique.technique_code,
+                'mesure_code': mesure.mesure_code,
+                'nom': mesure.nom,
+                'description': mesure.description,
+                'nature_mesure': mesure.nature_mesure,
+                'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre),
+                'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel),
+                'efficacite': float(mesure.efficacite),
+                'duree_implementation': mesure.duree_implementation,
+                'ressources_necessaires': mesure.ressources_necessaires or ''
+            })
+        
+        df = pd.DataFrame(data)
+        
+        # Créer le fichier Excel en mémoire
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, index=False, engine='openpyxl')
+        excel_buffer.seek(0)
+        
+        response = HttpResponse(
+            excel_buffer.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="mesures_controle.xlsx"'
+        
+        return response
+
+    @action(detail=False, methods=['get'])
+    def template_import_mesures(self, request):
+        """Génère un template Excel pour l'import de mesures de contrôle"""
+        import pandas as pd
+        from django.http import HttpResponse
+        import io
+        
+        # Données d'exemple
+        template_data = [
+            {
+                'technique_code': 'AC-02.1',
+                'mesure_code': 'AC-02.1.01',
+                'nom': 'Automated Account Creation',
+                'description': 'Mise en place d\'un système automatisé de création de comptes',
+                'nature_mesure': 'TECHNIQUE',
+                'cout_mise_en_oeuvre': 15000.00,
+                'cout_maintenance_annuel': 3000.00,
+                'efficacite': 85.50,
+                'duree_implementation': 45,
+                'ressources_necessaires': 'Administrateur système, Développeur'
+            },
+            {
+                'technique_code': 'AC-02.1',
+                'mesure_code': 'AC-02.1.02',
+                'nom': 'Account Review Process',
+                'description': '',  # Description vide pour montrer que c'est optionnel
+                'nature_mesure': '',  # Nature vide pour montrer que c'est optionnel
+                'cout_mise_en_oeuvre': '',  # Coût vide pour montrer que c'est optionnel
+                'cout_maintenance_annuel': '',
+                'efficacite': '',
+                'duree_implementation': '',
+                'ressources_necessaires': ''
+            },
+            {
+                'technique_code': 'SI-04.1',
+                'mesure_code': 'SI-04.1.01',
+                'nom': 'Network Monitoring Tools',
+                'description': 'Déploiement d\'outils de surveillance réseau',
+                'nature_mesure': 'TECHNIQUE',
+                'cout_mise_en_oeuvre': 25000.00,
+                'cout_maintenance_annuel': 5000.00,
+                'efficacite': 90.00,
+                'duree_implementation': 60,
+                'ressources_necessaires': 'Équipe réseau, Analyste sécurité'
+            }
+        ]
+        
+        df = pd.DataFrame(template_data)
+        
+        # Créer le fichier Excel en mémoire
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, index=False, engine='openpyxl')
+        excel_buffer.seek(0)
+        
+        response = HttpResponse(
+            excel_buffer.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="template_import_mesures_controle.xlsx"'
+        
+        return response
+
 # ============================================================================
 # GESTION DES IMPLEMENTATIONS
 # ============================================================================
