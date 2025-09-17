@@ -459,19 +459,40 @@ class AttributMenaceSerializer(serializers.ModelSerializer):
         return solutions[:3]
 
 class AttributMenaceCreateSerializer(serializers.ModelSerializer):
+    # Champs de l'association
+    probabilite = serializers.DecimalField(max_digits=5, decimal_places=2, required=True)
+    
+    # Champs optionnels pour modifier la menace
+    nom = serializers.CharField(max_length=200, required=False, write_only=True)
+    description = serializers.CharField(required=False, write_only=True, allow_blank=True)
+    type_menace = serializers.CharField(max_length=50, required=False, write_only=True)
+    
     class Meta:
         model = AttributMenace
-        fields = ['attribut_securite', 'menace', 'probabilite', 'impact', 'cout_impact']
-    
-    def validate_probabilite(self, value):
-        if value < 0 or value > 100:
-            raise serializers.ValidationError("La probabilité doit être entre 0 et 100.")
-        return value
-    
-    def validate_impact(self, value):
-        if value < 0 or value > 100:
-            raise serializers.ValidationError("L'impact doit être entre 0 et 100.")
-        return value
+        fields = ['attribut_securite', 'menace', 'probabilite', 'impact', 'cout_impact', 
+                 'nom', 'description', 'type_menace']
+        
+    def update(self, instance, validated_data):
+        # Séparer les données de l'association et de la menace
+        association_data = {k: v for k, v in validated_data.items() 
+                          if k not in ['nom', 'description', 'type_menace']}
+        menace_data = {k: v for k, v in validated_data.items() 
+                      if k in ['nom', 'description', 'type_menace']}
+        
+        # Mettre à jour l'association
+        for attr, value in association_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Mettre à jour la menace si nécessaire
+        if menace_data:
+            menace = instance.menace
+            for attr, value in menace_data.items():
+                if hasattr(menace, attr):
+                    setattr(menace, attr, value)
+            menace.save()
+        
+        return instance
 
 # ============================================================================
 # SERIALIZERS POUR ATTRIBUTS DE SECURITE

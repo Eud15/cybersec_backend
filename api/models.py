@@ -175,14 +175,15 @@ class Menace(BaseModel):
     type_menace = models.CharField(
         max_length=50,
         choices=[
-            ('MALWARE', 'Malware'),
-            ('INTRUSION', 'Intrusion'),
-            ('PANNE', 'Panne technique'),
-            ('HUMAIN', 'Erreur humaine'),
-            ('NATUREL', 'Catastrophe naturelle'),
-            ('PHYSIQUE', 'Menace physique'),
+            ('Spoofing', 'S - Usurpation d\'identité'),
+            ('Tampering', 'T - Altération des données'),
+            ('Repudiation', 'R - Répudiation'),
+            ('Information Disclosure', 'I - Divulgation d\'informations'),
+            ('Denial of Service (DoS)', 'D - Déni de service'),
+            ('Elevation of Privilege', 'E - Élévation de privilèges'),
             ('AUTRE', 'Autre')
-        ]
+        ],
+        default='Spoofing'  # Nouvelle valeur par défaut
     )
     severite = models.CharField(
         max_length=10,
