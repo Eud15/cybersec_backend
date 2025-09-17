@@ -481,6 +481,7 @@ class MenaceControle(BaseModel):
             ('NON_APPLICABLE', 'Non applicable')
         ],
         default='NON_CONFORME'
+
     )
     
     commentaires = models.TextField(blank=True, null=True)

@@ -2286,6 +2286,60 @@ class MenaceViewSet(viewsets.ModelViewSet):
             'contexte': menace.contexte_hierarchique_complet
         })
     
+   
+
+    @action(detail=True, methods=['get'])
+    def controles_disponibles(self, request, pk=None):
+        """Recherche les contrôles NIST disponibles (non encore associés à cette menace)"""
+        menace = self.get_object()
+        
+        search_query = request.query_params.get('search', '').strip()
+        famille = request.query_params.get('famille', '')
+        priorite = request.query_params.get('priorite', '')
+        
+        # Récupérer les IDs des contrôles déjà associés
+        controles_associes_ids = MenaceControle.objects.filter(menace=menace).values_list('controle_nist_id', flat=True)
+        
+        # Rechercher dans tous les contrôles NIST
+        queryset = ControleNIST.objects.exclude(id__in=controles_associes_ids)
+        
+        # Filtres de recherche
+        if search_query:
+            queryset = queryset.filter(
+                Q(code__icontains=search_query) |
+                Q(nom__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+        
+        if famille:
+            queryset = queryset.filter(famille=famille)
+        
+        if priorite:
+            queryset = queryset.filter(priorite=priorite)
+        
+        # Limiter les résultats pour la performance
+        queryset = queryset.order_by('code')[:20]
+        
+        # Sérialiser les résultats
+        controles_data = []
+        for controle in queryset:
+            controles_data.append({
+                'id': controle.id,
+                'code': controle.code,
+                'nom': controle.nom,
+                'famille': controle.famille,
+                'priorite': controle.priorite,
+                'description': controle.description[:200] + '...' if len(controle.description) > 200 else controle.description,
+                'techniques_count': controle.techniques.count(),
+                'created_at': controle.created_at.isoformat()
+            })
+        
+        return Response({
+            'results': controles_data,
+            'count': len(controles_data),
+            'menace_id': str(menace.id),
+            'search_query': search_query
+        })
     @action(detail=True, methods=['get'])
     def contextes_disponibles(self, request, pk=None):
         """Retourne tous les contextes (attributs de sécurité) disponibles pour cette menace"""

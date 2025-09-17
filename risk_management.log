@@ -2116,6 +2116,7 @@ Watching for file changes with StatReloader
 "GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
 "GET /api/v1/controles-nist/?page=2&page_size=10 HTTP/1.1" 200 5385
 Watching for file changes with StatReloader
+<<<<<<< HEAD
 >>>>>>> 139ccadacc8d2d8770cc4acbce6e6af9b44b6b09
 Watching for file changes with StatReloader
 "GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
@@ -2156,3 +2157,192 @@ Watching for file changes with StatReloader
 "GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/menaces/ HTTP/1.1" 200 4798
 "GET /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 657
 "GET /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 657
+=======
+"GET /api/v1/mesures-controle/?page=2&page_size=10 HTTP/1.1" 200 13196
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52095
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /api/v1/mesures-controle/
+"GET /api/v1/mesures-controle/?page=2&page_size=10 HTTP/1.1" 404 29
+Not Found: /api/v1/mesures-controle/
+"GET /api/v1/mesures-controle/?page=2&page_size=10 HTTP/1.1" 404 29
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 8824
+"POST /api/v1/mesures-controle/import_mesures/ HTTP/1.1" 201 10481
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 12786
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 3704
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 6318
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 5749
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=AC-02 HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=AC-02 HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Management HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Management HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managemen HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managemen HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manageme HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managem HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manage HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manageme HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manag HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managem HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Mana HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Ma HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+M HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Man HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+ HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Accoun HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Accou HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Acco HTTP/1.1" 200 0
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Acc HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manage HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manag HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Mana HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+M HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+ HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Ma HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Man HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Ac HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Accoun HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Accou HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Acco HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Acc HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Ac HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Management HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managemen HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manageme HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Managem HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manage HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Ma HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Man HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Manag HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+Mana HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+M HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account+ HTTP/1.1" 404 47
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Account HTTP/1.1" 404 47
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Information+Flow+Enforcement HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/controles_disponibles/?search=Information+Flow+Enforcement HTTP/1.1" 404 47
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"OPTIONS /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"OPTIONS /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1410
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 1921
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1410
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/attributs-securite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/ HTTP/1.1" 200 11852
+"OPTIONS /api/v1/attributs-securite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d/menaces/ HTTP/1.1" 200 11279
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/associer_controle/ HTTP/1.1" 200 0
+Not Found: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/associer_controle/
+"POST /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/associer_controle/ HTTP/1.1" 404 55196
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"OPTIONS /api/v1/menace-controle/ HTTP/1.1" 200 0
+Not Found: /api/v1/menace-controle/
+"POST /api/v1/menace-controle/ HTTP/1.1" 404 55055
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+"OPTIONS /api/v1/menace-controles/ HTTP/1.1" 200 0
+"POST /api/v1/menace-controles/ HTTP/1.1" 201 178
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 2616
+"POST /api/v1/menace-controles/ HTTP/1.1" 201 178
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 3504
+"POST /api/v1/menace-controles/ HTTP/1.1" 201 178
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
+C:\Users\afdev\Videos\gestion_risques_nist\api\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\models.py changed, reloading.
+Watching for file changes with StatReloader
+"OPTIONS /api/v1/controles-nist/6453763e-3791-43c7-a9bf-fd09a111a2c3/ HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/6453763e-3791-43c7-a9bf-fd09a111a2c3/ HTTP/1.1" 200 1568
+"OPTIONS /api/v1/controles-nist/6453763e-3791-43c7-a9bf-fd09a111a2c3/techniques/ HTTP/1.1" 200 0
+Not Found: /api/v1/controles-nist/6453763e-3791-43c7-a9bf-fd09a111a2c3/techniques/
+"GET /api/v1/controles-nist/6453763e-3791-43c7-a9bf-fd09a111a2c3/techniques/ HTTP/1.1" 404 55195
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+>>>>>>> cb9cc65dbf34c4c83e817157ad575f6f872a8abb
