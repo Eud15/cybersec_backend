@@ -1125,6 +1125,449 @@ class TechniqueViewSet(viewsets.ModelViewSet):
                           status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['post'])
+    def import_techniques(self, request):
+        """Import de techniques depuis un fichier CSV/Excel"""
+        
+        if 'file' not in request.FILES:
+            return Response(
+                {'error': 'Fichier requis'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        uploaded_file = request.FILES['file']
+        
+        # Vérifier l'extension du fichier
+        file_extension = uploaded_file.name.split('.')[-1].lower()
+        if file_extension not in ['csv', 'xlsx', 'xls']:
+            return Response(
+                {'error': 'Format de fichier non supporté. Utilisez CSV, XLSX ou XLS'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Import selon le type de fichier
+            if file_extension == 'csv':
+                import_result = self._import_techniques_from_csv(uploaded_file, request.user)
+            else:
+                import_result = self._import_techniques_from_excel(uploaded_file, request.user)
+            
+            return Response(import_result, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'import de techniques: {str(e)}")
+            return Response(
+                {'error': f'Erreur lors de l\'import: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def _import_techniques_from_excel(self, excel_file, user):
+        """Import de techniques depuis un fichier Excel"""
+        import pandas as pd
+        
+        try:
+            # Lire le fichier Excel
+            df = pd.read_excel(excel_file)
+            
+            # Mapping flexible des noms de colonnes
+            column_mapping = {
+                # Variations pour 'controle_nist_code'
+                'controle_nist_code': 'controle_nist_code',
+                'controle_code': 'controle_nist_code',
+                'code_controle': 'controle_nist_code',
+                'controle': 'controle_nist_code',
+                
+                # Variations pour 'technique_code'
+                'technique_code': 'technique_code',
+                'code_technique': 'technique_code',
+                'code': 'technique_code',
+                
+                # Variations pour 'nom'
+                'nom': 'nom',
+                'name': 'nom',
+                'titre': 'nom',
+                
+                # Variations pour 'description'
+                'description': 'description',
+                'desc': 'description',
+                
+                # Variations pour 'type_technique'
+                'type_technique': 'type_technique',
+                'type': 'type_technique',
+                'categorie': 'type_technique',
+                
+                # Variations pour 'complexite'
+                'complexite': 'complexite',
+                'complexity': 'complexite',
+                'niveau': 'complexite'
+            }
+            
+            # Renommer les colonnes selon le mapping
+            df = df.rename(columns=column_mapping)
+            
+            # Vérifier les colonnes OBLIGATOIRES
+            required_columns = ['controle_nist_code', 'nom', 'technique_code']
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            
+            if missing_columns:
+                return {
+                    'message': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}',
+                    'techniques_creees': 0,
+                    'erreurs': [{
+                        'ligne': 1,
+                        'erreur': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}. Colonnes disponibles: {", ".join(df.columns.tolist())}'
+                    }],
+                    'total_erreurs': 1,
+                    'colonnes_disponibles': df.columns.tolist(),
+                    'colonnes_obligatoires': required_columns
+                }
+            
+            techniques_creees = 0
+            techniques_errors = []
+            
+            # Nettoyer les données avant traitement
+            df = df.fillna('')  # Remplacer NaN par chaîne vide
+            
+            for index, row in df.iterrows():
+                try:
+                    # Récupérer les champs
+                    controle_nist_code = str(row.get('controle_nist_code', '')).strip()
+                    technique_code = str(row.get('technique_code', '')).strip()
+                    nom = str(row.get('nom', '')).strip()
+                    description = str(row.get('description', '')).strip()
+                    type_technique = str(row.get('type_technique', '')).strip()
+                    complexite = str(row.get('complexite', 'MOYEN')).strip()
+                    
+                    # Validation des champs obligatoires
+                    if not all([controle_nist_code, nom, technique_code]):
+                        techniques_errors.append({
+                            'ligne': index + 2,
+                            'erreur': 'Champs obligatoires manquants: controle_nist_code, nom, technique_code',
+                            'donnees_recues': {
+                                'controle_nist_code': controle_nist_code,
+                                'nom': nom,
+                                'technique_code': technique_code
+                            }
+                        })
+                        continue
+                    
+                    # Vérifier que le contrôle NIST existe
+                    try:
+                        controle_nist = ControleNIST.objects.get(code=controle_nist_code)
+                    except ControleNIST.DoesNotExist:
+                        techniques_errors.append({
+                            'ligne': index + 2,
+                            'erreur': f'Contrôle NIST avec le code {controle_nist_code} non trouvé'
+                        })
+                        continue
+                    
+                    # Traitement des champs optionnels
+                    # Description (optionnel)
+                    if not description or description.lower() in ['', 'nan', 'null', 'none']:
+                        description = f"Technique {technique_code}: {nom}"
+                    
+                    # Type de technique (optionnel)
+                    valid_types = ['TECHNIQUE', 'ADMINISTRATIF', 'PHYSIQUE', 'PREVENTIF', 'DETECTIF', 'CORRECTIF']
+                    if not type_technique or type_technique.upper() not in valid_types:
+                        type_technique = 'TECHNIQUE'  # Valeur par défaut
+                    else:
+                        type_technique = type_technique.upper()
+                    
+                    # Valider la complexité (optionnel)
+                    valid_complexites = ['FAIBLE', 'MOYEN', 'ELEVE']
+                    if not complexite or complexite.upper() not in valid_complexites:
+                        complexite = 'MOYEN'  # Valeur par défaut
+                    else:
+                        complexite = complexite.upper()
+                    
+                    # Préparer les données
+                    data = {
+                        'controle_nist': controle_nist,
+                        'technique_code': technique_code,  # Maintenant obligatoire
+                        'nom': nom,
+                        'description': description,  # Maintenant optionnel avec valeur par défaut
+                        'type_technique': type_technique,  # Maintenant optionnel avec valeur par défaut
+                        'complexite': complexite
+                    }
+                    
+                    # Vérifier l'unicité du technique_code (maintenant obligatoire)
+                    if Technique.objects.filter(technique_code=technique_code).exists():
+                        techniques_errors.append({
+                            'ligne': index + 2,
+                            'erreur': f'Une technique avec le code {technique_code} existe déjà'
+                        })
+                        continue
+                    
+                    # Créer la technique
+                    technique = Technique.objects.create(**data)
+                    techniques_creees += 1
+                    
+                    # Log de l'activité
+                    log_activity(
+                        user, 
+                        'IMPORT_TECHNIQUE', 
+                        'Technique', 
+                        str(technique.id),
+                        {
+                            'nom': technique.nom,
+                            'technique_code': technique.technique_code,
+                            'controle_nist_code': controle_nist_code,
+                            'ligne': index + 2
+                        }
+                    )
+                    
+                except Exception as e:
+                    techniques_errors.append({
+                        'ligne': index + 2,
+                        'erreur': str(e)
+                    })
+            
+            return {
+                'message': f'Import terminé: {techniques_creees} techniques créées',
+                'techniques_creees': techniques_creees,
+                'erreurs': techniques_errors,
+                'total_erreurs': len(techniques_errors),
+                'colonnes_detectees': df.columns.tolist()
+            }
+            
+        except Exception as e:
+            raise Exception(f'Erreur lors de la lecture du fichier Excel: {str(e)}')
+
+    def _import_techniques_from_csv(self, csv_file, user):
+        """Import de techniques depuis un fichier CSV"""
+        import csv
+        import io
+        
+        # Lire le fichier CSV
+        file_content = csv_file.read().decode('utf-8')
+        csv_data = csv.DictReader(io.StringIO(file_content))
+        
+        techniques_creees = 0
+        techniques_errors = []
+        
+        for row_num, row in enumerate(csv_data, start=2):
+            try:
+                # Nettoyer et valider les données
+                controle_nist_code = row.get('controle_nist_code', '').strip()
+                technique_code = row.get('technique_code', '').strip()
+                nom = row.get('nom', '').strip()
+                description = row.get('description', '').strip()
+                type_technique = row.get('type_technique', '').strip()
+                complexite = row.get('complexite', 'MOYEN').strip()
+                
+                # Validation des champs requis
+                if not all([controle_nist_code, nom, technique_code]):
+                    techniques_errors.append({
+                        'ligne': row_num,
+                        'erreur': 'Champs requis manquants: controle_nist_code, nom, technique_code'
+                    })
+                    continue
+                
+                # Vérifier que le contrôle NIST existe
+                try:
+                    controle_nist = ControleNIST.objects.get(code=controle_nist_code)
+                except ControleNIST.DoesNotExist:
+                    techniques_errors.append({
+                        'ligne': row_num,
+                        'erreur': f'Contrôle NIST avec le code {controle_nist_code} non trouvé'
+                    })
+                    continue
+                
+                # Vérifier l'unicité du technique_code (maintenant obligatoire)
+                if Technique.objects.filter(technique_code=technique_code).exists():
+                    techniques_errors.append({
+                        'ligne': row_num,
+                        'erreur': f'Une technique avec le code {technique_code} existe déjà'
+                    })
+                    continue
+                
+                # Traitement des champs optionnels
+                # Description (optionnel)
+                if not description or description.lower() in ['', 'nan', 'null', 'none']:
+                    description = f"Technique {technique_code}: {nom}"
+                
+                # Type de technique (optionnel)
+                valid_types = ['TECHNIQUE', 'ADMINISTRATIF', 'PHYSIQUE', 'PREVENTIF', 'DETECTIF', 'CORRECTIF']
+                if not type_technique or type_technique.upper() not in valid_types:
+                    type_technique = 'TECHNIQUE'  # Valeur par défaut
+                else:
+                    type_technique = type_technique.upper()
+                
+                # Complexité (optionnel)
+                valid_complexites = ['FAIBLE', 'MOYEN', 'ELEVE']
+                if not complexite or complexite.upper() not in valid_complexites:
+                    complexite = 'MOYEN'  # Valeur par défaut
+                else:
+                    complexite = complexite.upper()
+                
+                # Créer la technique
+                data = {
+                    'controle_nist': controle_nist,
+                    'technique_code': technique_code,  # Maintenant obligatoire
+                    'nom': nom,
+                    'description': description,
+                    'type_technique': type_technique,
+                    'complexite': complexite
+                }
+                
+                technique = Technique.objects.create(**data)
+                techniques_creees += 1
+                
+                # Log de l'activité
+                log_activity(
+                    user, 
+                    'IMPORT_TECHNIQUE', 
+                    'Technique', 
+                    str(technique.id),
+                    {'nom': technique.nom, 'ligne': row_num}
+                )
+                
+            except Exception as e:
+                techniques_errors.append({
+                    'ligne': row_num,
+                    'erreur': str(e)
+                })
+        
+        return {
+            'message': f'Import terminé: {techniques_creees} techniques créées',
+            'techniques_creees': techniques_creees,
+            'erreurs': techniques_errors,
+            'total_erreurs': len(techniques_errors)
+        }
+
+    @action(detail=False, methods=['get'])
+    def export_techniques(self, request):
+        """Export des techniques au format CSV ou Excel"""
+        
+        format_export = request.query_params.get('format', 'csv').lower()
+        controle_nist = request.query_params.get('controle_nist')
+        type_technique = request.query_params.get('type_technique')
+        complexite = request.query_params.get('complexite')
+        
+        # Filtrer les techniques
+        queryset = self.get_queryset()
+        if controle_nist:
+            queryset = queryset.filter(controle_nist__code=controle_nist)
+        if type_technique:
+            queryset = queryset.filter(type_technique=type_technique)
+        if complexite:
+            queryset = queryset.filter(complexite=complexite)
+        
+        if format_export == 'excel' or format_export == 'xlsx':
+            return self._export_techniques_to_excel(queryset)
+        else:
+            return self._export_techniques_to_csv(queryset)
+
+    def _export_techniques_to_csv(self, queryset):
+        """Export techniques au format CSV"""
+        import csv
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="techniques.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow([
+            'controle_nist_code', 'technique_code', 'nom', 'description', 
+            'type_technique', 'complexite'
+        ])
+        
+        for technique in queryset:
+            writer.writerow([
+                technique.controle_nist.code,
+                technique.technique_code or '',
+                technique.nom,
+                technique.description,
+                technique.type_technique,
+                technique.complexite
+            ])
+        
+        return response
+
+    def _export_techniques_to_excel(self, queryset):
+        """Export techniques au format Excel"""
+        import pandas as pd
+        from django.http import HttpResponse
+        import io
+        
+        # Préparer les données
+        data = []
+        for technique in queryset:
+            data.append({
+                'controle_nist_code': technique.controle_nist.code,
+                'technique_code': technique.technique_code or '',
+                'nom': technique.nom,
+                'description': technique.description,
+                'type_technique': technique.type_technique,
+                'complexite': technique.complexite
+            })
+        
+        df = pd.DataFrame(data)
+        
+        # Créer le fichier Excel en mémoire
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, index=False, engine='openpyxl')
+        excel_buffer.seek(0)
+        
+        response = HttpResponse(
+            excel_buffer.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="techniques.xlsx"'
+        
+        return response
+
+    @action(detail=False, methods=['get'])
+    def template_import_techniques(self, request):
+        """Génère un template Excel pour l'import de techniques"""
+        import pandas as pd
+        from django.http import HttpResponse
+        import io
+        
+        # Données d'exemple
+        template_data = [
+            {
+                'controle_nist_code': 'AC-02',
+                'technique_code': 'AC-02.1',
+                'nom': 'Automated System Account Management',
+                'description': 'Utiliser des mécanismes automatisés pour supporter la gestion des comptes système',
+                'type_technique': 'TECHNIQUE',
+                'complexite': 'MOYEN'
+            },
+            {
+                'controle_nist_code': 'AC-02',
+                'technique_code': 'AC-02.2',
+                'nom': 'Removal of Temporary Emergency Accounts',
+                'description': '',  # Description vide pour montrer que c'est optionnel
+                'type_technique': '',  # Type vide pour montrer que c'est optionnel
+                'complexite': ''  # Complexité vide pour montrer que c'est optionnel
+            },
+            {
+                'controle_nist_code': 'SI-04',
+                'technique_code': 'SI-04.1',
+                'nom': 'System-wide Intrusion Detection System',
+                'description': 'Déployer un système de détection d\'intrusion à l\'échelle du système',
+                'type_technique': 'DETECTIF',
+                'complexite': 'ELEVE'
+            }
+        ]
+        
+        df = pd.DataFrame(template_data)
+        
+        # Créer le fichier Excel en mémoire
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, index=False, engine='openpyxl')
+        excel_buffer.seek(0)
+        
+        response = HttpResponse(
+            excel_buffer.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="template_import_techniques.xlsx"'
+        
+        return response
+
+
 # ============================================================================
 # NIVEAU 7: GESTION DES MESURES DE CONTROLE
 # ============================================================================
