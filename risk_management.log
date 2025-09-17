@@ -1227,3 +1227,74 @@ Unauthorized: /api/v1/controles-nist/
 "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
 "GET /?format=openapi HTTP/1.1" 200 79336
 >>>>>>> aa6bf2b350f51b00d2e3a2bd3b88ea0ffb87974d
+Watching for file changes with StatReloader
+"GET /api/v1/mesures-controle/ HTTP/1.1" 200 52
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 52
+"POST /api/v1/controles-nist/import_controles/ HTTP/1.1" 201 8935
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 52
+"POST /api/v1/controles-nist/import_controles/ HTTP/1.1" 201 104
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 643
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 536
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/?architecture=bcf66a9a-925b-4a8e-86a7-e81f8e84fc28 HTTP/1.1" 200 1233
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"OPTIONS /api/v1/actifs/8c377b2d-25ad-42c3-b1fe-6ad1ef9c469b/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/8c377b2d-25ad-42c3-b1fe-6ad1ef9c469b/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/8c377b2d-25ad-42c3-b1fe-6ad1ef9c469b/attributs_securite/ HTTP/1.1" 200 2
+"GET /api/v1/actifs/8c377b2d-25ad-42c3-b1fe-6ad1ef9c469b/ HTTP/1.1" 200 484
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/actifs/8c377b2d-25ad-42c3-b1fe-6ad1ef9c469b/attributs_securite/ HTTP/1.1" 200 2
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/?architecture=bcf66a9a-925b-4a8e-86a7-e81f8e84fc28 HTTP/1.1" 200 1233
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/ HTTP/1.1" 200 1574
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"GET /api/v1/actifs/ HTTP/1.1" 200 1233
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/ HTTP/1.1" 200 5404
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/menaces/ HTTP/1.1" 200 4798
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"OPTIONS /api/v1/controles-nist/export/?format=csv&search=&famille=&priorite= HTTP/1.1" 200 0
+Not Found: /api/v1/controles-nist/export/
+"GET /api/v1/controles-nist/export/?format=csv&search=&famille=&priorite= HTTP/1.1" 404 25
+Not Found: /api/v1/controles-nist/export/
+"GET /api/v1/controles-nist/export/?format=csv&search=&famille=&priorite= HTTP/1.1" 404 25
+Not Found: /api/v1/controles-nist/export/
+"GET /api/v1/controles-nist/export/?format=csv&search=&famille=&priorite= HTTP/1.1" 404 25
+Not Found: /api/v1/controles-nist/export/
+"GET /api/v1/controles-nist/export/?format=csv&search=&famille=&priorite= HTTP/1.1" 404 25
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/architectures/ HTTP/1.1" 200 643
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 536
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/?architecture=bcf66a9a-925b-4a8e-86a7-e81f8e84fc28 HTTP/1.1" 200 1233
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 621
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/ HTTP/1.1" 200 1574
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"GET /api/v1/architectures/bcf66a9a-925b-4a8e-86a7-e81f8e84fc28/ HTTP/1.1" 200 1581
+"GET /api/v1/actifs/1bbfd33c-c6ce-4d6d-89c8-dffbbb41585c/attributs_securite/ HTTP/1.1" 200 1085
+"GET /api/v1/actifs/ HTTP/1.1" 200 1233
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/ HTTP/1.1" 200 5404
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/menaces/ HTTP/1.1" 200 4798
+"OPTIONS /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/5b4a4353-0ac5-4e33-9678-f01ef5d37af3/vue_complete/ HTTP/1.1" 200 657
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
