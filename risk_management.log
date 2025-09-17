@@ -838,3 +838,8 @@ Watching for file changes with StatReloader
 C:\Users\afdev\Videos\gestion_risques_nist\api\models.py changed, reloading.
 Watching for file changes with StatReloader
 >>>>>>> aea87b6e8e91528b6e1d77c8eb66a930176eac5f
+Watching for file changes with StatReloader
+"GET /api/v1/actifs/ HTTP/1.1" 200 1233
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/ HTTP/1.1" 200 4192
+"GET /api/v1/attributs-securite/fc69e202-3e78-4f1e-a21f-2a8acee329cd/menaces/ HTTP/1.1" 200 3586
+Watching for file changes with StatReloader
