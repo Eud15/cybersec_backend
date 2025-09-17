@@ -539,6 +539,9 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
         description = validated_data.get('description', '')
         probabilite = validated_data['probabilite']
         
+        # ✅ RÉCUPÉRER LE TYPE_MENACE DU FORMULAIRE
+        type_menace = request.data.get('type_menace', 'Spoofing')  # Valeur par défaut cohérente
+        
         try:
             with transaction.atomic():
                 # 1. Créer ou récupérer la menace
@@ -546,8 +549,8 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                     nom=nom,
                     defaults={
                         'description': description,
-                        'type_menace': 'AUTRE',  # Valeur par défaut
-                        'severite': 'MOYEN',     # Valeur par défaut
+                        'type_menace': type_menace,  # ✅ UTILISER LA VALEUR DU FORMULAIRE
+                        'severite': 'MOYEN',     
                         'attribut_securite_principal': attribut
                     }
                 )
@@ -565,9 +568,16 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                             'existing_association_id': existing_association.id
                         }, status=status.HTTP_400_BAD_REQUEST)
                     
-                    # Mettre à jour la description si fournie et différente
+                    # ✅ METTRE À JOUR TOUS LES CHAMPS SI NÉCESSAIRE
+                    updated = False
                     if description and description != menace.description:
                         menace.description = description
+                        updated = True
+                    if type_menace and type_menace != menace.type_menace:
+                        menace.type_menace = type_menace
+                        updated = True
+                    
+                    if updated:
                         menace.save()
                 
                 # 2. Créer l'association AttributMenace
@@ -575,7 +585,7 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                     attribut_securite=attribut,
                     menace=menace,
                     probabilite=probabilite,
-                    impact=Decimal('100.0'),  # 100% car basé sur le coût de compromission
+                    impact=Decimal('100.0'),  
                     cout_impact=attribut.cout_compromission
                 )
                 
@@ -589,7 +599,7 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                         'id': menace.id,
                         'nom': menace.nom,
                         'description': menace.description,
-                        'type_menace': menace.type_menace,
+                        'type_menace': menace.type_menace,  # ✅ RETOURNER LE BON TYPE
                         'severite': menace.severite,
                         'total_controles': menace.controles_nist.count(),
                         'total_techniques': sum(
@@ -629,6 +639,7 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                     {
                         'menace_nom': menace.nom,
                         'menace_id': str(menace.id),
+                        'type_menace': menace.type_menace,  # ✅ LOGGER LE BON TYPE
                         'probabilite': float(probabilite),
                         'risque_financier': association.risque_financier,
                         'menace_creee': created
@@ -643,6 +654,7 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                 {'error': f'Erreur interne lors de la création : {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
 
 # ============================================================================
 # NIVEAU 4: GESTION DES ASSOCIATIONS ATTRIBUT-MENACE
@@ -762,6 +774,81 @@ class AttributMenaceViewSet(viewsets.ModelViewSet):
                 {'error': f'Erreur interne: {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+    def update(self, request, *args, **kwargs):
+        """Override de la méthode update standard pour gérer les champs de menace"""
+        instance = self.get_object()
+        
+        # Séparer les données de l'association et de la menace
+        association_data = {}
+        menace_data = {}
+        
+        # Champs de l'association AttributMenace
+        association_fields = ['probabilite', 'impact', 'cout_impact']
+        # Champs de la Menace
+        menace_fields = ['nom', 'description', 'type_menace', 'severite']
+        
+        for key, value in request.data.items():
+            if key in association_fields:
+                association_data[key] = value
+            elif key in menace_fields:
+                menace_data[key] = value
+        
+        try:
+            with transaction.atomic():
+                # Mettre à jour l'association
+                for field, value in association_data.items():
+                    if hasattr(instance, field):
+                        setattr(instance, field, value)
+                
+                if association_data:
+                    instance.save()
+                
+                # Mettre à jour la menace si nécessaire
+                if menace_data:
+                    menace = instance.menace
+                    menace_updated = False
+                    
+                    for field, value in menace_data.items():
+                        if hasattr(menace, field) and getattr(menace, field) != value:
+                            # Vérification spéciale pour le nom (unicité)
+                            if field == 'nom':
+                                if Menace.objects.filter(nom=value).exclude(id=menace.id).exists():
+                                    return Response(
+                                        {'error': 'Une menace avec ce nom existe déjà'}, 
+                                        status=status.HTTP_400_BAD_REQUEST
+                                    )
+                            
+                            setattr(menace, field, value)
+                            menace_updated = True
+                    
+                    if menace_updated:
+                        menace.save()
+                
+                # Log de l'activité
+                log_activity(
+                    request.user, 
+                    'UPDATE_MENACE_ASSOCIATION', 
+                    'AttributMenace', 
+                    str(instance.id),
+                    {
+                        'menace_nom': instance.menace.nom,
+                        'association_updated': bool(association_data),
+                        'menace_updated': bool(menace_data)
+                    }
+                )
+                
+                # Retourner la réponse avec les données mises à jour
+                serializer = self.get_serializer(instance)
+                return Response(serializer.data)
+                
+        except Exception as e:
+            logger.error(f"Erreur lors de la mise à jour: {str(e)}")
+            return Response(
+                {'error': f'Erreur lors de la mise à jour: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
     @action(detail=True, methods=['get'])
     def plan_mitigation(self, request, pk=None):
         """Génère un plan de mitigation complet pour ce risque"""
@@ -1375,6 +1462,250 @@ class ControleNISTViewSet(viewsets.ModelViewSet):
             return Response(TechniqueSerializer(technique).data, 
                           status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def import_controles(self, request):
+        """Import de contrôles NIST depuis un fichier CSV/Excel"""
+        
+        if 'file' not in request.FILES:
+            return Response(
+                {'error': 'Fichier requis'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        uploaded_file = request.FILES['file']
+        
+        # Vérifier l'extension du fichier
+        file_extension = uploaded_file.name.split('.')[-1].lower()
+        if file_extension not in ['csv', 'xlsx', 'xls']:
+            return Response(
+                {'error': 'Format de fichier non supporté. Utilisez CSV, XLSX ou XLS'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Import selon le type de fichier
+            if file_extension == 'csv':
+                import_result = self._import_from_csv(uploaded_file, request.user)
+            else:
+                import_result = self._import_from_excel(uploaded_file, request.user)
+            
+            return Response(import_result, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'import de contrôles NIST: {str(e)}")
+            return Response(
+                {'error': f'Erreur lors de l\'import: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def _import_from_csv(self, csv_file, user):
+        """Import depuis un fichier CSV"""
+        import csv
+        import io
+        
+        # Lire le fichier CSV
+        file_content = csv_file.read().decode('utf-8')
+        csv_data = csv.DictReader(io.StringIO(file_content))
+        
+        controles_crees = 0
+        controles_errors = []
+        
+        for row_num, row in enumerate(csv_data, start=2):
+            try:
+                # Nettoyer et valider les données
+                data = {
+                    'code': row.get('code', '').strip(),
+                    'nom': row.get('nom', '').strip(),
+                    'famille': row.get('famille', '').strip(),
+                    'priorite': row.get('priorite', 'P2').strip(),
+                    'description': row.get('description', '').strip()
+                }
+                
+                # Validation des champs requis
+                if not all([data['code'], data['nom'], data['famille'], data['description']]):
+                    controles_errors.append({
+                        'ligne': row_num,
+                        'erreur': 'Champs requis manquants: code, nom, famille, description'
+                    })
+                    continue
+                
+                # Vérifier que le contrôle n'existe pas déjà
+                if ControleNIST.objects.filter(code=data['code']).exists():
+                    controles_errors.append({
+                        'ligne': row_num,
+                        'erreur': f'Le contrôle avec le code {data["code"]} existe déjà'
+                    })
+                    continue
+                
+                # Créer le contrôle NIST
+                controle = ControleNIST.objects.create(**data)
+                controles_crees += 1
+                
+                # Log de l'activité
+                log_activity(
+                    user, 
+                    'IMPORT_CONTROLE', 
+                    'ControleNIST', 
+                    str(controle.id),
+                    {'code': controle.code, 'ligne': row_num}
+                )
+                
+            except Exception as e:
+                controles_errors.append({
+                    'ligne': row_num,
+                    'erreur': str(e)
+                })
+        
+        return {
+            'message': f'Import terminé: {controles_crees} contrôles créés',
+            'controles_crees': controles_crees,
+            'erreurs': controles_errors,
+            'total_erreurs': len(controles_errors)
+        }
+
+    def _import_from_excel(self, excel_file, user):
+        """Import depuis un fichier Excel"""
+        import pandas as pd
+        
+        try:
+            # Lire le fichier Excel
+            df = pd.read_excel(excel_file)
+            
+            controles_crees = 0
+            controles_errors = []
+            
+            for index, row in df.iterrows():
+                try:
+                    # Nettoyer et valider les données
+                    data = {
+                        'code': str(row.get('code', '')).strip(),
+                        'nom': str(row.get('nom', '')).strip(),
+                        'famille': str(row.get('famille', '')).strip(),
+                        'priorite': str(row.get('priorite', 'P2')).strip(),
+                        'description': str(row.get('description', '')).strip()
+                    }
+                    
+                    # Validation des champs requis
+                    if not all([data['code'], data['nom'], data['famille'], data['description']]):
+                        controles_errors.append({
+                            'ligne': index + 2,  # +2 car index commence à 0 et ligne 1 = header
+                            'erreur': 'Champs requis manquants: code, nom, famille, description'
+                        })
+                        continue
+                    
+                    # Vérifier que le contrôle n'existe pas déjà
+                    if ControleNIST.objects.filter(code=data['code']).exists():
+                        controles_errors.append({
+                            'ligne': index + 2,
+                            'erreur': f'Le contrôle avec le code {data["code"]} existe déjà'
+                        })
+                        continue
+                    
+                    # Créer le contrôle NIST
+                    controle = ControleNIST.objects.create(**data)
+                    controles_crees += 1
+                    
+                    # Log de l'activité
+                    log_activity(
+                        user, 
+                        'IMPORT_CONTROLE', 
+                        'ControleNIST', 
+                        str(controle.id),
+                        {'code': controle.code, 'ligne': index + 2}
+                    )
+                    
+                except Exception as e:
+                    controles_errors.append({
+                        'ligne': index + 2,
+                        'erreur': str(e)
+                    })
+            
+            return {
+                'message': f'Import terminé: {controles_crees} contrôles créés',
+                'controles_crees': controles_crees,
+                'erreurs': controles_errors,
+                'total_erreurs': len(controles_errors)
+            }
+            
+        except Exception as e:
+            raise Exception(f'Erreur lors de la lecture du fichier Excel: {str(e)}')
+
+    @action(detail=False, methods=['get'])
+    def export_controles(self, request):
+        """Export des contrôles NIST au format CSV ou Excel"""
+        
+        format_export = request.query_params.get('format', 'csv').lower()
+        famille = request.query_params.get('famille')
+        priorite = request.query_params.get('priorite')
+        
+        # Filtrer les contrôles
+        queryset = self.get_queryset()
+        if famille:
+            queryset = queryset.filter(famille=famille)
+        if priorite:
+            queryset = queryset.filter(priorite=priorite)
+        
+        if format_export == 'excel' or format_export == 'xlsx':
+            return self._export_to_excel(queryset)
+        else:
+            return self._export_to_csv(queryset)
+
+    def _export_to_csv(self, queryset):
+        """Export au format CSV"""
+        import csv
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="controles_nist.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['code', 'nom', 'famille', 'priorite', 'description'])
+        
+        for controle in queryset:
+            writer.writerow([
+                controle.code,
+                controle.nom,
+                controle.famille,
+                controle.priorite,
+                controle.description
+            ])
+        
+        return response
+
+    def _export_to_excel(self, queryset):
+        """Export au format Excel"""
+        import pandas as pd
+        from django.http import HttpResponse
+        import io
+        
+        # Préparer les données
+        data = []
+        for controle in queryset:
+            data.append({
+                'code': controle.code,
+                'nom': controle.nom,
+                'famille': controle.famille,
+                'priorite': controle.priorite,
+                'description': controle.description
+            })
+        
+        df = pd.DataFrame(data)
+        
+        # Créer le fichier Excel en mémoire
+        excel_buffer = io.BytesIO()
+        df.to_excel(excel_buffer, index=False, engine='openpyxl')
+        excel_buffer.seek(0)
+        
+        response = HttpResponse(
+            excel_buffer.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="controles_nist.xlsx"'
+        
+        return response
+
+
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """Consultation des utilisateurs"""
