@@ -1349,3 +1349,31 @@ Watching for file changes with StatReloader
 C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
 Watching for file changes with StatReloader
 >>>>>>> 1ce052c29b2c43474ba3563b6184255465582a4e
+Watching for file changes with StatReloader
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
+"POST /api/v1/controles-nist/import_controles/ HTTP/1.1" 201 1006
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"OPTIONS /api/v1/techniques/import_techniques/ HTTP/1.1" 200 0
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 398684
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 390061
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 400764
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/mesures-controle/ HTTP/1.1" 200 52
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"OPTIONS /api/v1/controles-nist/ HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
