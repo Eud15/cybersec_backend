@@ -1348,6 +1348,7 @@ C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
 Watching for file changes with StatReloader
 C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
 Watching for file changes with StatReloader
+<<<<<<< HEAD
 >>>>>>> 1ce052c29b2c43474ba3563b6184255465582a4e
 Watching for file changes with StatReloader
 "GET /api/v1/controles-nist/ HTTP/1.1" 200 3258
@@ -1377,3 +1378,78 @@ Watching for file changes with StatReloader
 "GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
 "GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
 "GET /api/v1/techniques/ HTTP/1.1" 200 8811
+=======
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 755
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5316
+"POST /api/v1/controles-nist/import_controles/ HTTP/1.1" 201 1217
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/techniques/ HTTP/1.1" 200 63981
+"OPTIONS /api/v1/techniques/import_techniques/ HTTP/1.1" 200 0
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 365407
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/techniques/ HTTP/1.1" 200 59076
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5111
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 52
+"POST /api/v1/controles-nist/import_controles/ HTTP/1.1" 201 106
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"GET /api/v1/techniques/ HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 365407
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/techniques/ HTTP/1.1" 200 8811
+"GET /api/v1/controles-nist/ HTTP/1.1" 200 5066
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 701
+"OPTIONS /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 3704
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"OPTIONS /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/ HTTP/1.1" 200 2613
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+"GET /api/v1/actifs/2772e65b-e1bb-47ab-a1ae-acf5cc5bb324/attributs_securite/ HTTP/1.1" 200 2092
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 6318
+"OPTIONS /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 5749
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/ HTTP/1.1" 200 6318
+"GET /api/v1/attributs-securite/a9bd51cd-ff69-4f48-9bc2-d03dc9d4b51b/menaces/ HTTP/1.1" 200 5749
+"OPTIONS /api/v1/menaces/5a211283-dbc8-4d1e-b2a9-87c7eefa65a1/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/5a211283-dbc8-4d1e-b2a9-87c7eefa65a1/vue_complete/ HTTP/1.1" 200 654
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 701
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 701
+>>>>>>> f33297cbca8d27b71b6215fe0391303551d8ca63
