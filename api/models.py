@@ -547,11 +547,12 @@ class MesureDeControle(BaseModel):
     nature_mesure = models.CharField(
         max_length=50,
         choices=[
-            ('ORGANISATIONNEL', 'Organisationnel'),
-            ('TECHNIQUE', 'Technique'),
-            ('PHYSIQUE', 'Physique'),
-            ('JURIDIQUE', 'Juridique')
-        ]
+            ('IS', 'IS - Implémentation Système'),
+            ('IP', 'IP - Implémentation Processus'),
+            ('RC', 'RC - Révision Configuration'),
+            ('RA', 'RA - Révision Architecture')
+        ],
+        default='IS'  # Valeur par défaut
     )
     
     # Coûts et efficacité
