@@ -6,7 +6,7 @@ import pyomo.environ as pyo
 
 # Chemin vers le solveur BONMIN (assure-toi que ce chemin est correct)
 # solver_path = '/usr/local/bin/bonmin'
-solver_path = r"C:\BONMIN\bonmin.exe"
+solver_path = r'C:\Users\afdev\Music\BONMIN\bonmin.exe'
 solver = pyo.SolverFactory('bonmin', executable=solver_path)
 
 import pymysql

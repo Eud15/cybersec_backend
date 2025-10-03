@@ -2979,6 +2979,7 @@ Watching for file changes with StatReloader
 C:\Users\afdev\Videos\gestion_risques_nist\api\models.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+<<<<<<< HEAD
 >>>>>>> eab84c562a0b6fda2ed0eec7e6cfbe7b177c71dc
 Watching for file changes with StatReloader
 "OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
@@ -3006,10 +3007,454 @@ Watching for file changes with StatReloader
 "GET /api/v1/attributs-securite/b9436747-59b6-414e-b0e6-391a0ddf6e0b/menaces/ HTTP/1.1" 200 3615
 "OPTIONS /api/v1/menaces/60efdc42-bad1-4136-af91-76e73f999cfc/vue_complete/ HTTP/1.1" 200 0
 "GET /api/v1/menaces/60efdc42-bad1-4136-af91-76e73f999cfc/vue_complete/ HTTP/1.1" 200 720
+=======
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"OPTIONS /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/ HTTP/1.1" 200 0
+Bad Request: /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/
+"PUT /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/ HTTP/1.1" 400 123
+Bad Request: /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/
+"PUT /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/ HTTP/1.1" 400 123
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8803
+"PATCH /api/v1/mesures-controle/6512bf39-319a-4b68-9ca2-aee661fb83ec/ HTTP/1.1" 200 325
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+"OPTIONS /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+C:\Users\afdev\Videos\gestion_risques_nist\api\serializers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\risk_management\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\risk_management\settings.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /api/optimization/optimize_architecture/
+"GET /api/optimization/optimize_architecture/ HTTP/1.1" 404 3327
+"GET / HTTP/1.1" 200 1640
+"GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+"GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+"GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+"GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+"GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+"GET /?format=openapi HTTP/1.1" 200 89615
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 200 8830
+Unauthorized: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/
+"GET /api/v1/menaces/63449148-c3e9-4d93-afa4-a2b8f24547a4/vue_complete/ HTTP/1.1" 401 58
+"OPTIONS /api/v1/auth/token/ HTTP/1.1" 200 0
+"POST /api/v1/auth/token/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"POST /api/v1/auth/token/ HTTP/1.1" 200 52
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+Watching for file changes with StatReloader
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+C:\Users\afdev\Videos\gestion_risques_nist\risk_management\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\risk_management\settings.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+Unauthorized: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/
+"GET /api/v1/ HTTP/1.1" 401 58
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+Method Not Allowed: /api/v1/optimization/optimize_architecture/
+"GET /api/v1/optimization/optimize_architecture/ HTTP/1.1" 405 49
+Bad Request: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 400 49
+Not Found: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 404 74
+"OPTIONS /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+Optimisation de l'actif: Application ERP
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Watching for file changes with StatReloader
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Watching for file changes with StatReloader
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Watching for file changes with StatReloader
+Solveur bonmin initialisé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut d0ac4cec-d31c-4d51-bf25-e8f1ba3a6f0d: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de la résolution du modèle: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'attribut afa6a527-7fac-411c-a03f-f196ed6af1a0: Solver (asl) did not exit normally
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 259, in _optimize_attribut_security
+    result = self._solve_model(model)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 113, in _solve_model
+    result = self.solver.solve(model, **solve_options)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\pyomo\opt\base\solvers.py", line 654, in solve
+    raise ApplicationError("Solver (%s) did not exit normally" % self.name)
+pyomo.common.errors.ApplicationError: Solver (asl) did not exit normally
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+ATTENTION : Aucun solveur d'optimisation disponible. Les fonctionnalités d'optimisation seront désactivées. OS: Windows, Pour installer : conda install -c conda-forge glpk
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 91
+"OPTIONS /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+Watching for file changes with StatReloader
+ATTENTION : Aucun solveur d'optimisation disponible. Les fonctionnalités d'optimisation seront désactivées. OS: Windows, Pour installer : conda install -c conda-forge glpk
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 91
+ATTENTION : Aucun solveur d'optimisation disponible. Les fonctionnalités d'optimisation seront désactivées. OS: Windows, Pour installer : conda install -c conda-forge glpk
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 91
+C:\Users\afdev\Videos\gestion_risques_nist\risk_management\settings.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+Erreur lors de l'optimisation de l'architecture 2ad57535-4794-4614-a928-b3828a1ce73d: "Got KeyError when attempting to get a value for field `measures_by_nature` on serializer `OptimizationSummarySerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'measures_by_nature'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 315
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 407
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"OPTIONS /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/actifs/?architecture=2ad57535-4794-4614-a928-b3828a1ce73d HTTP/1.1" 200 493
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/ HTTP/1.1" 200 1921
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1410
+"GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/ HTTP/1.1" 200 838
+"GET /api/v1/actifs/0015fe0f-db72-4a1e-b640-b7796aa6586f/attributs_securite/ HTTP/1.1" 200 1410
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"OPTIONS /api/v1/actifs/?architecture=f3ede71e-fe40-49b1-ae09-605703b61970 HTTP/1.1" 200 0
+"OPTIONS /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/?architecture=f3ede71e-fe40-49b1-ae09-605703b61970 HTTP/1.1" 200 443
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+"OPTIONS /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/ HTTP/1.1" 200 811
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/ HTTP/1.1" 200 1707
+"OPTIONS /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/menaces/ HTTP/1.1" 200 1149
+"OPTIONS /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 621
+>>>>>>> 2d8db057920a62430016b14a745ce759ac259249
 "OPTIONS /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 0
 "GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 5079
 "OPTIONS /api/v1/menace-controles/ HTTP/1.1" 200 0
 "POST /api/v1/menace-controles/ HTTP/1.1" 201 178
+<<<<<<< HEAD
 "GET /api/v1/menaces/60efdc42-bad1-4136-af91-76e73f999cfc/vue_complete/ HTTP/1.1" 200 1594
 "POST /api/v1/menace-controles/ HTTP/1.1" 201 178
 "GET /api/v1/menaces/60efdc42-bad1-4136-af91-76e73f999cfc/vue_complete/ HTTP/1.1" 200 2561
@@ -3126,3 +3571,742 @@ Watching for file changes with StatReloader
 "GET /api/v1/architectures/ea09a89b-68b7-494b-aec1-a33a0f6fdc38/ HTTP/1.1" 200 2678
 "GET /api/v1/architectures/ea09a89b-68b7-494b-aec1-a33a0f6fdc38/ HTTP/1.1" 200 2678
 "GET /api/v1/actifs/6061c110-76f2-4615-96c4-f440a1bcdfb8/attributs_securite/ HTTP/1.1" 200 694
+=======
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 6102
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Application ERP
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 407
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/ HTTP/1.1" 200 7192
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/menaces/ HTTP/1.1" 200 6630
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/ HTTP/1.1" 200 811
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 704
+"GET /api/v1/actifs/?architecture=f3ede71e-fe40-49b1-ae09-605703b61970 HTTP/1.1" 200 443
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 407
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/ HTTP/1.1" 200 811
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+"GET /api/v1/actifs/bc00c6de-94ba-498b-9a29-0f64b18d44f3/attributs_securite/ HTTP/1.1" 200 359
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/ HTTP/1.1" 200 7192
+"GET /api/v1/attributs-securite/6d79670a-bf51-4203-8bd3-2d7c3c38d1e0/menaces/ HTTP/1.1" 200 6630
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 6102
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 542
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 542
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 507
+Not Found: /api/optimization/optimize_architecture/
+"POST /api/optimization/optimize_architecture/ HTTP/1.1" 404 3328
+Not Found: /v1/api/optimization/optimize_architecture/
+"POST /v1/api/optimization/optimize_architecture/ HTTP/1.1" 404 3337
+Not Found: /v1/api/optimization/optimize_architecture/
+"POST /v1/api/optimization/optimize_architecture/ HTTP/1.1" 404 3337
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+Erreur lors de l'optimisation de l'architecture f3ede71e-fe40-49b1-ae09-605703b61970: "Got KeyError when attempting to get a value for field `actif_id` on serializer `AttributOptimizationResultSerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'actif_id'."
+Internal Server Error: /api/v1/optimization/optimize_architecture/
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 500 302
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 507
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+"OPTIONS /api/v1/mesures-controle/5c6ccf4b-8e3e-47cd-8e95-c819d43e9d6d/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/5c6ccf4b-8e3e-47cd-8e95-c819d43e9d6d/ HTTP/1.1" 200 312
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9321
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9321
+"OPTIONS /api/v1/mesures-controle/22c69b2c-49f5-4233-b2c2-f6769c4a0758/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/22c69b2c-49f5-4233-b2c2-f6769c4a0758/ HTTP/1.1" 200 312
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9322
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9322
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+"OPTIONS /api/v1/mesures-controle/f4fd54b3-fd88-45ac-af81-0516a35ac24f/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/f4fd54b3-fd88-45ac-af81-0516a35ac24f/ HTTP/1.1" 200 313
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9328
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9328
+"OPTIONS /api/v1/mesures-controle/3b5b1b99-bf5e-4458-b766-5e3b4a219f12/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/3b5b1b99-bf5e-4458-b766-5e3b4a219f12/ HTTP/1.1" 200 312
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9329
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9329
+"OPTIONS /api/v1/mesures-controle/bc718757-ba20-448a-942b-9f92aa442dc4/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/bc718757-ba20-448a-942b-9f92aa442dc4/ HTTP/1.1" 200 319
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9330
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9330
+"OPTIONS /api/v1/mesures-controle/cc8539b8-8646-4f1c-99be-00a74f4b4233/ HTTP/1.1" 200 0
+"PATCH /api/v1/mesures-controle/cc8539b8-8646-4f1c-99be-00a74f4b4233/ HTTP/1.1" 200 318
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9328
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9328
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 336
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 508
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 508
+"PATCH /api/v1/mesures-controle/cc8539b8-8646-4f1c-99be-00a74f4b4233/ HTTP/1.1" 200 320
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9333
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9333
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 509
+"PATCH /api/v1/mesures-controle/bc718757-ba20-448a-942b-9f92aa442dc4/ HTTP/1.1" 200 320
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9335
+"GET /api/v1/menaces/71319002-818c-4103-a312-e3d21e8603fd/vue_complete/ HTTP/1.1" 200 9335
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 510
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 510
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 574, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1495
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 716
+"OPTIONS /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 3704
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1910
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+Erreur lors de la création du plan d'implémentation: 'dict' object has no attribute 'id'
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 609, in create_implementation_plan
+    'implementation_ids': [str(impl.id) for impl in implementations_created]
+                               ^^^^^^^
+AttributeError: 'dict' object has no attribute 'id'
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1239
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 17186
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+"POST /api/v1/optimization/diagnostic/ HTTP/1.1" 200 17186
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1303
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 718
+"GET /api/v1/actifs/?architecture=f3ede71e-fe40-49b1-ae09-605703b61970 HTTP/1.1" 200 443
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/f3ede71e-fe40-49b1-ae09-605703b61970/ HTTP/1.1" 200 753
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1301
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1301
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 336
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 336
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Base de données Sql Serveur
+Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 574, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1495
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 718
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=f15818d8-f0fb-41d4-b8b4-d43cf64dff5e HTTP/1.1" 200 3704
+"GET /api/v1/architectures/f15818d8-f0fb-41d4-b8b4-d43cf64dff5e/ HTTP/1.1" 200 4110
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 574, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1497
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1265
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1071
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py changed, reloading.
+Watching for file changes with StatReloader
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base Données Clients
+Optimisation de l'actif: Application ERP
+Optimisation de l'actif: Serveur Mail Exchange
+Optimisation de l'actif: Firewall Périmètre
+Optimisation de l'actif: Storage NAS Principal
+Optimisation de l'actif: Serveur Backup
+Optimisation de l'actif: Postes Développeurs
+Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1265
+"GET /api/v1/architectures/ HTTP/1.1" 200 1814
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 718
+"OPTIONS /api/v1/architectures/0af0086e-7fee-4075-bd9c-5b3e8ede44d7/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=0af0086e-7fee-4075-bd9c-5b3e8ede44d7 HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/actifs/?architecture=0af0086e-7fee-4075-bd9c-5b3e8ede44d7 HTTP/1.1" 200 1871
+"GET /api/v1/architectures/0af0086e-7fee-4075-bd9c-5b3e8ede44d7/ HTTP/1.1" 200 2260
+Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+Optimisation de l'actif: Serveur Web Production
+Optimisation de l'actif: Base de Données Clients
+Optimisation de l'actif: Infrastructure AWS
+Optimisation de l'actif: Postes Utilisateurs
+"POST /api/v1/optimization/optimize_architecture/ HTTP/1.1" 200 1902
+"OPTIONS /api/v1/actifs/71fb8d84-e317-47ef-923f-81445eaa8619/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/71fb8d84-e317-47ef-923f-81445eaa8619/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/71fb8d84-e317-47ef-923f-81445eaa8619/attributs_securite/ HTTP/1.1" 200 1076
+"GET /api/v1/actifs/71fb8d84-e317-47ef-923f-81445eaa8619/ HTTP/1.1" 200 1611
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 2476
+"GET /api/v1/architectures/0af0086e-7fee-4075-bd9c-5b3e8ede44d7/ HTTP/1.1" 200 2260
+"GET /api/v1/actifs/71fb8d84-e317-47ef-923f-81445eaa8619/attributs_securite/ HTTP/1.1" 200 1076
+"OPTIONS /api/v1/attributs-securite/b4844d72-f695-499a-975d-0a830555fcc0/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/b4844d72-f695-499a-975d-0a830555fcc0/ HTTP/1.1" 200 4125
+"GET /api/v1/actifs/ HTTP/1.1" 200 8043
+"OPTIONS /api/v1/attributs-securite/b4844d72-f695-499a-975d-0a830555fcc0/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/b4844d72-f695-499a-975d-0a830555fcc0/menaces/ HTTP/1.1" 200 3549
+"OPTIONS /api/v1/menaces/c1a07d35-3fd4-4569-b055-dfe85d779c5d/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/c1a07d35-3fd4-4569-b055-dfe85d779c5d/vue_complete/ HTTP/1.1" 200 680
+>>>>>>> 2d8db057920a62430016b14a745ce759ac259249

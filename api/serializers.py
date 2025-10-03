@@ -794,3 +794,125 @@ class MenaceSimpleCreateSerializer(serializers.Serializer):
         if not value.strip():
             raise serializers.ValidationError("Le nom de la menace ne peut pas être vide")
         return value.strip()
+    
+class OptimizationRequestSerializer(serializers.Serializer):
+    """Serializer pour les requêtes d'optimisation"""
+    architecture_id = serializers.UUIDField(required=True)
+    budget_max = serializers.DecimalField(
+        max_digits=15, 
+        decimal_places=2, 
+        required=False, 
+        allow_null=True,
+        help_text="Budget maximum pour l'optimisation (optionnel)"
+    )
+    include_implementation_plan = serializers.BooleanField(
+        default=False,
+        help_text="Créer automatiquement un plan d'implémentation"
+    )
+    responsable_id = serializers.UUIDField(
+        required=False, 
+        allow_null=True,
+        help_text="Responsable par défaut pour les implémentations"
+    )
+
+class OptimizedMeasureSerializer(serializers.Serializer):
+    """Serializer pour une mesure optimisée"""
+    measure_id = serializers.UUIDField()
+    measure_nom = serializers.CharField()
+    measure_code = serializers.CharField()
+    cost = serializers.DecimalField(max_digits=15, decimal_places=2)
+    efficacity = serializers.DecimalField(max_digits=5, decimal_places=2)
+    nature = serializers.CharField()
+    technique_nom = serializers.CharField()
+    controle_code = serializers.CharField()
+    selected = serializers.BooleanField()
+
+class AttributOptimizationResultSerializer(serializers.Serializer):
+    """Serializer pour le résultat d'optimisation d'un attribut"""
+    actif_id = serializers.UUIDField()
+    actif_nom = serializers.CharField()
+    attribut_id = serializers.UUIDField()
+    attribut_type = serializers.CharField()
+    status = serializers.CharField()
+    selected_measures = OptimizedMeasureSerializer(many=True, required=False)
+    total_cost = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    objective_value = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    measures_count = serializers.IntegerField(required=False)
+    risk_threshold = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    menaces_analyzed = serializers.IntegerField(required=False)
+    error = serializers.CharField(required=False)
+
+class GlobalOptimizationResultSerializer(serializers.Serializer):
+    """Serializer pour le résultat d'optimisation globale"""
+    status = serializers.CharField()
+    selected_measures = serializers.ListField(child=serializers.UUIDField(), required=False)
+    total_cost = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    budget_used_percentage = serializers.DecimalField(max_digits=5, decimal_places=2, required=False)
+    measures_count = serializers.IntegerField(required=False)
+    total_measures_analyzed = serializers.IntegerField(required=False)
+    message = serializers.CharField(required=False)
+    error = serializers.CharField(required=False)
+
+class OptimizationRecommendationSerializer(serializers.Serializer):
+    """Serializer pour les recommandations d'optimisation"""
+    actif = serializers.CharField()
+    attribut = serializers.CharField()
+    measures_count = serializers.IntegerField()
+    cost = serializers.DecimalField(max_digits=15, decimal_places=2)
+
+class OptimizationSummarySerializer(serializers.Serializer):
+    """Serializer pour le résumé des recommandations"""
+    total_measures = serializers.IntegerField()
+    total_cost = serializers.DecimalField(max_digits=15, decimal_places=2)
+    measures_by_nature = serializers.DictField()
+    recommendations = OptimizationRecommendationSerializer(many=True)
+
+class FullOptimizationResultSerializer(serializers.Serializer):
+    """Serializer pour le résultat complet d'optimisation"""
+    architecture_id = serializers.UUIDField()
+    optimization_type = serializers.CharField()
+    budget_max = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    total_solutions_analyzed = serializers.IntegerField(required=False)
+    total_actifs_processed = serializers.IntegerField(required=False)
+    total_attributs_processed = serializers.IntegerField(required=False)
+    successful_optimizations = serializers.IntegerField(required=False)
+    
+    # Résultats individuels
+    results = AttributOptimizationResultSerializer(many=True, required=False)
+    recommended_measures = OptimizationSummarySerializer(required=False)
+    
+    # Optimisation globale (si applicable)
+    global_optimization = GlobalOptimizationResultSerializer(required=False)
+    
+    # Plan d'implémentation (si créé)
+    implementation_plan = serializers.DictField(required=False)
+    
+    # Erreurs
+    error = serializers.CharField(required=False)
+
+class ImplementationPlanSerializer(serializers.Serializer):
+    """Serializer pour le plan d'implémentation"""
+    status = serializers.CharField()
+    implementations_created = serializers.IntegerField(required=False)
+    implementation_ids = serializers.ListField(child=serializers.UUIDField(), required=False)
+    error = serializers.CharField(required=False)
+
+class OptimizationStatusSerializer(serializers.Serializer):
+    """Serializer pour le statut de l'optimisation"""
+    solver_available = serializers.BooleanField()
+    solver_name = serializers.CharField()
+    last_optimization_time = serializers.DateTimeField(required=False, allow_null=True)
+    total_optimizations_run = serializers.IntegerField()
+    architectures_optimized = serializers.IntegerField()
+    
+class QuickOptimizationSerializer(serializers.Serializer):
+    """Serializer pour l'optimisation rapide d'un attribut"""
+    attribut_securite_id = serializers.UUIDField(required=True)
+    budget_max = serializers.DecimalField(
+        max_digits=15, 
+        decimal_places=2, 
+        required=False, 
+        allow_null=True
+    )
+    create_implementations = serializers.BooleanField(default=False)
+    responsable_id = serializers.UUIDField(required=False, allow_null=True)
