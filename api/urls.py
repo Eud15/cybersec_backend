@@ -49,5 +49,7 @@ urlpatterns = [
     
     # Routes d'authentification DRF
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    
+    path('', include('api.urls_optimization')),
 ]
 

@@ -119,6 +119,21 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+PYOMO_SOLVER_PATH = r"C:\Users\afdev\Music\BONMIN\bonmin.exe"  # Par défaut GLPK (open source)
+PYOMO_SOLVER_OPTIONS = {
+    'timelimit': 300,  # 5 minutes maximum par optimisation
+    'mipgap': 0.01,    # 1% de gap acceptable
+}
+
+# Configuration de l'optimisation
+OPTIMIZATION_SETTINGS = {
+    'DEFAULT_RISK_THRESHOLD_PERCENTAGE': 10,  # 10% du coût de compromission
+    'MAX_OPTIMIZATION_TIME': 300,  # 5 minutes
+    'ENABLE_PARALLEL_OPTIMIZATION': False,  # Désactivé par défaut
+    'CACHE_OPTIMIZATION_RESULTS': True,
+    'DEFAULT_EFFICACITY_REDUCTION': 0.8,  # Rendements décroissants (80% de l'efficacité théorique)
+}
+
 # Static files
 STATIC_URL = '/static/'
 
@@ -173,11 +188,23 @@ CORS_ALLOWED_ORIGINS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'risk_management.log',
+        },
+        'optimization_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'optimization.log',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
@@ -188,6 +215,11 @@ LOGGING = {
         },
         'api': {
             'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'api.services.optimization_service': {
+            'handlers': ['optimization_file'],
             'level': 'INFO',
             'propagate': True,
         },

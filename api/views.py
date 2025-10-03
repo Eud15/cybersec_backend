@@ -10,6 +10,14 @@ from django.utils import timezone
 from decimal import Decimal
 from django.db import transaction        
 import logging  
+import pyomo.environ as pyo
+
+from .services.optimization_service import SecurityOptimizationService
+from .serializers import (
+    OptimizationRequestSerializer, FullOptimizationResultSerializer,
+    ImplementationPlanSerializer, OptimizationStatusSerializer,
+    QuickOptimizationSerializer
+)
 
 from .models import (
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
@@ -208,6 +216,390 @@ class ArchitectureViewSet(viewsets.ModelViewSet):
             'nouveau_seuil': float(nouveau_seuil),
             'statut_tolerance': 'CONFORME' if not architecture.risque_depasse_tolerance else 'DEPASSEMENT'
         })
+
+
+
+    
+    @action(detail=True, methods=['post'])
+    def optimiser(self, request, pk=None):
+        """
+        Optimise les mesures de contrôle pour minimiser les coûts
+        tout en respectant les contraintes de risque
+        """
+        architecture = self.get_object()
+        
+        try:
+            # Chemin vers le solveur BONMIN
+            solver_path = getattr(settings, 'BONMIN_SOLVER_PATH', r'C:\Users\afdev\Music\BONMIN\bonmin.exe')
+            
+            if not os.path.exists(solver_path):
+                return Response({
+                    'error': 'Solveur BONMIN non trouvé. Veuillez configurer BONMIN_SOLVER_PATH dans settings.py'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            solver = pyo.SolverFactory('bonmin', executable=solver_path)
+            
+            # Résultats finaux
+            resultats_optimisation = {
+                'architecture': architecture.nom,
+                'actifs': [],
+                'mesures_selectionnees': [],
+                'cout_total': 0,
+                'statistiques': {
+                    'actifs_traites': 0,
+                    'attributs_traites': 0,
+                    'menaces_traitees': 0,
+                    'mesures_proposees': 0
+                }
+            }
+            
+            # Traiter chaque actif de l'architecture
+            actifs = architecture.actifs.all()
+            
+            for actif in actifs:
+                resultats_actif = self._optimiser_actif(actif, solver)
+                resultats_optimisation['actifs'].append(resultats_actif)
+                resultats_optimisation['mesures_selectionnees'].extend(resultats_actif['mesures_selectionnees'])
+                resultats_optimisation['cout_total'] += resultats_actif['cout_total']
+                
+                # Mise à jour des statistiques
+                resultats_optimisation['statistiques']['actifs_traites'] += 1
+                resultats_optimisation['statistiques']['attributs_traites'] += resultats_actif['attributs_traites']
+                resultats_optimisation['statistiques']['menaces_traitees'] += resultats_actif['menaces_traitees']
+            
+            resultats_optimisation['statistiques']['mesures_proposees'] = len(resultats_optimisation['mesures_selectionnees'])
+            
+            # Log de l'activité
+            log_activity(
+                request.user,
+                'OPTIMISATION',
+                'Architecture',
+                str(architecture.id),
+                {
+                    'actifs_traites': resultats_optimisation['statistiques']['actifs_traites'],
+                    'mesures_proposees': resultats_optimisation['statistiques']['mesures_proposees'],
+                    'cout_total': resultats_optimisation['cout_total']
+                }
+            )
+            
+            return Response(resultats_optimisation)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation: {str(e)}")
+            return Response({
+                'error': f'Erreur lors de l\'optimisation: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+    @action(detail=True, methods=['post'])
+    def optimiser_mesures_securite(self, request, pk=None):
+        """
+        Lance l'optimisation automatique des mesures de sécurité pour cette architecture
+        
+        POST /api/architectures/{id}/optimiser_mesures_securite/
+        {
+            "budget_max": 50000.00,  // optionnel
+            "creer_plan_implementation": true,  // optionnel
+            "responsable_id": "uuid"  // optionnel
+        }
+        """
+        architecture = self.get_object()
+        
+        budget_max = request.data.get('budget_max')
+        creer_plan = request.data.get('creer_plan_implementation', False)
+        responsable_id = request.data.get('responsable_id')
+        
+        try:
+            # Initialiser le service d'optimisation
+            optimization_service = SecurityOptimizationService()
+            
+            # Lancer l'optimisation
+            result = optimization_service.optimize_architecture_security(
+                architecture_id=str(architecture.id),
+                budget_max=float(budget_max) if budget_max else None
+            )
+            
+            # Créer le plan d'implémentation si demandé
+            if creer_plan and result.get('successful_optimizations', 0) > 0:
+                implementation_plan = optimization_service.create_implementation_plan(
+                    optimization_result=result,
+                    responsable_id=responsable_id
+                )
+                result['implementation_plan'] = implementation_plan
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'ARCHITECTURE_OPTIMIZATION', 
+                'Architecture', 
+                str(architecture.id),
+                {
+                    'budget_max': budget_max,
+                    'successful_optimizations': result.get('successful_optimizations', 0),
+                    'plan_created': creer_plan
+                }
+            )
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture.id}: {str(e)}")
+            return Response(
+                {'error': f'Erreur d\'optimisation: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=True, methods=['get'])
+    def analyse_optimisation_potentielle(self, request, pk=None):
+        """
+        Analyse le potentiel d'optimisation pour cette architecture sans lancer l'optimisation
+        
+        GET /api/architectures/{id}/analyse_optimisation_potentielle/
+        """
+        architecture = self.get_object()
+        
+        try:
+            # Collecter les statistiques pour l'analyse
+            actifs = architecture.actifs.all()
+            total_attributs = sum(actif.attributs_securite.count() for actif in actifs)
+            total_menaces = sum(
+                attribut.menaces.count() 
+                for actif in actifs 
+                for attribut in actif.attributs_securite.all()
+            )
+            
+            # Compter les mesures disponibles
+            total_mesures_disponibles = 0
+            for actif in actifs:
+                for attribut in actif.attributs_securite.all():
+                    for attr_menace in attribut.menaces.all():
+                        for menace_controle in attr_menace.menace.controles_nist.all():
+                            for technique in menace_controle.controle_nist.techniques.all():
+                                total_mesures_disponibles += technique.mesures_controle.count()
+            
+            # Analyser le risque actuel
+            risque_total = architecture.risque_financier_total
+            tolerance = float(architecture.risque_tolere)
+            
+            # Estimation du potentiel d'optimisation
+            potentiel_optimisation = {
+                'architecture': ArchitectureListSerializer(architecture).data,
+                'statistiques': {
+                    'total_actifs': actifs.count(),
+                    'total_attributs': total_attributs,
+                    'total_menaces': total_menaces,
+                    'total_mesures_disponibles': total_mesures_disponibles
+                },
+                'analyse_risque': {
+                    'risque_financier_actuel': risque_total,
+                    'tolerance_risque': tolerance,
+                    'depassement': risque_total > tolerance,
+                    'marge_tolerance': max(0, tolerance - risque_total),
+                    'pourcentage_utilisation': min(100, (risque_total / tolerance) * 100) if tolerance > 0 else 100
+                },
+                'recommandations': {
+                    'optimisation_recommandee': risque_total > tolerance or total_menaces > 10,
+                    'budget_suggere': min(risque_total * 0.2, tolerance * 0.1),  # 20% du risque ou 10% de la tolérance
+                    'priorite': 'HAUTE' if risque_total > tolerance else 'MOYENNE' if risque_total > tolerance * 0.8 else 'BASSE'
+                }
+            }
+            
+            return Response(potentiel_optimisation, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'analyse de l'architecture {architecture.id}: {str(e)}")
+            return Response(
+                {'error': f'Erreur d\'analyse: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+            
+        def _optimiser_actif(self, actif, solver):
+            """Optimise les mesures de contrôle pour un actif spécifique"""
+            resultats = {
+                'actif_id': str(actif.id),
+                'actif_nom': actif.nom,
+                'attributs': [],
+                'mesures_selectionnees': [],
+                'cout_total': 0,
+                'attributs_traites': 0,
+                'menaces_traitees': 0
+            }
+            
+            # Traiter chaque attribut de sécurité
+            attributs = actif.attributs_securite.all()
+            
+            for attribut in attributs:
+                resultats_attribut = self._optimiser_attribut(actif, attribut, solver)
+                
+                if resultats_attribut['succes']:
+                    resultats['attributs'].append(resultats_attribut)
+                    resultats['mesures_selectionnees'].extend(resultats_attribut['mesures_selectionnees'])
+                    resultats['cout_total'] += resultats_attribut['cout_total']
+                    resultats['attributs_traites'] += 1
+                    resultats['menaces_traitees'] += resultats_attribut['menaces_traitees']
+            
+            return resultats
+        
+        def _optimiser_attribut(self, actif, attribut, solver):
+            """Optimise les mesures pour un attribut de sécurité spécifique"""
+            resultats = {
+                'attribut_id': str(attribut.id),
+                'attribut_type': attribut.type_attribut,
+                'succes': False,
+                'mesures_selectionnees': [],
+                'cout_total': 0,
+                'menaces_traitees': 0,
+                'message': ''
+            }
+            
+            try:
+                # Récupérer toutes les associations menaces-attribut
+                associations_menaces = attribut.menaces.select_related('menace').all()
+                
+                if not associations_menaces:
+                    resultats['message'] = 'Aucune menace associée'
+                    return resultats
+                
+                # Récupérer toutes les mesures via les contrôles NIST
+                mesures_data = []
+                mesure_ids = set()
+                
+                for assoc_menace in associations_menaces:
+                    menace = assoc_menace.menace
+                    
+                    # Parcourir les contrôles NIST de cette menace
+                    for menace_controle in menace.controles_nist.all():
+                        controle = menace_controle.controle_nist
+                        
+                        # Parcourir les techniques de ce contrôle
+                        for technique in controle.techniques.all():
+                            
+                            # Parcourir les mesures de cette technique
+                            for mesure in technique.mesures_controle.all():
+                                if mesure.id not in mesure_ids:
+                                    mesure_ids.add(mesure.id)
+                                    mesures_data.append({
+                                        'id': mesure.id,
+                                        'nom': mesure.nom,
+                                        'cout': float(mesure.cout_mise_en_oeuvre),
+                                        'efficacite': float(mesure.efficacite) / 100.0,  # Convertir en décimal
+                                        'nature': mesure.nature_mesure
+                                    })
+                
+                if not mesures_data:
+                    resultats['message'] = 'Aucune mesure de contrôle disponible'
+                    return resultats
+                
+                # Créer le modèle Pyomo
+                model = pyo.ConcreteModel()
+                
+                # Ensemble des mesures
+                model.M = pyo.Set(initialize=[m['id'] for m in mesures_data])
+                
+                # Variables de décision binaires
+                model.x = pyo.Var(model.M, domain=pyo.Boolean)
+                
+                # Fonction objectif : minimiser le coût total
+                model.objective = pyo.Objective(
+                    expr=sum(
+                        next(m['cout'] for m in mesures_data if m['id'] == mesure_id) * model.x[mesure_id]
+                        for mesure_id in model.M
+                    ),
+                    sense=pyo.minimize
+                )
+                
+                # Contraintes
+                model.risk_constraint = pyo.ConstraintList()
+                
+                # Impact de l'attribut
+                impact = float(attribut.cout_compromission)
+                
+                # Seuil de risque acceptable (à ajuster)
+                seuil_local = float(impact) * 0.5  # 50% de l'impact
+                
+                # Traiter chaque menace
+                menaces_uniques = set()
+                proba_residuelles = []
+                
+                for assoc_menace in associations_menaces:
+                    menace = assoc_menace.menace
+                    
+                    if menace.id in menaces_uniques:
+                        continue
+                    
+                    menaces_uniques.add(menace.id)
+                    resultats['menaces_traitees'] += 1
+                    
+                    # Probabilité initiale de la menace
+                    initial_proba = float(assoc_menace.probabilite) / 100.0  # Convertir en décimal
+                    proba_res = initial_proba
+                    
+                    # Parcourir les mesures liées à cette menace
+                    for mesure_data in mesures_data:
+                        mesure_id = mesure_data['id']
+                        efficacite = mesure_data['efficacite']
+                        nature = mesure_data['nature']
+                        
+                        if nature in ['IS', 'IP']:
+                            # Réduction directe de la probabilité
+                            proba_res = proba_res * (1 - efficacite * model.x[mesure_id])
+                        
+                        elif nature == 'RA':
+                            # Variable auxiliaire pour RA
+                            var_aux_ra = pyo.Var(bounds=(0, 1))
+                            model.add_component(f'RA_aux_{mesure_id}_{menace.id}', var_aux_ra)
+                            model.risk_constraint.add(var_aux_ra >= efficacite * model.x[mesure_id])
+                            proba_res = proba_res * (1 - var_aux_ra)
+                        
+                        elif nature == 'RC':
+                            # Variable auxiliaire pour RC
+                            var_aux_rc = pyo.Var(bounds=(0, 1))
+                            model.add_component(f'RC_aux_{mesure_id}_{menace.id}', var_aux_rc)
+                            model.risk_constraint.add(
+                                var_aux_rc <= efficacite * model.x[mesure_id] + (1 - model.x[mesure_id])
+                            )
+                            proba_res = proba_res * (1 - var_aux_rc)
+                    
+                    proba_residuelles.append(proba_res)
+                
+                # Contrainte de risque global
+                if proba_residuelles:
+                    risque_local = (1 - pyo.prod(1 - p for p in proba_residuelles)) * impact
+                    model.risk_constraint.add(risque_local <= seuil_local)
+                
+                # Contrainte : au moins une mesure doit être sélectionnée
+                if model.M:
+                    model.risk_constraint.add(sum(model.x[m] for m in model.M) >= 1)
+                
+                # Résoudre le modèle
+                result = solver.solve(model, tee=False)
+                
+                # Vérifier la solution
+                if result.solver.termination_condition == pyo.TerminationCondition.optimal:
+                    # Extraire les mesures sélectionnées
+                    for mesure_id in model.M:
+                        if pyo.value(model.x[mesure_id]) > 0.5:
+                            mesure_info = next(m for m in mesures_data if m['id'] == mesure_id)
+                            resultats['mesures_selectionnees'].append({
+                                'mesure_id': str(mesure_id),
+                                'mesure_nom': mesure_info['nom'],
+                                'cout': mesure_info['cout'],
+                                'efficacite': mesure_info['efficacite'] * 100,
+                                'nature': mesure_info['nature']
+                            })
+                            resultats['cout_total'] += mesure_info['cout']
+                    
+                    resultats['succes'] = True
+                    resultats['message'] = f"{len(resultats['mesures_selectionnees'])} mesure(s) sélectionnée(s)"
+                else:
+                    resultats['message'] = f"Pas de solution optimale trouvée: {result.solver.termination_condition}"
+            
+            except Exception as e:
+                resultats['message'] = f"Erreur: {str(e)}"
+                logger.error(f"Erreur optimisation attribut {attribut.id}: {str(e)}")
+            
+            return resultats
 
 # ============================================================================
 # NIVEAU 2: GESTION DES ACTIFS
@@ -655,6 +1047,70 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @action(detail=True, methods=['post'])
+    def optimiser_mesures(self, request, pk=None):
+        """
+        Optimise les mesures de sécurité pour cet attribut spécifique
+        
+        POST /api/attributs-securite/{id}/optimiser_mesures/
+        {
+            "budget_max": 10000.00,  // optionnel
+            "creer_implementations": true,  // optionnel
+            "responsable_id": "uuid"  // optionnel
+        }
+        """
+        attribut = self.get_object()
+        
+        budget_max = request.data.get('budget_max')
+        creer_implementations = request.data.get('creer_implementations', False)
+        responsable_id = request.data.get('responsable_id')
+        
+        try:
+            # Initialiser le service d'optimisation
+            optimization_service = SecurityOptimizationService()
+            
+            # Lancer l'optimisation
+            result = optimization_service._optimize_attribut_security(attribut)
+            
+            # Créer les implémentations si demandé et si l'optimisation a réussi
+            if creer_implementations and result.get('status') == 'optimal':
+                # Formater pour create_implementation_plan
+                formatted_result = {
+                    'optimization_type': 'individual_by_attribute',
+                    'results': [{
+                        'attribut': attribut,
+                        'result': result
+                    }]
+                }
+                
+                implementation_plan = optimization_service.create_implementation_plan(
+                    optimization_result=formatted_result,
+                    responsable_id=responsable_id
+                )
+                result['implementation_plan'] = implementation_plan
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'ATTRIBUT_OPTIMIZATION', 
+                'AttributSecurite', 
+                str(attribut.id),
+                {
+                    'status': result.get('status'),
+                    'measures_count': result.get('measures_count', 0),
+                    'total_cost': result.get('total_cost', 0),
+                    'implementations_created': creer_implementations
+                }
+            )
+            
+            return Response(result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation de l'attribut {attribut.id}: {str(e)}")
+            return Response(
+                {'error': f'Erreur d\'optimisation: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 # ============================================================================
 # NIVEAU 4: GESTION DES ASSOCIATIONS ATTRIBUT-MENACE
@@ -2879,3 +3335,421 @@ class DashboardViewSet(viewsets.ViewSet):
         }
         
         return Response(analyse)
+    
+# ============================================================================
+# MODÈLES DE DONNÉES Optimisation
+# ============================================================================
+
+class OptimizationViewSet(viewsets.ViewSet):
+    """ViewSet pour les opérations d'optimisation de sécurité"""
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._optimization_service = None  # Instancié à la demande
+    
+    @property
+    def optimization_service(self):
+        """Instancie le service seulement quand nécessaire"""
+        if self._optimization_service is None:
+            from .services.optimization_service import SecurityOptimizationService
+            self._optimization_service = SecurityOptimizationService()
+        return self._optimization_service
+    
+    @action(detail=False, methods=['post'])
+    def optimize_architecture(self, request):
+        """
+        Optimise la sélection de mesures de sécurité pour une architecture complète
+        
+        POST /api/optimization/optimize_architecture/
+        {
+            "architecture_id": "uuid",
+            "budget_max": 50000.00,  // optionnel
+            "include_implementation_plan": true,  // optionnel
+            "responsable_id": "uuid"  // optionnel
+        }
+        """
+        serializer = OptimizationRequestSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        data = serializer.validated_data
+        architecture_id = str(data['architecture_id'])
+        budget_max = float(data['budget_max']) if data.get('budget_max') else None
+        
+        try:
+            # Vérifier que l'architecture existe
+            try:
+                architecture = Architecture.objects.get(id=architecture_id)
+            except Architecture.DoesNotExist:
+                return Response(
+                    {'error': f'Architecture {architecture_id} non trouvée'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Lancer l'optimisation
+            optimization_result = self.optimization_service.optimize_architecture_security(
+                architecture_id=architecture_id,
+                budget_max=budget_max
+            )
+            
+            # Gérer les erreurs d'optimisation
+            if 'error' in optimization_result:
+                return Response(
+                    {'error': optimization_result['error']}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            # Créer un plan d'implémentation si demandé
+            if data.get('include_implementation_plan', False):
+                implementation_plan = self.optimization_service.create_implementation_plan(
+                    optimization_result=optimization_result,
+                    responsable_id=str(data['responsable_id']) if data.get('responsable_id') else None
+                )
+                optimization_result['implementation_plan'] = implementation_plan
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'OPTIMIZATION_RUN', 
+                'Architecture', 
+                architecture_id,
+                {
+                    'optimization_type': optimization_result.get('optimization_type'),
+                    'budget_max': budget_max,
+                    'successful_optimizations': optimization_result.get('successful_optimizations', 0),
+                    'total_cost': optimization_result.get('recommended_measures', {}).get('total_cost', 0)
+                }
+            )
+            
+            # Sérialiser la réponse
+            response_serializer = FullOptimizationResultSerializer(optimization_result)
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture_id}: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def optimize_attribut(self, request):
+        """
+        Optimise la sélection de mesures pour un attribut de sécurité spécifique
+        
+        POST /api/optimization/optimize_attribut/
+        {
+            "attribut_securite_id": "uuid",
+            "budget_max": 10000.00,  // optionnel
+            "create_implementations": true,  // optionnel
+            "responsable_id": "uuid"  // optionnel
+        }
+        """
+        serializer = QuickOptimizationSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        data = serializer.validated_data
+        attribut_id = str(data['attribut_securite_id'])
+        
+        try:
+            # Vérifier que l'attribut existe
+            try:
+                attribut = AttributSecurite.objects.get(id=attribut_id)
+            except AttributSecurite.DoesNotExist:
+                return Response(
+                    {'error': f'Attribut de sécurité {attribut_id} non trouvé'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Lancer l'optimisation
+            optimization_result = self.optimization_service._optimize_attribut_security(attribut)
+            
+            # Créer les implémentations si demandé et si l'optimisation a réussi
+            if (data.get('create_implementations', False) and 
+                optimization_result.get('status') == 'optimal'):
+                
+                # Simuler le format attendu par create_implementation_plan
+                formatted_result = {
+                    'optimization_type': 'individual_by_attribute',
+                    'results': [{
+                        'attribut': attribut,
+                        'result': optimization_result
+                    }]
+                }
+                
+                implementation_plan = self.optimization_service.create_implementation_plan(
+                    optimization_result=formatted_result,
+                    responsable_id=str(data['responsable_id']) if data.get('responsable_id') else None
+                )
+                optimization_result['implementation_plan'] = implementation_plan
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'OPTIMIZATION_ATTRIBUT', 
+                'AttributSecurite', 
+                attribut_id,
+                {
+                    'status': optimization_result.get('status'),
+                    'measures_count': optimization_result.get('measures_count', 0),
+                    'total_cost': optimization_result.get('total_cost', 0)
+                }
+            )
+            
+            return Response(optimization_result, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'optimisation de l'attribut {attribut_id}: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def create_implementation_plan(self, request):
+        """
+        Crée un plan d'implémentation à partir de résultats d'optimisation
+        
+        POST /api/optimization/create_implementation_plan/
+        {
+            "optimization_result": {...},  // Résultat d'optimisation complet
+            "responsable_id": "uuid"  // optionnel
+        }
+        """
+        optimization_result = request.data.get('optimization_result')
+        responsable_id = request.data.get('responsable_id')
+        
+        if not optimization_result:
+            return Response(
+                {'error': 'optimization_result requis'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            implementation_plan = self.optimization_service.create_implementation_plan(
+                optimization_result=optimization_result,
+                responsable_id=responsable_id
+            )
+            
+            # Log de l'activité
+            log_activity(
+                request.user, 
+                'CREATE_IMPLEMENTATION_PLAN', 
+                'Architecture', 
+                optimization_result.get('architecture_id', 'unknown'),
+                {
+                    'implementations_created': implementation_plan.get('implementations_created', 0),
+                    'responsable_id': responsable_id
+                }
+            )
+            
+            serializer = ImplementationPlanSerializer(implementation_plan)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la création du plan d'implémentation: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['post'])
+    def diagnostic(self, request):
+        """
+        Diagnostic détaillé pour comprendre pourquoi l'optimisation échoue
+        
+        POST /api/v1/optimization/diagnostic/
+        {
+            "architecture_id": "uuid"
+        }
+        """
+        architecture_id = request.data.get('architecture_id')
+        
+        if not architecture_id:
+            return Response({'error': 'architecture_id requis'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            from .services.optimization_service import SecurityOptimizationService
+            from .models import Architecture
+            
+            architecture = Architecture.objects.get(id=architecture_id)
+            service = SecurityOptimizationService()
+            
+            diagnostic_info = {
+                'architecture': {
+                    'id': str(architecture.id),
+                    'nom': architecture.nom,
+                    'actifs_count': architecture.actifs.count()
+                },
+                'solver': {
+                    'available': service.solver is not None,
+                    'name': service.solver_name,
+                    'io_mode': service.solver_io
+                },
+                'actifs': []
+            }
+            
+            # Pour chaque actif
+            for actif in architecture.actifs.all():
+                actif_info = {
+                    'nom': actif.nom,
+                    'attributs': []
+                }
+                
+                # Pour chaque attribut
+                for attribut in actif.attributs_securite.all():
+                    attribut_info = {
+                        'type': attribut.type_attribut,
+                        'cout_compromission': float(attribut.cout_compromission),
+                        'menaces_count': attribut.menaces.count(),
+                        'menaces': []
+                    }
+                    
+                    # Pour chaque menace
+                    for attr_menace in attribut.menaces.all():
+                        menace = attr_menace.menace
+                        menace_info = {
+                            'nom': menace.nom,
+                            'probabilite': float(attr_menace.probabilite),
+                            'cout_impact': float(attr_menace.cout_impact),
+                            'controles_count': menace.controles_nist.count(),
+                            'mesures_disponibles': 0
+                        }
+                        
+                        # Compter les mesures disponibles
+                        for menace_controle in menace.controles_nist.all():
+                            for technique in menace_controle.controle_nist.techniques.all():
+                                menace_info['mesures_disponibles'] += technique.mesures_controle.count()
+                        
+                        attribut_info['menaces'].append(menace_info)
+                    
+                    # Tester l'optimisation pour cet attribut
+                    if attribut.menaces.exists():
+                        result = service._optimize_attribut_security(attribut)
+                        attribut_info['optimization_result'] = {
+                            'status': result.get('status'),
+                            'message': result.get('message', result.get('error', '')),
+                            'measures_count': result.get('measures_count', 0),
+                            'total_cost': result.get('total_cost', 0)
+                        }
+                    else:
+                        attribut_info['optimization_result'] = {
+                            'status': 'no_menaces',
+                            'message': 'Aucune menace associée'
+                        }
+                    
+                    actif_info['attributs'].append(attribut_info)
+                
+                diagnostic_info['actifs'].append(actif_info)
+            
+            return Response(diagnostic_info, status=status.HTTP_200_OK)
+            
+        except Architecture.DoesNotExist:
+            return Response({'error': 'Architecture non trouvée'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(f"Erreur diagnostic: {str(e)}", exc_info=True)
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=['get'])
+    def status(self, request):
+        """
+        Retourne le statut du service d'optimisation
+        
+        GET /api/optimization/status/
+        """
+        try:
+            # Vérifier la disponibilité du solveur
+            solver_available = True
+            solver_name = 'bonmin'
+            
+            try:
+                test_service = SecurityOptimizationService()
+                if hasattr(test_service.solver, 'name'):
+                    solver_name = test_service.solver.name()
+            except Exception as e:
+                solver_available = False
+                logger.warning(f"Solveur non disponible: {e}")
+            
+            # Statistiques d'utilisation (basées sur les logs)
+            optimization_logs = LogActivite.objects.filter(
+                action__in=['OPTIMIZATION_RUN', 'OPTIMIZATION_ATTRIBUT']
+            )
+            
+            total_optimizations = optimization_logs.count()
+            architectures_optimized = optimization_logs.filter(
+                action='OPTIMIZATION_RUN'
+            ).values('objet_id').distinct().count()
+            
+            last_optimization = optimization_logs.first()
+            
+            status_data = {
+                'solver_available': solver_available,
+                'solver_name': solver_name,
+                'last_optimization_time': last_optimization.created_at if last_optimization else None,
+                'total_optimizations_run': total_optimizations,
+                'architectures_optimized': architectures_optimized
+            }
+            
+            serializer = OptimizationStatusSerializer(status_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération du statut d'optimisation: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    @action(detail=False, methods=['get'])
+    def optimization_history(self, request):
+        """
+        Historique des optimisations
+        
+        GET /api/optimization/optimization_history/
+        """
+        try:
+            # Filtres optionnels
+            architecture_id = request.query_params.get('architecture_id')
+            limit = int(request.query_params.get('limit', 20))
+            
+            # Récupérer les logs d'optimisation
+            logs_query = LogActivite.objects.filter(
+                action__in=['OPTIMIZATION_RUN', 'OPTIMIZATION_ATTRIBUT']
+            ).select_related('utilisateur').order_by('-created_at')
+            
+            if architecture_id:
+                logs_query = logs_query.filter(objet_id=architecture_id)
+            
+            logs = logs_query[:limit]
+            
+            # Formatter l'historique
+            history = []
+            for log in logs:
+                details = log.details or {}
+                history.append({
+                    'id': log.id,
+                    'date': log.created_at,
+                    'utilisateur': log.utilisateur.username if log.utilisateur else 'Système',
+                    'action': log.action,
+                    'objet_type': log.objet_type,
+                    'objet_id': log.objet_id,
+                    'optimization_type': details.get('optimization_type'),
+                    'successful_optimizations': details.get('successful_optimizations'),
+                    'budget_max': details.get('budget_max'),
+                    'total_cost': details.get('total_cost'),
+                    'measures_count': details.get('measures_count')
+                })
+            
+            return Response({
+                'count': len(history),
+                'results': history
+            }, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de la récupération de l'historique: {str(e)}")
+            return Response(
+                {'error': f'Erreur interne: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
