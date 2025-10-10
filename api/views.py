@@ -218,388 +218,573 @@ class ArchitectureViewSet(viewsets.ModelViewSet):
         })
 
 
-
-    
-    @action(detail=True, methods=['post'])
-    def optimiser(self, request, pk=None):
-        """
-        Optimise les mesures de contrôle pour minimiser les coûts
-        tout en respectant les contraintes de risque
-        """
-        architecture = self.get_object()
-        
-        try:
-            # Chemin vers le solveur BONMIN
-            solver_path = getattr(settings, 'BONMIN_SOLVER_PATH', r'C:\Users\afdev\Music\BONMIN\bonmin.exe')
-            
-            if not os.path.exists(solver_path):
-                return Response({
-                    'error': 'Solveur BONMIN non trouvé. Veuillez configurer BONMIN_SOLVER_PATH dans settings.py'
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-            solver = pyo.SolverFactory('bonmin', executable=solver_path)
-            
-            # Résultats finaux
-            resultats_optimisation = {
-                'architecture': architecture.nom,
-                'actifs': [],
-                'mesures_selectionnees': [],
-                'cout_total': 0,
-                'statistiques': {
-                    'actifs_traites': 0,
-                    'attributs_traites': 0,
-                    'menaces_traitees': 0,
-                    'mesures_proposees': 0
-                }
-            }
-            
-            # Traiter chaque actif de l'architecture
-            actifs = architecture.actifs.all()
-            
-            for actif in actifs:
-                resultats_actif = self._optimiser_actif(actif, solver)
-                resultats_optimisation['actifs'].append(resultats_actif)
-                resultats_optimisation['mesures_selectionnees'].extend(resultats_actif['mesures_selectionnees'])
-                resultats_optimisation['cout_total'] += resultats_actif['cout_total']
-                
-                # Mise à jour des statistiques
-                resultats_optimisation['statistiques']['actifs_traites'] += 1
-                resultats_optimisation['statistiques']['attributs_traites'] += resultats_actif['attributs_traites']
-                resultats_optimisation['statistiques']['menaces_traitees'] += resultats_actif['menaces_traitees']
-            
-            resultats_optimisation['statistiques']['mesures_proposees'] = len(resultats_optimisation['mesures_selectionnees'])
-            
-            # Log de l'activité
-            log_activity(
-                request.user,
-                'OPTIMISATION',
-                'Architecture',
-                str(architecture.id),
-                {
-                    'actifs_traites': resultats_optimisation['statistiques']['actifs_traites'],
-                    'mesures_proposees': resultats_optimisation['statistiques']['mesures_proposees'],
-                    'cout_total': resultats_optimisation['cout_total']
-                }
-            )
-            
-            return Response(resultats_optimisation)
-            
-        except Exception as e:
-            logger.error(f"Erreur lors de l'optimisation: {str(e)}")
-            return Response({
-                'error': f'Erreur lors de l\'optimisation: {str(e)}'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-
-    @action(detail=True, methods=['post'])
-    def optimiser_mesures_securite(self, request, pk=None):
-        """
-        Lance l'optimisation automatique des mesures de sécurité pour cette architecture
-        
-        POST /api/architectures/{id}/optimiser_mesures_securite/
-        {
-            "budget_max": 50000.00,  // optionnel
-            "creer_plan_implementation": true,  // optionnel
-            "responsable_id": "uuid"  // optionnel
-        }
-        """
-        architecture = self.get_object()
-        
-        budget_max = request.data.get('budget_max')
-        creer_plan = request.data.get('creer_plan_implementation', False)
-        responsable_id = request.data.get('responsable_id')
-        
-        try:
-            # Initialiser le service d'optimisation
-            optimization_service = SecurityOptimizationService()
-            
-            # Lancer l'optimisation
-            result = optimization_service.optimize_architecture_security(
-                architecture_id=str(architecture.id),
-                budget_max=float(budget_max) if budget_max else None
-            )
-            
-            # Créer le plan d'implémentation si demandé
-            if creer_plan and result.get('successful_optimizations', 0) > 0:
-                implementation_plan = optimization_service.create_implementation_plan(
-                    optimization_result=result,
-                    responsable_id=responsable_id
-                )
-                result['implementation_plan'] = implementation_plan
-            
-            # Log de l'activité
-            log_activity(
-                request.user, 
-                'ARCHITECTURE_OPTIMIZATION', 
-                'Architecture', 
-                str(architecture.id),
-                {
-                    'budget_max': budget_max,
-                    'successful_optimizations': result.get('successful_optimizations', 0),
-                    'plan_created': creer_plan
-                }
-            )
-            
-            return Response(result, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture.id}: {str(e)}")
-            return Response(
-                {'error': f'Erreur d\'optimisation: {str(e)}'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
     @action(detail=True, methods=['get'])
-    def analyse_optimisation_potentielle(self, request, pk=None):
+    def mesures_controle(self, request, pk=None):
         """
-        Analyse le potentiel d'optimisation pour cette architecture sans lancer l'optimisation
+        Récupère toutes les mesures de contrôle disponibles pour cette architecture
+        avec leurs contrôles NIST, techniques, efficacité, nature et coûts
         
-        GET /api/architectures/{id}/analyse_optimisation_potentielle/
+        GET /api/architectures/{id}/mesures_controle/
         """
         architecture = self.get_object()
         
+        # Filtres optionnels
+        nature_mesure = request.query_params.get('nature_mesure')
+        efficacite_min = request.query_params.get('efficacite_min')
+        cout_max = request.query_params.get('cout_max')
+        search = request.query_params.get('search', '').strip()
+        
         try:
-            # Collecter les statistiques pour l'analyse
-            actifs = architecture.actifs.all()
-            total_attributs = sum(actif.attributs_securite.count() for actif in actifs)
-            total_menaces = sum(
-                attribut.menaces.count() 
-                for actif in actifs 
-                for attribut in actif.attributs_securite.all()
-            )
+            # Récupérer toutes les mesures liées à cette architecture via le chemin complet
+            mesures_set = set()
+            mesures_details = []
             
-            # Compter les mesures disponibles
-            total_mesures_disponibles = 0
+            # Parcourir: Architecture -> Actifs -> Attributs -> Menaces -> Contrôles -> Techniques -> Mesures
+            actifs = architecture.actifs.prefetch_related(
+                'attributs_securite__menaces__menace__controles_nist__controle_nist__techniques__mesures_controle'
+            ).all()
+            
             for actif in actifs:
                 for attribut in actif.attributs_securite.all():
                     for attr_menace in attribut.menaces.all():
-                        for menace_controle in attr_menace.menace.controles_nist.all():
-                            for technique in menace_controle.controle_nist.techniques.all():
-                                total_mesures_disponibles += technique.mesures_controle.count()
+                        menace = attr_menace.menace
+                        
+                        for menace_controle in menace.controles_nist.all():
+                            controle_nist = menace_controle.controle_nist
+                            
+                            for technique in controle_nist.techniques.all():
+                                for mesure in technique.mesures_controle.all():
+                                    
+                                    # Éviter les doublons
+                                    if mesure.id in mesures_set:
+                                        continue
+                                    
+                                    mesures_set.add(mesure.id)
+                                    
+                                    # Appliquer les filtres
+                                    if nature_mesure and mesure.nature_mesure != nature_mesure:
+                                        continue
+                                    
+                                    if efficacite_min and float(mesure.efficacite) < float(efficacite_min):
+                                        continue
+                                    
+                                    if cout_max and mesure.cout_total_3_ans > float(cout_max):
+                                        continue
+                                    
+                                    if search and search.lower() not in mesure.nom.lower() and search.lower() not in mesure.description.lower():
+                                        continue
+                                    
+                                    # Construire les détails de la mesure
+                                    mesure_detail = {
+                                        'id': str(mesure.id),
+                                        'mesure_code': mesure.mesure_code,
+                                        'nom': mesure.nom,
+                                        'description': mesure.description,
+                                        'nature_mesure': mesure.nature_mesure,
+                                        'efficacite': float(mesure.efficacite),
+                                        'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre),
+                                        'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel),
+                                        'cout_total_3_ans': mesure.cout_total_3_ans,
+                                        'duree_implementation': mesure.duree_implementation,
+                                        'ressources_necessaires': mesure.ressources_necessaires,
+                                        
+                                        # Technique associée
+                                        'technique': {
+                                            'id': str(technique.id),
+                                            'code': technique.technique_code,
+                                            'nom': technique.nom,
+                                            'type_technique': technique.type_technique,
+                                            'complexite': technique.complexite
+                                        },
+                                        
+                                        # Contrôle NIST associé
+                                        'controle_nist': {
+                                            'id': str(controle_nist.id),
+                                            'code': controle_nist.code,
+                                            'nom': controle_nist.nom,
+                                            'famille': controle_nist.famille,
+                                            'priorite': controle_nist.priorite
+                                        },
+                                        
+                                        # Menace(s) couvertes
+                                        'menaces_couvertes': [{
+                                            'id': str(menace.id),
+                                            'nom': menace.nom,
+                                            'type_menace': menace.type_menace,
+                                            'severite': menace.severite
+                                        }],
+                                        
+                                        # Contexte d'utilisation dans l'architecture
+                                        'contexte': {
+                                            'actif_nom': actif.nom,
+                                            'actif_criticite': actif.criticite,
+                                            'attribut_type': attribut.type_attribut
+                                        }
+                                    }
+                                    
+                                    mesures_details.append(mesure_detail)
             
-            # Analyser le risque actuel
-            risque_total = architecture.risque_financier_total
-            tolerance = float(architecture.risque_tolere)
+            # Trier par efficacité décroissante par défaut
+            sort_by = request.query_params.get('sort_by', 'efficacite')
+            sort_order = request.query_params.get('sort_order', 'desc')
             
-            # Estimation du potentiel d'optimisation
-            potentiel_optimisation = {
-                'architecture': ArchitectureListSerializer(architecture).data,
-                'statistiques': {
-                    'total_actifs': actifs.count(),
-                    'total_attributs': total_attributs,
-                    'total_menaces': total_menaces,
-                    'total_mesures_disponibles': total_mesures_disponibles
-                },
-                'analyse_risque': {
-                    'risque_financier_actuel': risque_total,
-                    'tolerance_risque': tolerance,
-                    'depassement': risque_total > tolerance,
-                    'marge_tolerance': max(0, tolerance - risque_total),
-                    'pourcentage_utilisation': min(100, (risque_total / tolerance) * 100) if tolerance > 0 else 100
-                },
-                'recommandations': {
-                    'optimisation_recommandee': risque_total > tolerance or total_menaces > 10,
-                    'budget_suggere': min(risque_total * 0.2, tolerance * 0.1),  # 20% du risque ou 10% de la tolérance
-                    'priorite': 'HAUTE' if risque_total > tolerance else 'MOYENNE' if risque_total > tolerance * 0.8 else 'BASSE'
-                }
+            reverse_sort = sort_order == 'desc'
+            
+            if sort_by == 'efficacite':
+                mesures_details.sort(key=lambda x: x['efficacite'], reverse=reverse_sort)
+            elif sort_by == 'cout':
+                mesures_details.sort(key=lambda x: x['cout_total_3_ans'], reverse=reverse_sort)
+            elif sort_by == 'nom':
+                mesures_details.sort(key=lambda x: x['nom'], reverse=reverse_sort)
+            elif sort_by == 'nature':
+                mesures_details.sort(key=lambda x: x['nature_mesure'], reverse=reverse_sort)
+            
+            # Statistiques
+            stats = {
+                'total_mesures': len(mesures_details),
+                'cout_total_mise_en_oeuvre': sum(m['cout_mise_en_oeuvre'] for m in mesures_details),
+                'cout_total_3_ans': sum(m['cout_total_3_ans'] for m in mesures_details),
+                'efficacite_moyenne': round(
+                    sum(m['efficacite'] for m in mesures_details) / len(mesures_details), 2
+                ) if mesures_details else 0,
+                'par_nature': {},
+                'par_famille_nist': {}
             }
             
-            return Response(potentiel_optimisation, status=status.HTTP_200_OK)
+            # Grouper par nature
+            for mesure in mesures_details:
+                nature = mesure['nature_mesure']
+                if nature not in stats['par_nature']:
+                    stats['par_nature'][nature] = {
+                        'count': 0,
+                        'cout_total': 0,
+                        'efficacite_moyenne': []
+                    }
+                stats['par_nature'][nature]['count'] += 1
+                stats['par_nature'][nature]['cout_total'] += mesure['cout_total_3_ans']
+                stats['par_nature'][nature]['efficacite_moyenne'].append(mesure['efficacite'])
+            
+            # Calculer les moyennes d'efficacité par nature
+            for nature in stats['par_nature']:
+                efficacites = stats['par_nature'][nature]['efficacite_moyenne']
+                stats['par_nature'][nature]['efficacite_moyenne'] = round(
+                    sum(efficacites) / len(efficacites), 2
+                ) if efficacites else 0
+            
+            # Grouper par famille NIST
+            for mesure in mesures_details:
+                famille = mesure['controle_nist']['famille']
+                if famille not in stats['par_famille_nist']:
+                    stats['par_famille_nist'][famille] = 0
+                stats['par_famille_nist'][famille] += 1
+            
+            response_data = {
+                'architecture': {
+                    'id': str(architecture.id),
+                    'nom': architecture.nom
+                },
+                'statistiques': stats,
+                'mesures': mesures_details
+            }
+            
+            log_activity(
+                request.user, 
+                'VIEW_ARCHITECTURE_MEASURES', 
+                'Architecture', 
+                str(architecture.id),
+                {'mesures_count': len(mesures_details)}
+            )
+            
+            return Response(response_data, status=status.HTTP_200_OK)
             
         except Exception as e:
-            logger.error(f"Erreur lors de l'analyse de l'architecture {architecture.id}: {str(e)}")
+            logger.error(f"Erreur lors de la récupération des mesures pour l'architecture {architecture.id}: {str(e)}")
             return Response(
-                {'error': f'Erreur d\'analyse: {str(e)}'}, 
+                {'error': f'Erreur lors de la récupération des mesures: {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-            
-        def _optimiser_actif(self, actif, solver):
-            """Optimise les mesures de contrôle pour un actif spécifique"""
-            resultats = {
-                'actif_id': str(actif.id),
-                'actif_nom': actif.nom,
-                'attributs': [],
-                'mesures_selectionnees': [],
-                'cout_total': 0,
-                'attributs_traites': 0,
-                'menaces_traitees': 0
-            }
-            
-            # Traiter chaque attribut de sécurité
-            attributs = actif.attributs_securite.all()
-            
-            for attribut in attributs:
-                resultats_attribut = self._optimiser_attribut(actif, attribut, solver)
-                
-                if resultats_attribut['succes']:
-                    resultats['attributs'].append(resultats_attribut)
-                    resultats['mesures_selectionnees'].extend(resultats_attribut['mesures_selectionnees'])
-                    resultats['cout_total'] += resultats_attribut['cout_total']
-                    resultats['attributs_traites'] += 1
-                    resultats['menaces_traitees'] += resultats_attribut['menaces_traitees']
-            
-            return resultats
         
-        def _optimiser_attribut(self, actif, attribut, solver):
-            """Optimise les mesures pour un attribut de sécurité spécifique"""
-            resultats = {
-                'attribut_id': str(attribut.id),
-                'attribut_type': attribut.type_attribut,
-                'succes': False,
-                'mesures_selectionnees': [],
-                'cout_total': 0,
-                'menaces_traitees': 0,
-                'message': ''
-            }
+        @action(detail=True, methods=['post'])
+        def optimiser(self, request, pk=None):
+            """
+            Optimise les mesures de contrôle pour minimiser les coûts
+            tout en respectant les contraintes de risque
+            """
+            architecture = self.get_object()
             
             try:
-                # Récupérer toutes les associations menaces-attribut
-                associations_menaces = attribut.menaces.select_related('menace').all()
+                # Chemin vers le solveur BONMIN
+                solver_path = getattr(settings, 'BONMIN_SOLVER_PATH', r'C:\Users\afdev\Music\BONMIN\bonmin.exe')
                 
-                if not associations_menaces:
-                    resultats['message'] = 'Aucune menace associée'
-                    return resultats
+                if not os.path.exists(solver_path):
+                    return Response({
+                        'error': 'Solveur BONMIN non trouvé. Veuillez configurer BONMIN_SOLVER_PATH dans settings.py'
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 
-                # Récupérer toutes les mesures via les contrôles NIST
-                mesures_data = []
-                mesure_ids = set()
+                solver = pyo.SolverFactory('bonmin', executable=solver_path)
                 
-                for assoc_menace in associations_menaces:
-                    menace = assoc_menace.menace
+                # Résultats finaux
+                resultats_optimisation = {
+                    'architecture': architecture.nom,
+                    'actifs': [],
+                    'mesures_selectionnees': [],
+                    'cout_total': 0,
+                    'statistiques': {
+                        'actifs_traites': 0,
+                        'attributs_traites': 0,
+                        'menaces_traitees': 0,
+                        'mesures_proposees': 0
+                    }
+                }
+                
+                # Traiter chaque actif de l'architecture
+                actifs = architecture.actifs.all()
+                
+                for actif in actifs:
+                    resultats_actif = self._optimiser_actif(actif, solver)
+                    resultats_optimisation['actifs'].append(resultats_actif)
+                    resultats_optimisation['mesures_selectionnees'].extend(resultats_actif['mesures_selectionnees'])
+                    resultats_optimisation['cout_total'] += resultats_actif['cout_total']
                     
-                    # Parcourir les contrôles NIST de cette menace
-                    for menace_controle in menace.controles_nist.all():
-                        controle = menace_controle.controle_nist
-                        
-                        # Parcourir les techniques de ce contrôle
-                        for technique in controle.techniques.all():
-                            
-                            # Parcourir les mesures de cette technique
-                            for mesure in technique.mesures_controle.all():
-                                if mesure.id not in mesure_ids:
-                                    mesure_ids.add(mesure.id)
-                                    mesures_data.append({
-                                        'id': mesure.id,
-                                        'nom': mesure.nom,
-                                        'cout': float(mesure.cout_mise_en_oeuvre),
-                                        'efficacite': float(mesure.efficacite) / 100.0,  # Convertir en décimal
-                                        'nature': mesure.nature_mesure
-                                    })
+                    # Mise à jour des statistiques
+                    resultats_optimisation['statistiques']['actifs_traites'] += 1
+                    resultats_optimisation['statistiques']['attributs_traites'] += resultats_actif['attributs_traites']
+                    resultats_optimisation['statistiques']['menaces_traitees'] += resultats_actif['menaces_traitees']
                 
-                if not mesures_data:
-                    resultats['message'] = 'Aucune mesure de contrôle disponible'
-                    return resultats
+                resultats_optimisation['statistiques']['mesures_proposees'] = len(resultats_optimisation['mesures_selectionnees'])
                 
-                # Créer le modèle Pyomo
-                model = pyo.ConcreteModel()
-                
-                # Ensemble des mesures
-                model.M = pyo.Set(initialize=[m['id'] for m in mesures_data])
-                
-                # Variables de décision binaires
-                model.x = pyo.Var(model.M, domain=pyo.Boolean)
-                
-                # Fonction objectif : minimiser le coût total
-                model.objective = pyo.Objective(
-                    expr=sum(
-                        next(m['cout'] for m in mesures_data if m['id'] == mesure_id) * model.x[mesure_id]
-                        for mesure_id in model.M
-                    ),
-                    sense=pyo.minimize
+                # Log de l'activité
+                log_activity(
+                    request.user,
+                    'OPTIMISATION',
+                    'Architecture',
+                    str(architecture.id),
+                    {
+                        'actifs_traites': resultats_optimisation['statistiques']['actifs_traites'],
+                        'mesures_proposees': resultats_optimisation['statistiques']['mesures_proposees'],
+                        'cout_total': resultats_optimisation['cout_total']
+                    }
                 )
                 
-                # Contraintes
-                model.risk_constraint = pyo.ConstraintList()
+                return Response(resultats_optimisation)
                 
-                # Impact de l'attribut
-                impact = float(attribut.cout_compromission)
-                
-                # Seuil de risque acceptable (à ajuster)
-                seuil_local = float(impact) * 0.5  # 50% de l'impact
-                
-                # Traiter chaque menace
-                menaces_uniques = set()
-                proba_residuelles = []
-                
-                for assoc_menace in associations_menaces:
-                    menace = assoc_menace.menace
-                    
-                    if menace.id in menaces_uniques:
-                        continue
-                    
-                    menaces_uniques.add(menace.id)
-                    resultats['menaces_traitees'] += 1
-                    
-                    # Probabilité initiale de la menace
-                    initial_proba = float(assoc_menace.probabilite) / 100.0  # Convertir en décimal
-                    proba_res = initial_proba
-                    
-                    # Parcourir les mesures liées à cette menace
-                    for mesure_data in mesures_data:
-                        mesure_id = mesure_data['id']
-                        efficacite = mesure_data['efficacite']
-                        nature = mesure_data['nature']
-                        
-                        if nature in ['IS', 'IP']:
-                            # Réduction directe de la probabilité
-                            proba_res = proba_res * (1 - efficacite * model.x[mesure_id])
-                        
-                        elif nature == 'RA':
-                            # Variable auxiliaire pour RA
-                            var_aux_ra = pyo.Var(bounds=(0, 1))
-                            model.add_component(f'RA_aux_{mesure_id}_{menace.id}', var_aux_ra)
-                            model.risk_constraint.add(var_aux_ra >= efficacite * model.x[mesure_id])
-                            proba_res = proba_res * (1 - var_aux_ra)
-                        
-                        elif nature == 'RC':
-                            # Variable auxiliaire pour RC
-                            var_aux_rc = pyo.Var(bounds=(0, 1))
-                            model.add_component(f'RC_aux_{mesure_id}_{menace.id}', var_aux_rc)
-                            model.risk_constraint.add(
-                                var_aux_rc <= efficacite * model.x[mesure_id] + (1 - model.x[mesure_id])
-                            )
-                            proba_res = proba_res * (1 - var_aux_rc)
-                    
-                    proba_residuelles.append(proba_res)
-                
-                # Contrainte de risque global
-                if proba_residuelles:
-                    risque_local = (1 - pyo.prod(1 - p for p in proba_residuelles)) * impact
-                    model.risk_constraint.add(risque_local <= seuil_local)
-                
-                # Contrainte : au moins une mesure doit être sélectionnée
-                if model.M:
-                    model.risk_constraint.add(sum(model.x[m] for m in model.M) >= 1)
-                
-                # Résoudre le modèle
-                result = solver.solve(model, tee=False)
-                
-                # Vérifier la solution
-                if result.solver.termination_condition == pyo.TerminationCondition.optimal:
-                    # Extraire les mesures sélectionnées
-                    for mesure_id in model.M:
-                        if pyo.value(model.x[mesure_id]) > 0.5:
-                            mesure_info = next(m for m in mesures_data if m['id'] == mesure_id)
-                            resultats['mesures_selectionnees'].append({
-                                'mesure_id': str(mesure_id),
-                                'mesure_nom': mesure_info['nom'],
-                                'cout': mesure_info['cout'],
-                                'efficacite': mesure_info['efficacite'] * 100,
-                                'nature': mesure_info['nature']
-                            })
-                            resultats['cout_total'] += mesure_info['cout']
-                    
-                    resultats['succes'] = True
-                    resultats['message'] = f"{len(resultats['mesures_selectionnees'])} mesure(s) sélectionnée(s)"
-                else:
-                    resultats['message'] = f"Pas de solution optimale trouvée: {result.solver.termination_condition}"
-            
             except Exception as e:
-                resultats['message'] = f"Erreur: {str(e)}"
-                logger.error(f"Erreur optimisation attribut {attribut.id}: {str(e)}")
+                logger.error(f"Erreur lors de l'optimisation: {str(e)}")
+                return Response({
+                    'error': f'Erreur lors de l\'optimisation: {str(e)}'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+        @action(detail=True, methods=['post'])
+        def optimiser_mesures_securite(self, request, pk=None):
+            """
+            Lance l'optimisation automatique des mesures de sécurité pour cette architecture
             
-            return resultats
+            POST /api/architectures/{id}/optimiser_mesures_securite/
+            {
+                "budget_max": 50000.00,  // optionnel
+                "creer_plan_implementation": true,  // optionnel
+                "responsable_id": "uuid"  // optionnel
+            }
+            """
+            architecture = self.get_object()
+            
+            budget_max = request.data.get('budget_max')
+            creer_plan = request.data.get('creer_plan_implementation', False)
+            responsable_id = request.data.get('responsable_id')
+            
+            try:
+                # Initialiser le service d'optimisation
+                optimization_service = SecurityOptimizationService()
+                
+                # Lancer l'optimisation
+                result = optimization_service.optimize_architecture_security(
+                    architecture_id=str(architecture.id),
+                    budget_max=float(budget_max) if budget_max else None
+                )
+                
+                # Créer le plan d'implémentation si demandé
+                if creer_plan and result.get('successful_optimizations', 0) > 0:
+                    implementation_plan = optimization_service.create_implementation_plan(
+                        optimization_result=result,
+                        responsable_id=responsable_id
+                    )
+                    result['implementation_plan'] = implementation_plan
+                
+                # Log de l'activité
+                log_activity(
+                    request.user, 
+                    'ARCHITECTURE_OPTIMIZATION', 
+                    'Architecture', 
+                    str(architecture.id),
+                    {
+                        'budget_max': budget_max,
+                        'successful_optimizations': result.get('successful_optimizations', 0),
+                        'plan_created': creer_plan
+                    }
+                )
+                
+                return Response(result, status=status.HTTP_200_OK)
+                
+            except Exception as e:
+                logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture.id}: {str(e)}")
+                return Response(
+                    {'error': f'Erreur d\'optimisation: {str(e)}'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+        @action(detail=True, methods=['get'])
+        def analyse_optimisation_potentielle(self, request, pk=None):
+            """
+            Analyse le potentiel d'optimisation pour cette architecture sans lancer l'optimisation
+            
+            GET /api/architectures/{id}/analyse_optimisation_potentielle/
+            """
+            architecture = self.get_object()
+            
+            try:
+                # Collecter les statistiques pour l'analyse
+                actifs = architecture.actifs.all()
+                total_attributs = sum(actif.attributs_securite.count() for actif in actifs)
+                total_menaces = sum(
+                    attribut.menaces.count() 
+                    for actif in actifs 
+                    for attribut in actif.attributs_securite.all()
+                )
+                
+                # Compter les mesures disponibles
+                total_mesures_disponibles = 0
+                for actif in actifs:
+                    for attribut in actif.attributs_securite.all():
+                        for attr_menace in attribut.menaces.all():
+                            for menace_controle in attr_menace.menace.controles_nist.all():
+                                for technique in menace_controle.controle_nist.techniques.all():
+                                    total_mesures_disponibles += technique.mesures_controle.count()
+                
+                # Analyser le risque actuel
+                risque_total = architecture.risque_financier_total
+                tolerance = float(architecture.risque_tolere)
+                
+                # Estimation du potentiel d'optimisation
+                potentiel_optimisation = {
+                    'architecture': ArchitectureListSerializer(architecture).data,
+                    'statistiques': {
+                        'total_actifs': actifs.count(),
+                        'total_attributs': total_attributs,
+                        'total_menaces': total_menaces,
+                        'total_mesures_disponibles': total_mesures_disponibles
+                    },
+                    'analyse_risque': {
+                        'risque_financier_actuel': risque_total,
+                        'tolerance_risque': tolerance,
+                        'depassement': risque_total > tolerance,
+                        'marge_tolerance': max(0, tolerance - risque_total),
+                        'pourcentage_utilisation': min(100, (risque_total / tolerance) * 100) if tolerance > 0 else 100
+                    },
+                    'recommandations': {
+                        'optimisation_recommandee': risque_total > tolerance or total_menaces > 10,
+                        'budget_suggere': min(risque_total * 0.2, tolerance * 0.1),  # 20% du risque ou 10% de la tolérance
+                        'priorite': 'HAUTE' if risque_total > tolerance else 'MOYENNE' if risque_total > tolerance * 0.8 else 'BASSE'
+                    }
+                }
+                
+                return Response(potentiel_optimisation, status=status.HTTP_200_OK)
+                
+            except Exception as e:
+                logger.error(f"Erreur lors de l'analyse de l'architecture {architecture.id}: {str(e)}")
+                return Response(
+                    {'error': f'Erreur d\'analyse: {str(e)}'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+                
+            def _optimiser_actif(self, actif, solver):
+                """Optimise les mesures de contrôle pour un actif spécifique"""
+                resultats = {
+                    'actif_id': str(actif.id),
+                    'actif_nom': actif.nom,
+                    'attributs': [],
+                    'mesures_selectionnees': [],
+                    'cout_total': 0,
+                    'attributs_traites': 0,
+                    'menaces_traitees': 0
+                }
+                
+                # Traiter chaque attribut de sécurité
+                attributs = actif.attributs_securite.all()
+                
+                for attribut in attributs:
+                    resultats_attribut = self._optimiser_attribut(actif, attribut, solver)
+                    
+                    if resultats_attribut['succes']:
+                        resultats['attributs'].append(resultats_attribut)
+                        resultats['mesures_selectionnees'].extend(resultats_attribut['mesures_selectionnees'])
+                        resultats['cout_total'] += resultats_attribut['cout_total']
+                        resultats['attributs_traites'] += 1
+                        resultats['menaces_traitees'] += resultats_attribut['menaces_traitees']
+                
+                return resultats
+            
+            def _optimiser_attribut(self, actif, attribut, solver):
+                """Optimise les mesures pour un attribut de sécurité spécifique"""
+                resultats = {
+                    'attribut_id': str(attribut.id),
+                    'attribut_type': attribut.type_attribut,
+                    'succes': False,
+                    'mesures_selectionnees': [],
+                    'cout_total': 0,
+                    'menaces_traitees': 0,
+                    'message': ''
+                }
+                
+                try:
+                    # Récupérer toutes les associations menaces-attribut
+                    associations_menaces = attribut.menaces.select_related('menace').all()
+                    
+                    if not associations_menaces:
+                        resultats['message'] = 'Aucune menace associée'
+                        return resultats
+                    
+                    # Récupérer toutes les mesures via les contrôles NIST
+                    mesures_data = []
+                    mesure_ids = set()
+                    
+                    for assoc_menace in associations_menaces:
+                        menace = assoc_menace.menace
+                        
+                        # Parcourir les contrôles NIST de cette menace
+                        for menace_controle in menace.controles_nist.all():
+                            controle = menace_controle.controle_nist
+                            
+                            # Parcourir les techniques de ce contrôle
+                            for technique in controle.techniques.all():
+                                
+                                # Parcourir les mesures de cette technique
+                                for mesure in technique.mesures_controle.all():
+                                    if mesure.id not in mesure_ids:
+                                        mesure_ids.add(mesure.id)
+                                        mesures_data.append({
+                                            'id': mesure.id,
+                                            'nom': mesure.nom,
+                                            'cout': float(mesure.cout_mise_en_oeuvre),
+                                            'efficacite': float(mesure.efficacite) / 100.0,  # Convertir en décimal
+                                            'nature': mesure.nature_mesure
+                                        })
+                    
+                    if not mesures_data:
+                        resultats['message'] = 'Aucune mesure de contrôle disponible'
+                        return resultats
+                    
+                    # Créer le modèle Pyomo
+                    model = pyo.ConcreteModel()
+                    
+                    # Ensemble des mesures
+                    model.M = pyo.Set(initialize=[m['id'] for m in mesures_data])
+                    
+                    # Variables de décision binaires
+                    model.x = pyo.Var(model.M, domain=pyo.Boolean)
+                    
+                    # Fonction objectif : minimiser le coût total
+                    model.objective = pyo.Objective(
+                        expr=sum(
+                            next(m['cout'] for m in mesures_data if m['id'] == mesure_id) * model.x[mesure_id]
+                            for mesure_id in model.M
+                        ),
+                        sense=pyo.minimize
+                    )
+                    
+                    # Contraintes
+                    model.risk_constraint = pyo.ConstraintList()
+                    
+                    # Impact de l'attribut
+                    impact = float(attribut.cout_compromission)
+                    
+                    # Seuil de risque acceptable (à ajuster)
+                    seuil_local = float(impact) * 0.5  # 50% de l'impact
+                    
+                    # Traiter chaque menace
+                    menaces_uniques = set()
+                    proba_residuelles = []
+                    
+                    for assoc_menace in associations_menaces:
+                        menace = assoc_menace.menace
+                        
+                        if menace.id in menaces_uniques:
+                            continue
+                        
+                        menaces_uniques.add(menace.id)
+                        resultats['menaces_traitees'] += 1
+                        
+                        # Probabilité initiale de la menace
+                        initial_proba = float(assoc_menace.probabilite) / 100.0  # Convertir en décimal
+                        proba_res = initial_proba
+                        
+                        # Parcourir les mesures liées à cette menace
+                        for mesure_data in mesures_data:
+                            mesure_id = mesure_data['id']
+                            efficacite = mesure_data['efficacite']
+                            nature = mesure_data['nature']
+                            
+                            if nature in ['IS', 'IP']:
+                                # Réduction directe de la probabilité
+                                proba_res = proba_res * (1 - efficacite * model.x[mesure_id])
+                            
+                            elif nature == 'RA':
+                                # Variable auxiliaire pour RA
+                                var_aux_ra = pyo.Var(bounds=(0, 1))
+                                model.add_component(f'RA_aux_{mesure_id}_{menace.id}', var_aux_ra)
+                                model.risk_constraint.add(var_aux_ra >= efficacite * model.x[mesure_id])
+                                proba_res = proba_res * (1 - var_aux_ra)
+                            
+                            elif nature == 'RC':
+                                # Variable auxiliaire pour RC
+                                var_aux_rc = pyo.Var(bounds=(0, 1))
+                                model.add_component(f'RC_aux_{mesure_id}_{menace.id}', var_aux_rc)
+                                model.risk_constraint.add(
+                                    var_aux_rc <= efficacite * model.x[mesure_id] + (1 - model.x[mesure_id])
+                                )
+                                proba_res = proba_res * (1 - var_aux_rc)
+                        
+                        proba_residuelles.append(proba_res)
+                    
+                    # Contrainte de risque global
+                    if proba_residuelles:
+                        risque_local = (1 - pyo.prod(1 - p for p in proba_residuelles)) * impact
+                        model.risk_constraint.add(risque_local <= seuil_local)
+                    
+                    # Contrainte : au moins une mesure doit être sélectionnée
+                    if model.M:
+                        model.risk_constraint.add(sum(model.x[m] for m in model.M) >= 1)
+                    
+                    # Résoudre le modèle
+                    result = solver.solve(model, tee=False)
+                    
+                    # Vérifier la solution
+                    if result.solver.termination_condition == pyo.TerminationCondition.optimal:
+                        # Extraire les mesures sélectionnées
+                        for mesure_id in model.M:
+                            if pyo.value(model.x[mesure_id]) > 0.5:
+                                mesure_info = next(m for m in mesures_data if m['id'] == mesure_id)
+                                resultats['mesures_selectionnees'].append({
+                                    'mesure_id': str(mesure_id),
+                                    'mesure_nom': mesure_info['nom'],
+                                    'cout': mesure_info['cout'],
+                                    'efficacite': mesure_info['efficacite'] * 100,
+                                    'nature': mesure_info['nature']
+                                })
+                                resultats['cout_total'] += mesure_info['cout']
+                        
+                        resultats['succes'] = True
+                        resultats['message'] = f"{len(resultats['mesures_selectionnees'])} mesure(s) sélectionnée(s)"
+                    else:
+                        resultats['message'] = f"Pas de solution optimale trouvée: {result.solver.termination_condition}"
+                
+                except Exception as e:
+                    resultats['message'] = f"Erreur: {str(e)}"
+                    logger.error(f"Erreur optimisation attribut {attribut.id}: {str(e)}")
+                
+                return resultats
 
 # ============================================================================
 # NIVEAU 2: GESTION DES ACTIFS

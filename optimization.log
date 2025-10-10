@@ -695,3 +695,585 @@ Traceback (most recent call last):
 django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
 DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(473e4ddb-80a3-4085-a8f3-b867120a69bd, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
 
+INFO 2025-10-03 23:20:42,230 optimization_service 12744 17588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:20:42,235 optimization_service 12744 17588 Optimisation de l'actif: Serveur Web Production
+INFO 2025-10-03 23:20:42,358 optimization_service 12744 17588 Optimisation de l'actif: Base de Données Clients
+INFO 2025-10-03 23:20:42,418 optimization_service 12744 17588 Optimisation de l'actif: Infrastructure AWS
+INFO 2025-10-03 23:20:42,594 optimization_service 12744 17588 Optimisation de l'actif: Postes Utilisateurs
+INFO 2025-10-03 23:23:15,719 optimization_service 12744 12140 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:23:49,788 optimization_service 12744 11908 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:24:16,955 optimization_service 12744 18120 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:24:16,961 optimization_service 12744 18120 Optimisation de l'actif: Base de données Sql Serveur
+ERROR 2025-10-03 23:24:17,078 optimization_service 12744 18120 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(4663547d-9aa2-42be-b3d1-0d4b701d38ca, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:28:10,018 optimization_service 12744 9144 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:28:10,025 optimization_service 12744 9144 Optimisation de l'actif: Base de données Sql Serveur
+INFO 2025-10-03 23:28:51,677 optimization_service 12744 4456 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:28:51,683 optimization_service 12744 4456 Optimisation de l'actif: Application ERP
+INFO 2025-10-03 23:32:03,834 optimization_service 12744 17572 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:32:03,840 optimization_service 12744 17572 Optimisation de l'actif: Application ERP
+ERROR 2025-10-03 23:32:04,086 optimization_service 12744 17572 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:32:18,280 optimization_service 12744 14032 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:32:18,285 optimization_service 12744 14032 Optimisation de l'actif: Application ERP
+ERROR 2025-10-03 23:32:18,569 optimization_service 12744 14032 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:33:01,526 optimization_service 12744 2192 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:33:01,532 optimization_service 12744 2192 Optimisation de l'actif: Application ERP
+ERROR 2025-10-03 23:33:01,795 optimization_service 12744 2192 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:33:39,733 optimization_service 12744 4972 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:33:39,737 optimization_service 12744 4972 Optimisation de l'actif: Application ERP
+ERROR 2025-10-03 23:33:39,992 optimization_service 12744 4972 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:33:57,380 optimization_service 12744 14560 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:33:57,386 optimization_service 12744 14560 Optimisation de l'actif: Application ERP
+ERROR 2025-10-03 23:33:57,675 optimization_service 12744 14560 Erreur lors de la création du plan d'implémentation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\afdev\Videos\gestion_risques_nist\api\services\optimization_service.py", line 648, in create_implementation_plan
+    implementation = ImplementationMesure.objects.create(
+        attribut_menace=attr_menace,
+    ...<3 lines>...
+        commentaires=f'Mesure recommandée par optimisation automatique'
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 902, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1008, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\base.py", line 1210, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\query.py", line 1868, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\models\sql\compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\afdev\Videos\gestion_risques_nist\env\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.IntegrityError: ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « implementation_mesure_attribut_menace_id_mesur_c958dd8a_uniq »
+DETAIL:  La clé « (attribut_menace_id, mesure_controle_id)=(46c5777c-f1bf-4506-ad9a-4dab71be1377, 22c69b2c-49f5-4233-b2c2-f6769c4a0758) » existe déjà.
+
+INFO 2025-10-03 23:35:07,687 optimization_service 12744 2736 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-03 23:35:07,694 optimization_service 12744 2736 Optimisation de l'actif: Application ERP
+INFO 2025-10-03 23:42:07,583 optimization_service 12744 9984 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 20:54:52,664 optimization_service 13164 16280 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 20:55:19,942 optimization_service 13164 14788 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 20:55:19,947 optimization_service 13164 14788 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 21:30:25,689 optimization_service 13164 17744 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 21:30:25,695 optimization_service 13164 17744 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 21:34:03,308 optimization_service 13172 18356 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 21:34:19,140 optimization_service 13172 14860 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 21:34:19,146 optimization_service 13172 14860 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 21:54:57,403 optimization_service 13172 7180 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 21:54:57,408 optimization_service 13172 7180 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:06:54,767 optimization_service 13172 7476 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:06:54,772 optimization_service 13172 7476 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:11:40,322 optimization_service 13172 17224 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:11:40,327 optimization_service 13172 17224 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:11:55,167 optimization_service 13172 17224 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:11:55,173 optimization_service 13172 17224 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:12:24,889 optimization_service 13172 17224 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:12:24,893 optimization_service 13172 17224 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:14:29,704 optimization_service 13172 17224 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:14:29,710 optimization_service 13172 17224 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:14:39,215 optimization_service 13172 17224 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:14:39,221 optimization_service 13172 17224 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:27:54,285 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:27:54,289 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:30:27,125 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:30:27,129 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:30:48,705 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:30:48,711 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:35:37,637 optimization_service 13172 2968 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:35:37,643 optimization_service 13172 2968 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:37:59,021 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:37:59,027 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
+INFO 2025-10-10 22:38:23,317 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-10-10 22:38:23,321 optimization_service 13172 2588 Optimisation de l'actif: Application ERP

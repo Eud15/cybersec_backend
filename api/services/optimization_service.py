@@ -2,12 +2,12 @@
 import pyomo.environ as pyo
 from decimal import Decimal
 from django.db import transaction
-from django.conf import settings
 import logging
 from typing import List, Dict, Optional
 import platform
 import sys
 import io
+from django.conf import settings 
 
 from ..models import (
     Architecture, Actif, AttributSecurite, AttributMenace, 
