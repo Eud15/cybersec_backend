@@ -4,14 +4,62 @@ from django.utils.html import format_html
 from .models import (
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
     ControleNIST, MenaceControle, Technique, MesureDeControle, 
-    ImplementationMesure, LogActivite
+    ImplementationMesure, LogActivite, CategorieActif
 )
+
+
+# ============================================================================
+# ADMIN POUR CATÉGORIE ET TYPE D'ACTIF (NOUVEAUX)
+# ============================================================================
+
+class TypeActifInline(admin.TabularInline):
+    model = TypeActif
+    extra = 0
+    fields = ['nom', 'code', 'description', 'actifs_count']
+    readonly_fields = ['actifs_count']
+    
+    def actifs_count(self, obj):
+        if obj.pk:
+            return obj.actifs.count()
+        return 0
+    actifs_count.short_description = 'Nb Actifs'
+
+@admin.register(CategorieActif)
+class CategorieActifAdmin(admin.ModelAdmin):
+    list_display = ['nom', 'code', 'types_count', 'actifs_total_count', 'created_at']
+    search_fields = ['nom', 'code', 'description']
+    ordering = ['nom']
+    inlines = [TypeActifInline]
+    
+    fieldsets = (
+        ('Informations principales', {
+            'fields': ('nom', 'code', 'description')
+        }),
+    )
+    
+    def types_count(self, obj):
+        return obj.types_actifs.count()
+    types_count.short_description = 'Nb Types'
+    
+    def actifs_total_count(self, obj):
+        return sum(type_actif.actifs.count() for type_actif in obj.types_actifs.all())
+    actifs_total_count.short_description = 'Total Actifs'
 
 @admin.register(TypeActif)
 class TypeActifAdmin(admin.ModelAdmin):
-    list_display = ['nom', 'description', 'actifs_count', 'created_at']
-    search_fields = ['nom', 'description']
-    ordering = ['nom']
+    list_display = ['nom', 'code', 'categorie', 'actifs_count', 'created_at']
+    list_filter = ['categorie']
+    search_fields = ['nom', 'code', 'description', 'categorie__nom']
+    ordering = ['categorie', 'nom']
+    
+    fieldsets = (
+        ('Catégorie', {
+            'fields': ('categorie',)
+        }),
+        ('Informations du type', {
+            'fields': ('nom', 'code', 'description')
+        }),
+    )
     
     def actifs_count(self, obj):
         return obj.actifs.count()
@@ -58,7 +106,6 @@ class ArchitectureAdmin(admin.ModelAdmin):
             )
     tolerance_status.short_description = 'Statut Tolérance'
 
-# Inline pour les attributs de sécurité dans un actif (CORRIGÉ)
 class AttributSecuriteInline(admin.TabularInline):
     model = AttributSecurite
     extra = 0
@@ -102,13 +149,22 @@ class AttributSecuriteInline(admin.TabularInline):
             )
         return "N/A"
     ratio_display.short_description = 'Ratio'
+
 @admin.register(Actif)
 class ActifAdmin(admin.ModelAdmin):
-    list_display = ['nom', 'type_actif', 'architecture', 'cout_formatted', 'criticite', 'proprietaire', 'attributs_count', 'risque_total']
-    list_filter = ['type_actif', 'architecture', 'criticite', 'proprietaire']
-    search_fields = ['nom', 'description']
+    list_display = [
+        'nom', 'type_actif', 'type_categorie', 'architecture', 
+        'cout_formatted', 'criticite', 'proprietaire', 
+        'attributs_count', 'risque_total'
+    ]
+    list_filter = ['type_actif__categorie', 'type_actif', 'architecture', 'criticite', 'proprietaire']
+    search_fields = ['nom', 'description', 'type_actif__nom', 'type_actif__categorie__nom']
     ordering = ['architecture', 'nom']
     inlines = [AttributSecuriteInline]
+    
+    def type_categorie(self, obj):
+        return obj.type_actif.categorie.nom
+    type_categorie.short_description = 'Catégorie'
     
     def cout_formatted(self, obj):
         return '{:,.2f} €'.format(obj.cout)

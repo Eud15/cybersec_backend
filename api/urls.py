@@ -7,7 +7,9 @@ from .views import (
     # Hiérarchie principale
     ArchitectureViewSet, ActifViewSet, AttributSecuriteViewSet,
     AttributMenaceViewSet, MenaceControleViewSet, TechniqueViewSet,
-    MesureDeControleViewSet, ImplementationMesureViewSet,
+    MesureDeControleViewSet, ImplementationMesureViewSet,  CategorieActifViewSet,
+    TypeActifViewSet,
+    
     
     # Catalogues globaux
     TypeActifViewSet, MenaceViewSet, ControleNISTViewSet,
@@ -18,6 +20,9 @@ from .views import (
 
 # Configuration du router pour les ViewSets
 router = DefaultRouter()
+
+router.register(r'categories-actifs', CategorieActifViewSet, basename='categorie-actif')
+router.register(r'types-actifs', TypeActifViewSet, basename='type-actif')
 
 # Hiérarchie principale (dans l'ordre de navigation)
 router.register(r'architectures', ArchitectureViewSet, basename='architecture')

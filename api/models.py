@@ -14,29 +14,70 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-class TypeActif(BaseModel):
-    """Type d'actif (serveur, réseau, application, base de données...)"""
+# ============================================================================
+# HIÉRARCHIE: CATÉGORIE → TYPE D'ACTIF → ACTIF
+# ============================================================================
+
+class CategorieActif(BaseModel):
+    """Catégorie d'actifs (ex: Infrastructure, Application, Données...)"""
     nom = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
+    code = models.CharField(
+        max_length=20, 
+        unique=True, 
+        help_text="Code court pour la catégorie (ex: INFRA, APP, DATA)"
+    )
+    
+    class Meta:
+        db_table = 'categorie_actif'
+        verbose_name = 'Catégorie d\'actif'
+        verbose_name_plural = 'Catégories d\'actifs'
+        ordering = ['nom']
+    
+    def __str__(self):
+        return f"{self.code} - {self.nom}"
+
+
+class TypeActif(BaseModel):
+    """Type d'actif appartenant à une catégorie"""
+    categorie = models.ForeignKey(
+        CategorieActif, 
+        on_delete=models.PROTECT, 
+        related_name='types_actifs',
+        help_text="Catégorie parente de ce type d'actif"
+        # Supprimez null=True et blank=True
+    )
+    nom = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    code = models.CharField(
+        max_length=20, 
+        unique=True, 
+        help_text="Code court pour le type (ex: SRV-WEB, SRV-DB, APP-WEB)"
+        # Supprimez null=True et blank=True
+    )
     
     class Meta:
         db_table = 'type_actif'
         verbose_name = 'Type d\'actif'
         verbose_name_plural = 'Types d\'actifs'
+        ordering = ['categorie', 'nom']  # Remettez categorie
+        unique_together = ['categorie', 'nom']  # Décommentez
     
     def __str__(self):
-        return self.nom
+        return f"{self.categorie.code}/{self.code} - {self.nom}"
+    
+    
 
 class Architecture(BaseModel):
     """Architecture système"""
     nom = models.CharField(max_length=200)
     description = models.TextField()
     risque_tolere = models.DecimalField(
-        max_digits=15,  # Augmenté pour supporter de gros montants
+        max_digits=15,
         decimal_places=2, 
-        validators=[MinValueValidator(0)],  # Suppression de MaxValueValidator
+        validators=[MinValueValidator(0)],
         help_text="Coût maximal du risque toléré (en €)",
-        default=Decimal('10000.00')  # Valeur par défaut plus réaliste en €
+        default=Decimal('10000.00')
     )
     
     class Meta:
@@ -117,7 +158,6 @@ class AttributSecurite(BaseModel):
         help_text="Coût financier en cas de compromission de cet attribut (en €)",
         default=Decimal('0.00')
     )
-
     priorite = models.CharField(
         max_length=10,
         choices=[
@@ -166,8 +206,6 @@ class AttributSecurite(BaseModel):
     def __str__(self):
         return f"{self.actif.nom} - {self.type_attribut}"
 
-# api/models.py - Ajout dans la classe Menace
-
 class Menace(BaseModel):
     """Menaces de sécurité liées aux attributs"""
     nom = models.CharField(max_length=200)
@@ -183,7 +221,7 @@ class Menace(BaseModel):
             ('Elevation of Privilege', 'E - Élévation de privilèges'),
             ('AUTRE', 'Autre')
         ],
-        default='Spoofing'  # Nouvelle valeur par défaut
+        default='Spoofing'
     )
     severite = models.CharField(
         max_length=10,
@@ -194,8 +232,6 @@ class Menace(BaseModel):
             ('CRITIQUE', 'Critique')
         ]
     )
-    
-    # Nouveaux champs optionnels pour définir un contexte principal
     attribut_securite_principal = models.ForeignKey(
         'AttributSecurite', 
         on_delete=models.SET_NULL, 
@@ -213,25 +249,23 @@ class Menace(BaseModel):
     def __str__(self):
         return f"{self.nom} ({self.severite})"
     
-
     @property 
     def attribut_securite_parent_simple(self):
         """Version alternative qui trie en Python"""
         if self.attribut_securite_principal:
             return self.attribut_securite_principal
         
-        # Récupérer tous et trier en Python
         attr_menaces = list(self.attributs_impactes.select_related('attribut_securite').all())
         if not attr_menaces:
             return None
         
-        # Trier par risque financier (propriété calculée)
         attr_menaces.sort(key=lambda am: am.risque_financier, reverse=True)
         return attr_menaces[0].attribut_securite
+    
     @property
     def actif_parent(self):
         """Retourne l'actif parent"""
-        attribut = self.attribut_securite_parent
+        attribut = self.attribut_securite_parent_simple
         return attribut.actif if attribut else None
     
     @property
@@ -243,13 +277,13 @@ class Menace(BaseModel):
     @property
     def attribut_nom(self):
         """Nom de l'attribut parent"""
-        attribut = self.attribut_securite_parent
+        attribut = self.attribut_securite_parent_simple
         return attribut.actif.nom if attribut else None
     
     @property
     def attribut_type(self):
         """Type de l'attribut parent"""
-        attribut = self.attribut_securite_parent
+        attribut = self.attribut_securite_parent_simple
         return attribut.type_attribut if attribut else None
     
     @property
@@ -279,13 +313,13 @@ class Menace(BaseModel):
     @property
     def attribut_securite_id(self):
         """ID de l'attribut de sécurité parent"""
-        attribut = self.attribut_securite_parent
+        attribut = self.attribut_securite_parent_simple
         return attribut.id if attribut else None
     
     @property
     def contexte_hierarchique_complet(self):
         """Retourne le contexte hiérarchique complet"""
-        attribut = self.attribut_securite_parent
+        attribut = self.attribut_securite_parent_simple
         if not attribut:
             return None
         
@@ -309,11 +343,11 @@ class Menace(BaseModel):
     @property
     def risque_financier_dans_contexte(self):
         """Risque financier de cette menace dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return 0
         
         attr_menace = self.attributs_impactes.filter(
-            attribut_securite=self.attribut_securite_parent
+            attribut_securite=self.attribut_securite_principal
         ).first()
         
         return attr_menace.risque_financier if attr_menace else 0
@@ -321,11 +355,11 @@ class Menace(BaseModel):
     @property
     def probabilite(self):
         """Probabilité dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return None
         
         attr_menace = self.attributs_impactes.filter(
-            attribut_securite=self.attribut_securite_parent
+            attribut_securite=self.attribut_securite_principal
         ).first()
         
         return attr_menace.probabilite if attr_menace else None
@@ -333,7 +367,7 @@ class Menace(BaseModel):
     @property
     def impact(self):
         """Impact dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return None
         
         attr_menace = self.attributs_impactes.filter(
@@ -345,7 +379,7 @@ class Menace(BaseModel):
     @property
     def cout_impact(self):
         """Coût d'impact dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return None
         
         attr_menace = self.attributs_impactes.filter(
@@ -357,7 +391,7 @@ class Menace(BaseModel):
     @property
     def niveau_risque_calculated(self):
         """Niveau de risque calculé dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return None
         
         attr_menace = self.attributs_impactes.filter(
@@ -369,7 +403,7 @@ class Menace(BaseModel):
     @property
     def risque_financier_calculated(self):
         """Risque financier calculé dans le contexte principal"""
-        if not self.attribut_securite_parent:
+        if not self.attribut_securite_principal:
             return None
         
         attr_menace = self.attributs_impactes.filter(
@@ -383,7 +417,6 @@ class AttributMenace(BaseModel):
     attribut_securite = models.ForeignKey(AttributSecurite, on_delete=models.CASCADE, related_name='menaces')
     menace = models.ForeignKey(Menace, on_delete=models.CASCADE, related_name='attributs_impactes')
     
-    # Évaluation du risque
     probabilite = models.DecimalField(
         max_digits=5, 
         decimal_places=2,
@@ -458,12 +491,12 @@ class ControleNIST(BaseModel):
     
     def __str__(self):
         return f"{self.code} - {self.nom}"
+
 class MenaceControle(BaseModel):
     """Association entre une menace et les contrôles NIST qui la traitent"""
     menace = models.ForeignKey(Menace, on_delete=models.CASCADE, related_name='controles_nist')
     controle_nist = models.ForeignKey(ControleNIST, on_delete=models.CASCADE, related_name='menaces_traitees')
     
-    # Efficacité du contrôle contre cette menace
     efficacite = models.DecimalField(
         max_digits=5, 
         decimal_places=2,
@@ -481,7 +514,6 @@ class MenaceControle(BaseModel):
             ('NON_APPLICABLE', 'Non applicable')
         ],
         default='NON_CONFORME'
-
     )
     
     commentaires = models.TextField(blank=True, null=True)
@@ -498,8 +530,13 @@ class MenaceControle(BaseModel):
 class Technique(BaseModel):
     """Techniques d'implémentation pour un contrôle NIST"""
     controle_nist = models.ForeignKey(ControleNIST, on_delete=models.CASCADE, related_name='techniques')
-    technique_code = models.CharField(max_length=20, unique=True,null=True, 
-        blank=True, help_text="Code unique de la technique (ex: AC-2.1, SI-4.a)")
+    technique_code = models.CharField(
+        max_length=20, 
+        unique=True,
+        null=True, 
+        blank=True, 
+        help_text="Code unique de la technique (ex: AC-2.1, SI-4.a)"
+    )
     nom = models.CharField(max_length=200)
     description = models.TextField()
     type_technique = models.CharField(
@@ -530,6 +567,7 @@ class Technique(BaseModel):
     
     def __str__(self):
         return f"{self.technique_code} - {self.nom}"
+
 class MesureDeControle(BaseModel):
     """Mesures de contrôle concrètes pour implémenter une technique"""
     technique = models.ForeignKey(Technique, on_delete=models.CASCADE, related_name='mesures_controle')
@@ -537,13 +575,11 @@ class MesureDeControle(BaseModel):
     description = models.TextField()
     mesure_code = models.CharField(
         max_length=30, 
-        
         null=True, 
         blank=True, 
         help_text="Code unique de la mesure (ex: AC-2.1.01, SI-4.a.01)"
     )
     
-    # Nature de la mesure
     nature_mesure = models.CharField(
         max_length=50,
         choices=[
@@ -552,10 +588,9 @@ class MesureDeControle(BaseModel):
             ('RC', 'RC - Révision Configuration'),
             ('RA', 'RA - Révision Architecture')
         ],
-        default='IS'  # Valeur par défaut
+        default='IS'
     )
     
-    # Coûts et efficacité
     cout_mise_en_oeuvre = models.DecimalField(
         max_digits=15, 
         decimal_places=2, 
@@ -576,7 +611,6 @@ class MesureDeControle(BaseModel):
         default=Decimal('0.00')
     )
     
-    # Temps et ressources
     duree_implementation = models.IntegerField(
         default=30,
         help_text="Durée d'implémentation en jours"
@@ -615,7 +649,6 @@ class ImplementationMesure(BaseModel):
         related_name='implementations'
     )
     
-    # Statut de l'implémentation
     statut = models.CharField(
         max_length=20,
         choices=[
@@ -628,16 +661,13 @@ class ImplementationMesure(BaseModel):
         default='PLANIFIE'
     )
     
-    # Planification
     date_debut_prevue = models.DateTimeField(null=True, blank=True)
     date_fin_prevue = models.DateTimeField(null=True, blank=True)
     date_implementation = models.DateTimeField(null=True, blank=True)
     
-    # Responsabilités
     responsable = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     equipe = models.TextField(blank=True, null=True, help_text="Membres de l'équipe impliqués")
     
-    # Suivi
     pourcentage_avancement = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -670,8 +700,8 @@ class LogActivite(BaseModel):
     """Logs des activités système"""
     utilisateur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     action = models.CharField(max_length=100)
-    objet_type = models.CharField(max_length=100)  # Type d'objet modifié
-    objet_id = models.CharField(max_length=100)    # ID de l'objet
+    objet_type = models.CharField(max_length=100)
+    objet_id = models.CharField(max_length=100)
     details = models.JSONField(default=dict, blank=True)
     adresse_ip = models.GenericIPAddressField(null=True, blank=True)
     

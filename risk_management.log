@@ -13580,3 +13580,686 @@ Watching for file changes with StatReloader
 C:\Users\afdev\Videos\gestion_risques_nist\api\views.py changed, reloading.
 Watching for file changes with StatReloader
 "GET /api/v1/architectures/2ad57535-4794-4614-a928-b3828a1ce73d/mesures_controle/ HTTP/1.1" 200 6578
+Watching for file changes with StatReloader
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+Unauthorized: /api/v1/architectures/
+"GET /api/v1/architectures/ HTTP/1.1" 401 58
+"OPTIONS /api/v1/auth/token/ HTTP/1.1" 200 0
+Bad Request: /api/v1/auth/token/
+"POST /api/v1/auth/token/ HTTP/1.1" 400 100
+Watching for file changes with StatReloader
+"POST /api/v1/auth/token/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"OPTIONS /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/auth/token/ HTTP/1.1" 200 0
+"POST /api/v1/auth/token/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+Watching for file changes with StatReloader
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"OPTIONS /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/techniques/import_techniques/ HTTP/1.1" 200 0
+Erreur lors de l'import de techniques: No module named 'pandas'
+Internal Server Error: /api/v1/techniques/import_techniques/
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 500 61
+Erreur lors de l'import de techniques: No module named 'pandas'
+Internal Server Error: /api/v1/techniques/import_techniques/
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 500 61
+Erreur lors de l'import de techniques: No module named 'pandas'
+Internal Server Error: /api/v1/techniques/import_techniques/
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 500 61
+Erreur lors de l'import de techniques: No module named 'pandas'
+Internal Server Error: /api/v1/techniques/import_techniques/
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 500 61
+Watching for file changes with StatReloader
+Erreur lors de l'import de techniques: Erreur lors de la lecture du fichier Excel: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
+Internal Server Error: /api/v1/techniques/import_techniques/
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 500 159
+Watching for file changes with StatReloader
+"POST /api/v1/techniques/import_techniques/ HTTP/1.1" 201 462
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"OPTIONS /api/v1/mesures-controle/import_mesures/ HTTP/1.1" 200 0
+"POST /api/v1/mesures-controle/import_mesures/ HTTP/1.1" 201 429
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/mesures-controle/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/architectures/ HTTP/1.1" 200 52
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 411
+"POST /api/v1/architectures/ HTTP/1.1" 201 113
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 469
+"OPTIONS /api/v1/architectures/undefined/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=undefined HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+Not Found: /api/v1/architectures/undefined/
+Bad Request: /api/v1/actifs/
+"GET /api/v1/architectures/undefined/ HTTP/1.1" 404 25
+"GET /api/v1/actifs/?architecture=undefined HTTP/1.1" 400 76
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 52
+"GET /api/v1/architectures/ HTTP/1.1" 200 367
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 469
+"OPTIONS /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 52
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 52
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 353
+"GET /api/v1/architectures/ HTTP/1.1" 200 367
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 469
+"GET / HTTP/1.1" 200 1640
+"GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 145206
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1046583
+"GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 322863
+"GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+"GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+"GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 15480
+"GET /?format=openapi HTTP/1.1" 200 88529
+"GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4248
+"GET /static/admin/css/base.css HTTP/1.1" 200 22120
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+"GET /static/admin/css/login.css HTTP/1.1" 200 951
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 3243
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 15375
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+"GET /admin/api/typeactif/ HTTP/1.1" 200 14714
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+"GET /static/admin/img/search.svg HTTP/1.1" 200 458
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+"GET /admin/api/typeactif/add/ HTTP/1.1" 200 15795
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"POST /admin/api/typeactif/add/ HTTP/1.1" 302 0
+"GET /admin/api/typeactif/ HTTP/1.1" 200 17180
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 52
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 234
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 353
+"OPTIONS /api/v1/actifs/ HTTP/1.1" 200 0
+"POST /api/v1/actifs/ HTTP/1.1" 201 228
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 442
+"OPTIONS /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/attributs_securite/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/attributs_securite/ HTTP/1.1" 200 2
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 234
+"GET /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/ HTTP/1.1" 200 484
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 752
+"GET /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/attributs_securite/ HTTP/1.1" 200 2
+"OPTIONS /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/ajouter_attribut/ HTTP/1.1" 200 0
+"POST /api/v1/actifs/9e680038-cec1-4ff5-8824-cd6a9568229a/ajouter_attribut/ HTTP/1.1" 201 356
+"OPTIONS /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/ HTTP/1.1" 200 0
+"GET /api/v1/actifs/ HTTP/1.1" 200 444
+"GET /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/ HTTP/1.1" 200 584
+"OPTIONS /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/menaces/ HTTP/1.1" 200 0
+"GET /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/menaces/ HTTP/1.1" 200 2
+"OPTIONS /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/creer_menace/ HTTP/1.1" 200 0
+"POST /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/creer_menace/ HTTP/1.1" 201 780
+"GET /api/v1/attributs-securite/daa358c3-a0df-4344-bc40-28579b326aff/menaces/ HTTP/1.1" 200 1185
+"OPTIONS /api/v1/menaces/ebd03d48-3051-458e-ba1d-2188fb7b62c0/vue_complete/ HTTP/1.1" 200 0
+"GET /api/v1/menaces/ebd03d48-3051-458e-ba1d-2188fb7b62c0/vue_complete/ HTTP/1.1" 200 661
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 234
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 445
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 760
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/serializers.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/serializers.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/serializers.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/serializers.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/urls.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/urls.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Internal Server Error: /admin/api/typeactif/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column type_actif.categorie_id does not exist
+LINE 1: ...e_actif"."created_at", "type_actif"."updated_at", "type_acti...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+                                                           ~~~^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column type_actif.categorie_id does not exist
+LINE 1: ...e_actif"."created_at", "type_actif"."updated_at", "type_acti...
+                                                             ^
+
+"GET /admin/api/typeactif/ HTTP/1.1" 500 165008
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /admin/api/typeactif/
+"GET /admin/api/typeactif/ HTTP/1.1" 404 8539
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /admin/api/typeactif/
+"GET /admin/api/typeactif/ HTTP/1.1" 404 8539
+Not Found: /admin/api/typeactif/
+"GET /admin/api/typeactif/ HTTP/1.1" 404 8539
+"GET /admin/ HTTP/1.1" 200 15103
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/admin.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 16452
+Internal Server Error: /admin/api/categorieactif/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "categorie_actif" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "categorie_actif"
+                                          ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/options.py", line 2024, in changelist_view
+    cl = self.get_changelist_instance(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/options.py", line 867, in get_changelist_instance
+    return ChangeList(
+        request,
+    ...<12 lines>...
+        self.search_help_text,
+    )
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/views/main.py", line 146, in __init__
+    self.get_results(request)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/contrib/admin/views/main.py", line 313, in get_results
+    result_count = paginator.count
+                   ^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/paginator.py", line 110, in count
+    return c()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/query.py", line 604, in count
+    return self.query.get_count(using=self.db)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/sql/query.py", line 644, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/sql/query.py", line 626, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "categorie_actif" does not exist
+LINE 1: SELECT COUNT(*) AS "__count" FROM "categorie_actif"
+                                          ^
+
+"GET /admin/api/categorieactif/ HTTP/1.1" 500 187289
+"GET /admin/ HTTP/1.1" 200 16452
+Watching for file changes with StatReloader
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /admin/api/typeactif/ HTTP/1.1" 200 19215
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/categorieactif/ HTTP/1.1" 200 20241
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/typeactif/ HTTP/1.1" 200 19215
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/architectures/export/?format=csv&search=&tolerance_status= HTTP/1.1" 200 0
+Not Found: /api/v1/architectures/export/
+"GET /api/v1/architectures/export/?format=csv&search=&tolerance_status= HTTP/1.1" 404 25
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+Not Found: /api/v1/architectures/export/
+"GET /api/v1/architectures/export/?format=csv&search=&tolerance_status= HTTP/1.1" 404 25
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 234
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 445
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 760
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /admin/api/typeactif/? HTTP/1.1" 200 19215
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/typeactif/?categorie__id__exact=5bab3b4f-3524-4df6-a521-3bb0b8e688e2 HTTP/1.1" 200 17434
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/typeactif/?categorie__id__exact=076258c5-3945-4329-b75e-c75f26cbf137 HTTP/1.1" 200 17434
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+"GET /admin/api/typeactif/?categorie__id__exact=423c84a0-1546-47f2-986d-0faf4e594ce6 HTTP/1.1" 200 20123
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+Watching for file changes with StatReloader
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/categories-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 234
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 42, in list
+    serializer = self.get_serializer(page, many=True)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 60, in get_serializer_class
+    return CategorieActifListSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifListSerializer' is not defined
+"GET /api/v1/categories-actifs/ HTTP/1.1" 500 102917
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 42, in list
+    serializer = self.get_serializer(page, many=True)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 60, in get_serializer_class
+    return CategorieActifListSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifListSerializer' is not defined
+"GET /api/v1/categories-actifs/ HTTP/1.1" 500 102917
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 42, in list
+    serializer = self.get_serializer(page, many=True)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 60, in get_serializer_class
+    return CategorieActifListSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifListSerializer' is not defined
+"GET /api/v1/categories-actifs/ HTTP/1.1" 500 102933
+"GET /admin/api/categorieactif/ HTTP/1.1" 200 20241
+"GET /admin/jsi18n/ HTTP/1.1" 200 8634
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/serializers.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 42, in list
+    serializer = self.get_serializer(page, many=True)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 60, in get_serializer_class
+    return CategorieActifListSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifListSerializer' is not defined
+"GET /api/v1/categories-actifs/ HTTP/1.1" 500 102933
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 0
+"OPTIONS /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 0
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/v1/techniques/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/controles-nist/?page=1&page_size=10 HTTP/1.1" 200 52
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1425
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1425
+"GET /api/v1/actifs/ HTTP/1.1" 200 445
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489

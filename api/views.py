@@ -20,11 +20,13 @@ from .serializers import (
 )
 
 from .models import (
+    CategorieActif,
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
     ControleNIST, MenaceControle, Technique, MesureDeControle, 
     ImplementationMesure, LogActivite
 )
 from .serializers import (
+    CategorieActifListSerializer,
     TypeActifSerializer, ArchitectureListSerializer, ArchitectureSerializer,
     ArchitectureCreateSerializer, ActifListSerializer, ActifSerializer, ActifCreateSerializer,
     AttributSecuriteListSerializer, AttributSecuriteSerializer, AttributSecuriteCreateSerializer,
@@ -39,6 +41,250 @@ from .serializers import (
 from .utils import log_activity
 
 logger = logging.getLogger(__name__)
+
+
+
+# ============================================================================
+# NIVEAU 0: GESTION DES CATÉGORIES ET TYPES D'ACTIFS (NOUVEAUX)
+# ============================================================================
+
+class CategorieActifViewSet(viewsets.ModelViewSet):
+    """Gestion des catégories d'actifs"""
+    queryset = CategorieActif.objects.all().order_by('nom')
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['nom', 'code', 'description']
+    ordering_fields = ['nom', 'code', 'created_at']
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return CategorieActifListSerializer
+        elif self.action in ['create', 'update', 'partial_update']:
+            return CategorieActifCreateSerializer
+        return CategorieActifSerializer
+    
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_activity(
+            self.request.user, 
+            'CREATE', 
+            'CategorieActif', 
+            str(instance.id), 
+            {'nom': instance.nom, 'code': instance.code}
+        )
+    
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_activity(
+            self.request.user, 
+            'UPDATE', 
+            'CategorieActif', 
+            str(instance.id), 
+            {'nom': instance.nom, 'code': instance.code}
+        )
+    
+    def perform_destroy(self, instance):
+        if instance.types_actifs.exists():
+            raise serializers.ValidationError(
+                f"Impossible de supprimer cette catégorie car elle contient {instance.types_actifs.count()} type(s) d'actif"
+            )
+        
+        log_activity(
+            self.request.user, 
+            'DELETE', 
+            'CategorieActif', 
+            str(instance.id), 
+            {'nom': instance.nom}
+        )
+        instance.delete()
+    
+    @action(detail=True, methods=['get'])
+    def types_actifs(self, request, pk=None):
+        """Récupère tous les types d'actifs d'une catégorie"""
+        categorie = self.get_object()
+        types = categorie.types_actifs.all().order_by('nom')
+        
+        search = request.query_params.get('search')
+        if search:
+            types = types.filter(nom__icontains=search)
+        
+        serializer = TypeActifListSerializer(types, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def ajouter_type(self, request, pk=None):
+        """Ajoute un nouveau type d'actif à cette catégorie"""
+        categorie = self.get_object()
+        data = request.data.copy()
+        data['categorie'] = str(categorie.id)
+        
+        serializer = TypeActifCreateSerializer(data=data)
+        if serializer.is_valid():
+            type_actif = serializer.save()
+            log_activity(
+                request.user, 
+                'ADD_TYPE', 
+                'CategorieActif', 
+                str(categorie.id),
+                {'type_nom': type_actif.nom, 'type_code': type_actif.code}
+            )
+            return Response(
+                TypeActifSerializer(type_actif).data, 
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['get'])
+    def statistiques(self, request, pk=None):
+        """Statistiques détaillées pour une catégorie"""
+        categorie = self.get_object()
+        
+        stats = {
+            'categorie': CategorieActifListSerializer(categorie).data,
+            'total_types': categorie.types_actifs.count(),
+            'total_actifs': sum(
+                type_actif.actifs.count() 
+                for type_actif in categorie.types_actifs.all()
+            ),
+            'types_detail': []
+        }
+        
+        for type_actif in categorie.types_actifs.all():
+            actifs = type_actif.actifs.all()
+            stats['types_detail'].append({
+                'type': TypeActifListSerializer(type_actif).data,
+                'actifs_count': actifs.count(),
+                'actifs_par_criticite': dict(
+                    actifs.values('criticite')
+                    .annotate(count=Count('id'))
+                    .values_list('criticite', 'count')
+                ),
+                'cout_total': sum(float(actif.cout) for actif in actifs)
+            })
+        
+        return Response(stats)
+
+class TypeActifViewSet(viewsets.ModelViewSet):
+    """Gestion des types d'actifs"""
+    queryset = TypeActif.objects.select_related('categorie').all().order_by('categorie', 'nom')
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['categorie']
+    search_fields = ['nom', 'code', 'description', 'categorie__nom']
+    ordering_fields = ['nom', 'code', 'created_at']
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return TypeActifListSerializer
+        elif self.action in ['create', 'update', 'partial_update']:
+            return TypeActifCreateSerializer
+        return TypeActifSerializer
+    
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_activity(
+            self.request.user, 
+            'CREATE', 
+            'TypeActif', 
+            str(instance.id), 
+            {
+                'nom': instance.nom, 
+                'code': instance.code,
+                'categorie': instance.categorie.nom
+            }
+        )
+    
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_activity(
+            self.request.user, 
+            'UPDATE', 
+            'TypeActif', 
+            str(instance.id), 
+            {
+                'nom': instance.nom, 
+                'code': instance.code,
+                'categorie': instance.categorie.nom
+            }
+        )
+    
+    def perform_destroy(self, instance):
+        if instance.actifs.exists():
+            raise serializers.ValidationError(
+                f"Impossible de supprimer ce type car il est utilisé par {instance.actifs.count()} actif(s)"
+            )
+        
+        log_activity(
+            self.request.user, 
+            'DELETE', 
+            'TypeActif', 
+            str(instance.id), 
+            {'nom': instance.nom}
+        )
+        instance.delete()
+    
+    @action(detail=True, methods=['get'])
+    def actifs(self, request, pk=None):
+        """Récupère tous les actifs de ce type"""
+        type_actif = self.get_object()
+        actifs = type_actif.actifs.select_related('architecture', 'proprietaire').all()
+        
+        architecture = request.query_params.get('architecture')
+        criticite = request.query_params.get('criticite')
+        
+        if architecture:
+            actifs = actifs.filter(architecture_id=architecture)
+        if criticite:
+            actifs = actifs.filter(criticite=criticite)
+        
+        from .serializers import ActifListSerializer
+        serializer = ActifListSerializer(actifs, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def statistiques(self, request, pk=None):
+        """Statistiques pour un type d'actif"""
+        type_actif = self.get_object()
+        actifs = type_actif.actifs.all()
+        
+        stats = {
+            'type_actif': TypeActifSerializer(type_actif).data,
+            'total_actifs': actifs.count(),
+            'actifs_par_criticite': dict(
+                actifs.values('criticite')
+                .annotate(count=Count('id'))
+                .values_list('criticite', 'count')
+            ),
+            'actifs_par_architecture': dict(
+                actifs.values('architecture__nom')
+                .annotate(count=Count('id'))
+                .values_list('architecture__nom', 'count')
+            ),
+            'cout_total': sum(float(actif.cout) for actif in actifs),
+            'cout_moyen': (
+                sum(float(actif.cout) for actif in actifs) / actifs.count()
+                if actifs.count() > 0 else 0
+            )
+        }
+        
+        return Response(stats)
+    
+    @action(detail=False, methods=['get'])
+    def par_categorie(self, request):
+        """Types d'actifs groupés par catégorie"""
+        categories = CategorieActif.objects.prefetch_related('types_actifs').all()
+        
+        result = []
+        for categorie in categories:
+            result.append({
+                'categorie': CategorieActifListSerializer(categorie).data,
+                'types': TypeActifListSerializer(
+                    categorie.types_actifs.all(), 
+                    many=True
+                ).data
+            })
+        
+        return Response(result)
 
 # ============================================================================
 # NIVEAU 1: GESTION DES ARCHITECTURES
