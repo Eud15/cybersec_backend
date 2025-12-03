@@ -5,8 +5,131 @@ from decimal import Decimal
 from .models import (
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
     ControleNIST, MenaceControle, Technique, MesureDeControle, 
-    ImplementationMesure, LogActivite
+    ImplementationMesure, LogActivite, CategorieActif, TypeActif, 
 )
+
+
+
+
+# ============================================================================
+# SERIALIZERS POUR CATÉGORIES ET TYPES D'ACTIFS (NOUVEAUX)
+# ============================================================================
+
+class TypeActifSerializer(serializers.ModelSerializer):
+    categorie_nom = serializers.CharField(source='categorie.nom', read_only=True)
+    categorie_code = serializers.CharField(source='categorie.code', read_only=True)
+    actifs_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = TypeActif
+        fields = [
+            'id', 'categorie', 'categorie_nom', 'categorie_code',
+            'nom', 'code', 'description', 'actifs_count', 
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_actifs_count(self, obj):
+        return obj.actifs.count()
+
+class TypeActifCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeActif
+        fields = ['categorie', 'nom', 'code', 'description']
+    
+    def validate_code(self, value):
+        """Valide que le code est en majuscules et sans espaces"""
+        if not value.replace('-', '').replace('_', '').isalnum():
+            raise serializers.ValidationError(
+                "Le code ne doit contenir que des lettres, chiffres, tirets et underscores"
+            )
+        return value.upper()
+    
+    def validate(self, data):
+        """Valide l'unicité du nom dans la catégorie"""
+        categorie = data.get('categorie')
+        nom = data.get('nom')
+        
+        instance_id = self.instance.id if self.instance else None
+        
+        if TypeActif.objects.filter(
+            categorie=categorie, 
+            nom=nom
+        ).exclude(id=instance_id).exists():
+            raise serializers.ValidationError({
+                'nom': f'Un type avec le nom "{nom}" existe déjà dans cette catégorie'
+            })
+        
+        return data
+
+class TypeActifListSerializer(serializers.ModelSerializer):
+    categorie_nom = serializers.CharField(source='categorie.nom', read_only=True)
+    categorie_code = serializers.CharField(source='categorie.code', read_only=True)
+    actifs_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = TypeActif
+        fields = [
+            'id', 'categorie_nom', 'categorie_code', 'nom', 'code', 
+            'actifs_count', 'created_at'
+        ]
+        read_only_fields = ['id', 'created_at']
+    
+    def get_actifs_count(self, obj):
+        return obj.actifs.count()
+
+class CategorieActifSerializer(serializers.ModelSerializer):
+    types_actifs = TypeActifListSerializer(many=True, read_only=True)
+    types_count = serializers.SerializerMethodField()
+    actifs_total_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = CategorieActif
+        fields = [
+            'id', 'nom', 'code', 'description', 
+            'types_actifs', 'types_count', 'actifs_total_count',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_types_count(self, obj):
+        return obj.types_actifs.count()
+    
+    def get_actifs_total_count(self, obj):
+        """Compte tous les actifs de tous les types de cette catégorie"""
+        return sum(type_actif.actifs.count() for type_actif in obj.types_actifs.all())
+
+class CategorieActifCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategorieActif
+        fields = ['nom', 'code', 'description']
+    
+    def validate_code(self, value):
+        """Valide que le code est en majuscules et sans espaces"""
+        if not value.replace('-', '').replace('_', '').isalnum():
+            raise serializers.ValidationError(
+                "Le code ne doit contenir que des lettres, chiffres, tirets et underscores"
+            )
+        return value.upper()
+
+class CategorieActifListSerializer(serializers.ModelSerializer):
+    types_count = serializers.SerializerMethodField()
+    actifs_total_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = CategorieActif
+        fields = [
+            'id', 'nom', 'code', 'description',
+            'types_count', 'actifs_total_count', 'created_at'
+        ]
+        read_only_fields = ['id', 'created_at']
+    
+    def get_types_count(self, obj):
+        return obj.types_actifs.count()
+    
+    def get_actifs_total_count(self, obj):
+        return sum(type_actif.actifs.count() for type_actif in obj.types_actifs.all())
+    
 
 # ============================================================================
 # SERIALIZERS DE BASE
@@ -23,16 +146,7 @@ class UserSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return obj.get_full_name() or obj.username
 
-class TypeActifSerializer(serializers.ModelSerializer):
-    actifs_count = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = TypeActif
-        fields = ['id', 'nom', 'description', 'actifs_count', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
-    
-    def get_actifs_count(self, obj):
-        return obj.actifs.count()
+
 
 # ============================================================================
 # SERIALIZERS POUR MESURES DE CONTROLE ET IMPLEMENTATIONS
