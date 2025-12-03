@@ -119,7 +119,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-PYOMO_SOLVER_PATH = r"C:\Users\afdev\Music\BONMIN\bonmin.exe"  # Par défaut GLPK (open source)
+PYOMO_SOLVER_PATH = r"C:\BONMIN\bonmin.exe"  # Par défaut GLPK (open source)
 PYOMO_SOLVER_OPTIONS = {
     'timelimit': 300,  # 5 minutes maximum par optimisation
     'mipgap': 0.01,    # 1% de gap acceptable
