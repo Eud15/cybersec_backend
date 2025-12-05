@@ -26,7 +26,7 @@ from .models import (
     ImplementationMesure, LogActivite
 )
 from .serializers import (
-    CategorieActifListSerializer,
+    CategorieActifListSerializer, CategorieActifCreateSerializer,
     TypeActifSerializer, ArchitectureListSerializer, ArchitectureSerializer,
     ArchitectureCreateSerializer, ActifListSerializer, ActifSerializer, ActifCreateSerializer,
     AttributSecuriteListSerializer, AttributSecuriteSerializer, AttributSecuriteCreateSerializer,

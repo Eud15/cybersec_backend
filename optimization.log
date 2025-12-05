@@ -1277,3 +1277,17 @@ INFO 2025-10-10 22:37:59,021 optimization_service 13172 2588 Solveur bonmin init
 INFO 2025-10-10 22:37:59,027 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
 INFO 2025-10-10 22:38:23,317 optimization_service 13172 2588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
 INFO 2025-10-10 22:38:23,321 optimization_service 13172 2588 Optimisation de l'actif: Application ERP
+INFO 2025-12-04 19:17:54,146 optimization_service 12756 6968 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-12-04 19:17:54,156 optimization_service 12756 6968 Optimisation de l'actif: Base de données
+INFO 2025-12-04 20:17:01,392 optimization_service 12756 29536 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-12-04 20:17:01,398 optimization_service 12756 29536 Optimisation de l'actif: Base de données
+INFO 2025-12-04 20:17:01,532 optimization_service 12756 29536 Optimisation de l'actif: Routeur TPLink
+INFO 2025-12-04 20:17:01,543 optimization_service 12756 29536 Optimisation de l'actif: Application Métier
+INFO 2025-12-04 20:17:12,649 optimization_service 12756 14588 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-12-04 20:17:12,654 optimization_service 12756 14588 Optimisation de l'actif: Base de données
+INFO 2025-12-04 20:17:12,747 optimization_service 12756 14588 Optimisation de l'actif: Routeur TPLink
+INFO 2025-12-04 20:17:12,759 optimization_service 12756 14588 Optimisation de l'actif: Application Métier
+INFO 2025-12-04 20:17:21,206 optimization_service 12756 22444 Solveur bonmin initialisé et testé avec succès (mode: default, OS: Windows)
+INFO 2025-12-04 20:17:21,212 optimization_service 12756 22444 Optimisation de l'actif: Base de données
+INFO 2025-12-04 20:17:21,302 optimization_service 12756 22444 Optimisation de l'actif: Routeur TPLink
+INFO 2025-12-04 20:17:21,307 optimization_service 12756 22444 Optimisation de l'actif: Application Métier
