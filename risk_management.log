@@ -14263,3 +14263,102 @@ Watching for file changes with StatReloader
 "GET /api/v1/architectures/ HTTP/1.1" 200 369
 "GET /api/v1/architectures/ HTTP/1.1" 200 369
 "GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1425
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1425
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/architectures/ HTTP/1.1" 200 0
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"OPTIONS /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 0
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 0
+"OPTIONS /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 0
+"OPTIONS /api/v1/types-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/actifs/?architecture=e20bdb96-fd84-4c81-97c8-cd584500d616 HTTP/1.1" 200 445
+"GET /api/v1/architectures/e20bdb96-fd84-4c81-97c8-cd584500d616/ HTTP/1.1" 200 760
+"GET /api/v1/architectures/ HTTP/1.1" 200 369
+"GET /api/v1/dashboard/statistiques_globales/ HTTP/1.1" 200 489
+"OPTIONS /api/v1/categories-actifs/ HTTP/1.1" 200 0
+"GET /api/v1/types-actifs/ HTTP/1.1" 200 352
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1425
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 17, in create
+    serializer = self.get_serializer(data=request.data)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 63, in get_serializer_class
+    return CategorieActifCreateSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifCreateSerializer' is not defined. Did you mean: 'CategorieActifListSerializer'?
+"POST /api/v1/categories-actifs/ HTTP/1.1" 500 101944
+Internal Server Error: /api/v1/categories-actifs/
+Traceback (most recent call last):
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/mixins.py", line 17, in create
+    serializer = self.get_serializer(data=request.data)
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/env/lib/python3.13/site-packages/rest_framework/generics.py", line 112, in get_serializer
+    serializer_class = self.get_serializer_class()
+  File "/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py", line 63, in get_serializer_class
+    return CategorieActifCreateSerializer
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+NameError: name 'CategorieActifCreateSerializer' is not defined. Did you mean: 'CategorieActifListSerializer'?
+"POST /api/v1/categories-actifs/ HTTP/1.1" 500 101960
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/afdev/Documents/eudoxie/cybersec_backend/api/views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/v1/categories-actifs/ HTTP/1.1" 201 52
+"OPTIONS /api/v1/categories-actifs/undefined/ HTTP/1.1" 200 0
+Not Found: /api/v1/categories-actifs/undefined/
+"PUT /api/v1/categories-actifs/undefined/ HTTP/1.1" 404 25
+"GET /api/v1/categories-actifs/ HTTP/1.1" 200 1604
+"OPTIONS /api/v1/categories-actifs/299ecae7-e939-4d4d-959c-5968b9aafce7/ HTTP/1.1" 200 0
+"PUT /api/v1/categories-actifs/299ecae7-e939-4d4d-959c-5968b9aafce7/ HTTP/1.1" 200 55
