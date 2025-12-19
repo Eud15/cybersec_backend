@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum, Avg, Q
+from django.db import models 
 from django.utils import timezone
 from decimal import Decimal
 from django.db import transaction        
@@ -22,7 +23,7 @@ from .serializers import (
 from .models import (
     CategorieActif,
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
-    ControleNIST, MenaceControle, Technique, MesureDeControle, 
+     Technique, MesureDeControle, MenaceMesure,
     ImplementationMesure, LogActivite
 )
 from .serializers import (
@@ -30,13 +31,13 @@ from .serializers import (
     TypeActifSerializer, ArchitectureListSerializer, ArchitectureSerializer,
     ArchitectureCreateSerializer, ActifListSerializer, ActifSerializer, ActifCreateSerializer,
     AttributSecuriteListSerializer, AttributSecuriteSerializer, AttributSecuriteCreateSerializer,
-    AttributMenaceSerializer, AttributMenaceCreateSerializer,MenaceCreateSerializer,
-    MenaceControleSerializer, MenaceControleCreateSerializer,
-    TechniqueSerializer, TechniqueCreateSerializer,
+    AttributMenaceSerializer, AttributMenaceCreateSerializer,MenaceCreateSerializer, TypeActifListSerializer, TypeActifCreateSerializer,
+   
+    TechniqueSerializer, TechniqueCreateSerializer,TechniqueListSerializer,
     MesureDeControleSerializer, MesureDeControleCreateSerializer,
     ImplementationMesureSerializer, MenaceListSerializer, MenaceSerializer, 
-    ControleNISTListSerializer, ControleNISTSerializer,
-    LogActiviteSerializer, UserSerializer, DashboardStatsSerializer, MenaceSimpleCreateSerializer
+     CategorieActifSerializer,
+    LogActiviteSerializer, UserSerializer, DashboardStatsSerializer, MenaceSimpleCreateSerializer, MenaceMesureSerializer, MenaceMesureCreateSerializer
 )
 from .utils import log_activity
 
@@ -466,571 +467,163 @@ class ArchitectureViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def mesures_controle(self, request, pk=None):
-        """
-        Récupère toutes les mesures de contrôle disponibles pour cette architecture
-        avec leurs contrôles NIST, techniques, efficacité, nature et coûts
-        
-        GET /api/architectures/{id}/mesures_controle/
-        """
+        """Récupère toutes les mesures de contrôle pour une architecture"""
         architecture = self.get_object()
         
-        # Filtres optionnels
-        nature_mesure = request.query_params.get('nature_mesure')
-        efficacite_min = request.query_params.get('efficacite_min')
-        cout_max = request.query_params.get('cout_max')
-        search = request.query_params.get('search', '').strip()
+        # ÉTAPE 1: Récupérer les IDs des menaces liées à cette architecture
+        attributs_menaces = AttributMenace.objects.filter(
+            attribut_securite__actif__architecture=architecture
+        ).select_related(
+            'menace',
+            'attribut_securite',
+            'attribut_securite__actif'
+        ).values_list('menace_id', flat=True).distinct()
         
-        try:
-            # Récupérer toutes les mesures liées à cette architecture via le chemin complet
-            mesures_set = set()
-            mesures_details = []
-            
-            # Parcourir: Architecture -> Actifs -> Attributs -> Menaces -> Contrôles -> Techniques -> Mesures
-            actifs = architecture.actifs.prefetch_related(
-                'attributs_securite__menaces__menace__controles_nist__controle_nist__techniques__mesures_controle'
-            ).all()
-            
-            for actif in actifs:
-                for attribut in actif.attributs_securite.all():
-                    for attr_menace in attribut.menaces.all():
-                        menace = attr_menace.menace
-                        
-                        for menace_controle in menace.controles_nist.all():
-                            controle_nist = menace_controle.controle_nist
-                            
-                            for technique in controle_nist.techniques.all():
-                                for mesure in technique.mesures_controle.all():
-                                    
-                                    # Éviter les doublons
-                                    if mesure.id in mesures_set:
-                                        continue
-                                    
-                                    mesures_set.add(mesure.id)
-                                    
-                                    # Appliquer les filtres
-                                    if nature_mesure and mesure.nature_mesure != nature_mesure:
-                                        continue
-                                    
-                                    if efficacite_min and float(mesure.efficacite) < float(efficacite_min):
-                                        continue
-                                    
-                                    if cout_max and mesure.cout_total_3_ans > float(cout_max):
-                                        continue
-                                    
-                                    if search and search.lower() not in mesure.nom.lower() and search.lower() not in mesure.description.lower():
-                                        continue
-                                    
-                                    # Construire les détails de la mesure
-                                    mesure_detail = {
-                                        'id': str(mesure.id),
-                                        'mesure_code': mesure.mesure_code,
-                                        'nom': mesure.nom,
-                                        'description': mesure.description,
-                                        'nature_mesure': mesure.nature_mesure,
-                                        'efficacite': float(mesure.efficacite),
-                                        'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre),
-                                        'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel),
-                                        'cout_total_3_ans': mesure.cout_total_3_ans,
-                                        'duree_implementation': mesure.duree_implementation,
-                                        'ressources_necessaires': mesure.ressources_necessaires,
-                                        
-                                        # Technique associée
-                                        'technique': {
-                                            'id': str(technique.id),
-                                            'code': technique.technique_code,
-                                            'nom': technique.nom,
-                                            'type_technique': technique.type_technique,
-                                            'complexite': technique.complexite
-                                        },
-                                        
-                                        # Contrôle NIST associé
-                                        'controle_nist': {
-                                            'id': str(controle_nist.id),
-                                            'code': controle_nist.code,
-                                            'nom': controle_nist.nom,
-                                            'famille': controle_nist.famille,
-                                            'priorite': controle_nist.priorite
-                                        },
-                                        
-                                        # Menace(s) couvertes
-                                        'menaces_couvertes': [{
-                                            'id': str(menace.id),
-                                            'nom': menace.nom,
-                                            'type_menace': menace.type_menace,
-                                            'severite': menace.severite
-                                        }],
-                                        
-                                        # Contexte d'utilisation dans l'architecture
-                                        'contexte': {
-                                            'actif_nom': actif.nom,
-                                            'actif_criticite': actif.criticite,
-                                            'attribut_type': attribut.type_attribut
-                                        }
-                                    }
-                                    
-                                    mesures_details.append(mesure_detail)
-            
-            # Trier par efficacité décroissante par défaut
-            sort_by = request.query_params.get('sort_by', 'efficacite')
-            sort_order = request.query_params.get('sort_order', 'desc')
-            
-            reverse_sort = sort_order == 'desc'
-            
-            if sort_by == 'efficacite':
-                mesures_details.sort(key=lambda x: x['efficacite'], reverse=reverse_sort)
-            elif sort_by == 'cout':
-                mesures_details.sort(key=lambda x: x['cout_total_3_ans'], reverse=reverse_sort)
-            elif sort_by == 'nom':
-                mesures_details.sort(key=lambda x: x['nom'], reverse=reverse_sort)
-            elif sort_by == 'nature':
-                mesures_details.sort(key=lambda x: x['nature_mesure'], reverse=reverse_sort)
-            
-            # Statistiques
-            stats = {
-                'total_mesures': len(mesures_details),
-                'cout_total_mise_en_oeuvre': sum(m['cout_mise_en_oeuvre'] for m in mesures_details),
-                'cout_total_3_ans': sum(m['cout_total_3_ans'] for m in mesures_details),
-                'efficacite_moyenne': round(
-                    sum(m['efficacite'] for m in mesures_details) / len(mesures_details), 2
-                ) if mesures_details else 0,
-                'par_nature': {},
-                'par_famille_nist': {}
-            }
-            
-            # Grouper par nature
-            for mesure in mesures_details:
-                nature = mesure['nature_mesure']
-                if nature not in stats['par_nature']:
-                    stats['par_nature'][nature] = {
-                        'count': 0,
-                        'cout_total': 0,
-                        'efficacite_moyenne': []
-                    }
-                stats['par_nature'][nature]['count'] += 1
-                stats['par_nature'][nature]['cout_total'] += mesure['cout_total_3_ans']
-                stats['par_nature'][nature]['efficacite_moyenne'].append(mesure['efficacite'])
-            
-            # Calculer les moyennes d'efficacité par nature
-            for nature in stats['par_nature']:
-                efficacites = stats['par_nature'][nature]['efficacite_moyenne']
-                stats['par_nature'][nature]['efficacite_moyenne'] = round(
-                    sum(efficacites) / len(efficacites), 2
-                ) if efficacites else 0
-            
-            # Grouper par famille NIST
-            for mesure in mesures_details:
-                famille = mesure['controle_nist']['famille']
-                if famille not in stats['par_famille_nist']:
-                    stats['par_famille_nist'][famille] = 0
-                stats['par_famille_nist'][famille] += 1
-            
-            response_data = {
-                'architecture': {
-                    'id': str(architecture.id),
-                    'nom': architecture.nom
-                },
-                'statistiques': stats,
-                'mesures': mesures_details
-            }
-            
-            log_activity(
-                request.user, 
-                'VIEW_ARCHITECTURE_MEASURES', 
-                'Architecture', 
-                str(architecture.id),
-                {'mesures_count': len(mesures_details)}
-            )
-            
-            return Response(response_data, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            logger.error(f"Erreur lors de la récupération des mesures pour l'architecture {architecture.id}: {str(e)}")
-            return Response(
-                {'error': f'Erreur lors de la récupération des mesures: {str(e)}'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
+        # ÉTAPE 2: Récupérer les mesures liées à ces menaces avec FILTRES
+        mesures = MesureDeControle.objects.filter(
+            menaces_traitees__menace_id__in=attributs_menaces
+        ).select_related('technique').prefetch_related(
+            'menaces_traitees__menace'
+        ).distinct()
         
-        @action(detail=True, methods=['post'])
-        def optimiser(self, request, pk=None):
-            """
-            Optimise les mesures de contrôle pour minimiser les coûts
-            tout en respectant les contraintes de risque
-            """
-            architecture = self.get_object()
-            
-            try:
-                # Chemin vers le solveur BONMIN
-                solver_path = getattr(settings, 'BONMIN_SOLVER_PATH', r'C:\Users\afdev\Music\BONMIN\bonmin.exe')
-                
-                if not os.path.exists(solver_path):
-                    return Response({
-                        'error': 'Solveur BONMIN non trouvé. Veuillez configurer BONMIN_SOLVER_PATH dans settings.py'
-                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                
-                solver = pyo.SolverFactory('bonmin', executable=solver_path)
-                
-                # Résultats finaux
-                resultats_optimisation = {
-                    'architecture': architecture.nom,
-                    'actifs': [],
-                    'mesures_selectionnees': [],
-                    'cout_total': 0,
-                    'statistiques': {
-                        'actifs_traites': 0,
-                        'attributs_traites': 0,
-                        'menaces_traitees': 0,
-                        'mesures_proposees': 0
-                    }
-                }
-                
-                # Traiter chaque actif de l'architecture
-                actifs = architecture.actifs.all()
-                
-                for actif in actifs:
-                    resultats_actif = self._optimiser_actif(actif, solver)
-                    resultats_optimisation['actifs'].append(resultats_actif)
-                    resultats_optimisation['mesures_selectionnees'].extend(resultats_actif['mesures_selectionnees'])
-                    resultats_optimisation['cout_total'] += resultats_actif['cout_total']
-                    
-                    # Mise à jour des statistiques
-                    resultats_optimisation['statistiques']['actifs_traites'] += 1
-                    resultats_optimisation['statistiques']['attributs_traites'] += resultats_actif['attributs_traites']
-                    resultats_optimisation['statistiques']['menaces_traitees'] += resultats_actif['menaces_traitees']
-                
-                resultats_optimisation['statistiques']['mesures_proposees'] = len(resultats_optimisation['mesures_selectionnees'])
-                
-                # Log de l'activité
-                log_activity(
-                    request.user,
-                    'OPTIMISATION',
-                    'Architecture',
-                    str(architecture.id),
-                    {
-                        'actifs_traites': resultats_optimisation['statistiques']['actifs_traites'],
-                        'mesures_proposees': resultats_optimisation['statistiques']['mesures_proposees'],
-                        'cout_total': resultats_optimisation['cout_total']
-                    }
-                )
-                
-                return Response(resultats_optimisation)
-                
-            except Exception as e:
-                logger.error(f"Erreur lors de l'optimisation: {str(e)}")
-                return Response({
-                    'error': f'Erreur lors de l\'optimisation: {str(e)}'
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # ✅ FILTRES: Exclure les mesures avec nature, efficacité ou coût vides
+        mesures = mesures.exclude(
+            models.Q(nature_mesure__isnull=True) | models.Q(nature_mesure='') |
+            models.Q(efficacite__isnull=True) | models.Q(efficacite=0) |
+            models.Q(cout_mise_en_oeuvre__isnull=True)
+        )
         
-
-        @action(detail=True, methods=['post'])
-        def optimiser_mesures_securite(self, request, pk=None):
-            """
-            Lance l'optimisation automatique des mesures de sécurité pour cette architecture
+        mesures_data = []
+        menaces_dict = {}
+        attributs_dict = {}
+        
+        for mesure in mesures:
+            # Pour chaque mesure, trouver les menaces et attributs liés
+            for menace_mesure in mesure.menaces_traitees.filter(
+                menace_id__in=attributs_menaces
+            ).select_related('menace'):
+                
+                menace = menace_mesure.menace
+                
+                # Récupérer les attributs de sécurité impactés par cette menace dans cette architecture
+                attributs_securite_lies = AttributMenace.objects.filter(
+                    menace=menace,
+                    attribut_securite__actif__architecture=architecture
+                ).select_related('attribut_securite', 'attribut_securite__actif')
+                
+                for attr_menace in attributs_securite_lies:
+                    attribut = attr_menace.attribut_securite
+                    
+                    # Compteurs pour statistiques
+                    if menace.nom not in menaces_dict:
+                        menaces_dict[menace.nom] = 0
+                    menaces_dict[menace.nom] += 1
+                    
+                    attribut_key = f"{attribut.actif.nom} - {attribut.type_attribut}"
+                    if attribut_key not in attributs_dict:
+                        attributs_dict[attribut_key] = 0
+                    attributs_dict[attribut_key] += 1
+                    
+                    # ✅ Construction de l'objet mesure avec attribut de sécurité
+                    mesures_data.append({
+                        'id': str(mesure.id),
+                        'mesure_code': mesure.mesure_code,
+                        'nom': mesure.nom,
+                        'description': mesure.description,
+                        'nature_mesure': mesure.nature_mesure,
+                        'efficacite': float(mesure.efficacite) if mesure.efficacite else 0,
+                        'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre) if mesure.cout_mise_en_oeuvre else 0,
+                        'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel) if mesure.cout_maintenance_annuel else 0,
+                        'cout_total_3_ans': float(mesure.cout_total_3_ans) if mesure.cout_total_3_ans else 0,
+                        'duree_implementation': mesure.duree_implementation,
+                        'ressources_necessaires': mesure.ressources_necessaires,
+                        
+                        # ✅ Attribut de sécurité
+                        'attribut_securite': {
+                            'id': str(attribut.id),
+                            'type_attribut': attribut.type_attribut,
+                            'cout_compromission': float(attribut.cout_compromission),
+                            'priorite': attribut.priorite,
+                            'actif_nom': attribut.actif.nom,
+                            'actif_id': str(attribut.actif.id),
+                            'risque_financier_attribut': attribut.risque_financier_attribut,
+                            'niveau_alerte': attribut.niveau_alerte
+                        },
+                        
+                        # Technique
+                        'technique': {
+                            'id': str(mesure.technique.id),
+                            'code': mesure.technique.technique_code,
+                            'nom': mesure.technique.nom,
+                            'type': mesure.technique.type_technique,
+                            'complexite': mesure.technique.complexite,
+                            'famille': mesure.technique.famille,
+                            'priorite': mesure.technique.priorite
+                        },
+                        
+                        # Menace
+                        'menace': {
+                            'id': str(menace.id),
+                            'nom': menace.nom,
+                            'severite': menace.severite,
+                            'type_menace': menace.type_menace,
+                            'probabilite': float(attr_menace.probabilite),
+                            'impact': float(attr_menace.impact),
+                            'risque_financier': attr_menace.risque_financier
+                        },
+                        
+                        # Association menace-mesure
+                        'menace_mesure': {
+                            'efficacite': float(menace_mesure.efficacite) if menace_mesure.efficacite else 0,
+                            'statut_conformite': menace_mesure.statut_conformite
+                        }
+                    })
+        
+        # Statistiques enrichies
+        total_mesures = len(mesures_data)
+        efficacite_moyenne = round(
+            sum(m['efficacite'] for m in mesures_data) / total_mesures, 2
+        ) if total_mesures > 0 else 0
+        
+        cout_total_mise_en_oeuvre = sum(m['cout_mise_en_oeuvre'] for m in mesures_data)
+        cout_total_maintenance = sum(m['cout_maintenance_annuel'] for m in mesures_data)
+        cout_total_3_ans = sum(m['cout_total_3_ans'] for m in mesures_data)
+        
+        par_nature = {}
+        par_priorite_attribut = {}
+        par_niveau_alerte = {}
+        
+        for mesure in mesures_data:
+            # Par nature
+            nature = mesure['nature_mesure']
+            par_nature[nature] = par_nature.get(nature, 0) + 1
             
-            POST /api/architectures/{id}/optimiser_mesures_securite/
-            {
-                "budget_max": 50000.00,  // optionnel
-                "creer_plan_implementation": true,  // optionnel
-                "responsable_id": "uuid"  // optionnel
+            # Par priorité d'attribut
+            priorite = mesure['attribut_securite']['priorite']
+            par_priorite_attribut[priorite] = par_priorite_attribut.get(priorite, 0) + 1
+            
+            # Par niveau d'alerte
+            niveau_alerte = mesure['attribut_securite']['niveau_alerte']
+            par_niveau_alerte[niveau_alerte] = par_niveau_alerte.get(niveau_alerte, 0) + 1
+        
+        return Response({
+            'architecture_id': str(architecture.id),
+            'architecture_nom': architecture.nom,
+            'mesures': mesures_data,
+            'statistiques': {
+                'total_mesures': total_mesures,
+                'mesures_uniques': mesures.count(),
+                'efficacite_moyenne': efficacite_moyenne,
+                'cout_total_mise_en_oeuvre': round(cout_total_mise_en_oeuvre, 2),
+                'cout_total_maintenance': round(cout_total_maintenance, 2),
+                'cout_total_3_ans': round(cout_total_3_ans, 2),
+                'par_nature': par_nature,
+                'par_menace': menaces_dict,
+                'par_attribut': attributs_dict,
+                'par_priorite_attribut': par_priorite_attribut,
+                'par_niveau_alerte': par_niveau_alerte
             }
-            """
-            architecture = self.get_object()
-            
-            budget_max = request.data.get('budget_max')
-            creer_plan = request.data.get('creer_plan_implementation', False)
-            responsable_id = request.data.get('responsable_id')
-            
-            try:
-                # Initialiser le service d'optimisation
-                optimization_service = SecurityOptimizationService()
-                
-                # Lancer l'optimisation
-                result = optimization_service.optimize_architecture_security(
-                    architecture_id=str(architecture.id),
-                    budget_max=float(budget_max) if budget_max else None
-                )
-                
-                # Créer le plan d'implémentation si demandé
-                if creer_plan and result.get('successful_optimizations', 0) > 0:
-                    implementation_plan = optimization_service.create_implementation_plan(
-                        optimization_result=result,
-                        responsable_id=responsable_id
-                    )
-                    result['implementation_plan'] = implementation_plan
-                
-                # Log de l'activité
-                log_activity(
-                    request.user, 
-                    'ARCHITECTURE_OPTIMIZATION', 
-                    'Architecture', 
-                    str(architecture.id),
-                    {
-                        'budget_max': budget_max,
-                        'successful_optimizations': result.get('successful_optimizations', 0),
-                        'plan_created': creer_plan
-                    }
-                )
-                
-                return Response(result, status=status.HTTP_200_OK)
-                
-            except Exception as e:
-                logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture.id}: {str(e)}")
-                return Response(
-                    {'error': f'Erreur d\'optimisation: {str(e)}'}, 
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-
-        @action(detail=True, methods=['get'])
-        def analyse_optimisation_potentielle(self, request, pk=None):
-            """
-            Analyse le potentiel d'optimisation pour cette architecture sans lancer l'optimisation
-            
-            GET /api/architectures/{id}/analyse_optimisation_potentielle/
-            """
-            architecture = self.get_object()
-            
-            try:
-                # Collecter les statistiques pour l'analyse
-                actifs = architecture.actifs.all()
-                total_attributs = sum(actif.attributs_securite.count() for actif in actifs)
-                total_menaces = sum(
-                    attribut.menaces.count() 
-                    for actif in actifs 
-                    for attribut in actif.attributs_securite.all()
-                )
-                
-                # Compter les mesures disponibles
-                total_mesures_disponibles = 0
-                for actif in actifs:
-                    for attribut in actif.attributs_securite.all():
-                        for attr_menace in attribut.menaces.all():
-                            for menace_controle in attr_menace.menace.controles_nist.all():
-                                for technique in menace_controle.controle_nist.techniques.all():
-                                    total_mesures_disponibles += technique.mesures_controle.count()
-                
-                # Analyser le risque actuel
-                risque_total = architecture.risque_financier_total
-                tolerance = float(architecture.risque_tolere)
-                
-                # Estimation du potentiel d'optimisation
-                potentiel_optimisation = {
-                    'architecture': ArchitectureListSerializer(architecture).data,
-                    'statistiques': {
-                        'total_actifs': actifs.count(),
-                        'total_attributs': total_attributs,
-                        'total_menaces': total_menaces,
-                        'total_mesures_disponibles': total_mesures_disponibles
-                    },
-                    'analyse_risque': {
-                        'risque_financier_actuel': risque_total,
-                        'tolerance_risque': tolerance,
-                        'depassement': risque_total > tolerance,
-                        'marge_tolerance': max(0, tolerance - risque_total),
-                        'pourcentage_utilisation': min(100, (risque_total / tolerance) * 100) if tolerance > 0 else 100
-                    },
-                    'recommandations': {
-                        'optimisation_recommandee': risque_total > tolerance or total_menaces > 10,
-                        'budget_suggere': min(risque_total * 0.2, tolerance * 0.1),  # 20% du risque ou 10% de la tolérance
-                        'priorite': 'HAUTE' if risque_total > tolerance else 'MOYENNE' if risque_total > tolerance * 0.8 else 'BASSE'
-                    }
-                }
-                
-                return Response(potentiel_optimisation, status=status.HTTP_200_OK)
-                
-            except Exception as e:
-                logger.error(f"Erreur lors de l'analyse de l'architecture {architecture.id}: {str(e)}")
-                return Response(
-                    {'error': f'Erreur d\'analyse: {str(e)}'}, 
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-
-                
-            def _optimiser_actif(self, actif, solver):
-                """Optimise les mesures de contrôle pour un actif spécifique"""
-                resultats = {
-                    'actif_id': str(actif.id),
-                    'actif_nom': actif.nom,
-                    'attributs': [],
-                    'mesures_selectionnees': [],
-                    'cout_total': 0,
-                    'attributs_traites': 0,
-                    'menaces_traitees': 0
-                }
-                
-                # Traiter chaque attribut de sécurité
-                attributs = actif.attributs_securite.all()
-                
-                for attribut in attributs:
-                    resultats_attribut = self._optimiser_attribut(actif, attribut, solver)
-                    
-                    if resultats_attribut['succes']:
-                        resultats['attributs'].append(resultats_attribut)
-                        resultats['mesures_selectionnees'].extend(resultats_attribut['mesures_selectionnees'])
-                        resultats['cout_total'] += resultats_attribut['cout_total']
-                        resultats['attributs_traites'] += 1
-                        resultats['menaces_traitees'] += resultats_attribut['menaces_traitees']
-                
-                return resultats
-            
-            def _optimiser_attribut(self, actif, attribut, solver):
-                """Optimise les mesures pour un attribut de sécurité spécifique"""
-                resultats = {
-                    'attribut_id': str(attribut.id),
-                    'attribut_type': attribut.type_attribut,
-                    'succes': False,
-                    'mesures_selectionnees': [],
-                    'cout_total': 0,
-                    'menaces_traitees': 0,
-                    'message': ''
-                }
-                
-                try:
-                    # Récupérer toutes les associations menaces-attribut
-                    associations_menaces = attribut.menaces.select_related('menace').all()
-                    
-                    if not associations_menaces:
-                        resultats['message'] = 'Aucune menace associée'
-                        return resultats
-                    
-                    # Récupérer toutes les mesures via les contrôles NIST
-                    mesures_data = []
-                    mesure_ids = set()
-                    
-                    for assoc_menace in associations_menaces:
-                        menace = assoc_menace.menace
-                        
-                        # Parcourir les contrôles NIST de cette menace
-                        for menace_controle in menace.controles_nist.all():
-                            controle = menace_controle.controle_nist
-                            
-                            # Parcourir les techniques de ce contrôle
-                            for technique in controle.techniques.all():
-                                
-                                # Parcourir les mesures de cette technique
-                                for mesure in technique.mesures_controle.all():
-                                    if mesure.id not in mesure_ids:
-                                        mesure_ids.add(mesure.id)
-                                        mesures_data.append({
-                                            'id': mesure.id,
-                                            'nom': mesure.nom,
-                                            'cout': float(mesure.cout_mise_en_oeuvre),
-                                            'efficacite': float(mesure.efficacite) / 100.0,  # Convertir en décimal
-                                            'nature': mesure.nature_mesure
-                                        })
-                    
-                    if not mesures_data:
-                        resultats['message'] = 'Aucune mesure de contrôle disponible'
-                        return resultats
-                    
-                    # Créer le modèle Pyomo
-                    model = pyo.ConcreteModel()
-                    
-                    # Ensemble des mesures
-                    model.M = pyo.Set(initialize=[m['id'] for m in mesures_data])
-                    
-                    # Variables de décision binaires
-                    model.x = pyo.Var(model.M, domain=pyo.Boolean)
-                    
-                    # Fonction objectif : minimiser le coût total
-                    model.objective = pyo.Objective(
-                        expr=sum(
-                            next(m['cout'] for m in mesures_data if m['id'] == mesure_id) * model.x[mesure_id]
-                            for mesure_id in model.M
-                        ),
-                        sense=pyo.minimize
-                    )
-                    
-                    # Contraintes
-                    model.risk_constraint = pyo.ConstraintList()
-                    
-                    # Impact de l'attribut
-                    impact = float(attribut.cout_compromission)
-                    
-                    # Seuil de risque acceptable (à ajuster)
-                    seuil_local = float(impact) * 0.5  # 50% de l'impact
-                    
-                    # Traiter chaque menace
-                    menaces_uniques = set()
-                    proba_residuelles = []
-                    
-                    for assoc_menace in associations_menaces:
-                        menace = assoc_menace.menace
-                        
-                        if menace.id in menaces_uniques:
-                            continue
-                        
-                        menaces_uniques.add(menace.id)
-                        resultats['menaces_traitees'] += 1
-                        
-                        # Probabilité initiale de la menace
-                        initial_proba = float(assoc_menace.probabilite) / 100.0  # Convertir en décimal
-                        proba_res = initial_proba
-                        
-                        # Parcourir les mesures liées à cette menace
-                        for mesure_data in mesures_data:
-                            mesure_id = mesure_data['id']
-                            efficacite = mesure_data['efficacite']
-                            nature = mesure_data['nature']
-                            
-                            if nature in ['IS', 'IP']:
-                                # Réduction directe de la probabilité
-                                proba_res = proba_res * (1 - efficacite * model.x[mesure_id])
-                            
-                            elif nature == 'RA':
-                                # Variable auxiliaire pour RA
-                                var_aux_ra = pyo.Var(bounds=(0, 1))
-                                model.add_component(f'RA_aux_{mesure_id}_{menace.id}', var_aux_ra)
-                                model.risk_constraint.add(var_aux_ra >= efficacite * model.x[mesure_id])
-                                proba_res = proba_res * (1 - var_aux_ra)
-                            
-                            elif nature == 'RC':
-                                # Variable auxiliaire pour RC
-                                var_aux_rc = pyo.Var(bounds=(0, 1))
-                                model.add_component(f'RC_aux_{mesure_id}_{menace.id}', var_aux_rc)
-                                model.risk_constraint.add(
-                                    var_aux_rc <= efficacite * model.x[mesure_id] + (1 - model.x[mesure_id])
-                                )
-                                proba_res = proba_res * (1 - var_aux_rc)
-                        
-                        proba_residuelles.append(proba_res)
-                    
-                    # Contrainte de risque global
-                    if proba_residuelles:
-                        risque_local = (1 - pyo.prod(1 - p for p in proba_residuelles)) * impact
-                        model.risk_constraint.add(risque_local <= seuil_local)
-                    
-                    # Contrainte : au moins une mesure doit être sélectionnée
-                    if model.M:
-                        model.risk_constraint.add(sum(model.x[m] for m in model.M) >= 1)
-                    
-                    # Résoudre le modèle
-                    result = solver.solve(model, tee=False)
-                    
-                    # Vérifier la solution
-                    if result.solver.termination_condition == pyo.TerminationCondition.optimal:
-                        # Extraire les mesures sélectionnées
-                        for mesure_id in model.M:
-                            if pyo.value(model.x[mesure_id]) > 0.5:
-                                mesure_info = next(m for m in mesures_data if m['id'] == mesure_id)
-                                resultats['mesures_selectionnees'].append({
-                                    'mesure_id': str(mesure_id),
-                                    'mesure_nom': mesure_info['nom'],
-                                    'cout': mesure_info['cout'],
-                                    'efficacite': mesure_info['efficacite'] * 100,
-                                    'nature': mesure_info['nature']
-                                })
-                                resultats['cout_total'] += mesure_info['cout']
-                        
-                        resultats['succes'] = True
-                        resultats['message'] = f"{len(resultats['mesures_selectionnees'])} mesure(s) sélectionnée(s)"
-                    else:
-                        resultats['message'] = f"Pas de solution optimale trouvée: {result.solver.termination_condition}"
-                
-                except Exception as e:
-                    resultats['message'] = f"Erreur: {str(e)}"
-                    logger.error(f"Erreur optimisation attribut {attribut.id}: {str(e)}")
-                
-                return resultats
+        }, status=status.HTTP_200_OK)
 
 # ============================================================================
 # NIVEAU 2: GESTION DES ACTIFS
@@ -1448,7 +1041,7 @@ class AttributSecuriteViewSet(viewsets.ModelViewSet):
                     # Informations calculées
                     'calculs': {
                         'cout_compromission_attribut': float(attribut.cout_compromission),
-                        'formule_risque': f"{probabilite}% × {float(attribut.cout_compromission)}€",
+                        'formule_risque': f"{probabilite}% × {float(attribut.cout_compromission)}$",
                         'menace_creee': created
                     }
                 }
@@ -1661,7 +1254,8 @@ class AttributMenaceViewSet(viewsets.ModelViewSet):
                 {'error': f'Erreur interne: {str(e)}'}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
+    
+
     def update(self, request, *args, **kwargs):
         """Override de la méthode update standard pour gérer les champs de menace"""
         instance = self.get_object()
@@ -1736,6 +1330,7 @@ class AttributMenaceViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
+   
     @action(detail=True, methods=['get'])
     def plan_mitigation(self, request, pk=None):
         """Génère un plan de mitigation complet pour ce risque"""
@@ -1951,517 +1546,18 @@ class AttributMenaceViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# ============================================================================
-# NIVEAU 5: GESTION DES CONTROLES NIST
-# ============================================================================
 
-class MenaceControleViewSet(viewsets.ModelViewSet):
-    """Gestion des associations menace-contrôle NIST"""
-    queryset = MenaceControle.objects.select_related('menace', 'controle_nist').all()
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['menace', 'controle_nist', 'statut_conformite']
-    ordering_fields = ['efficacite', 'statut_conformite', 'created_at']
-    
-    def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return MenaceControleCreateSerializer
-        return MenaceControleSerializer
-    
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        log_activity(self.request.user, 'CREATE', 'MenaceControle', str(instance.id), 
-                    {'controle_code': instance.controle_nist.code})
-
-# ============================================================================
-# NIVEAU 6: GESTION DES TECHNIQUES
-# ============================================================================
-
-class TechniqueViewSet(viewsets.ModelViewSet):
-    """Gestion des techniques d'implémentation"""
-    queryset = Technique.objects.select_related('controle_nist').all()
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['controle_nist', 'type_technique', 'complexite']
-    search_fields = ['nom', 'description']
-    ordering_fields = ['nom', 'complexite', 'created_at']
-    
-    def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
-            return TechniqueCreateSerializer
-        return TechniqueSerializer
-    
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        log_activity(self.request.user, 'CREATE', 'Technique', str(instance.id), 
-                    {'nom': instance.nom})
-    
-    @action(detail=True, methods=['post'])
-    def ajouter_mesure(self, request, pk=None):
-        """Ajoute une nouvelle mesure de contrôle à cette technique"""
-        technique = self.get_object()
-        data = request.data.copy()
-        data['technique'] = str(technique.id)
-        
-        serializer = MesureDeControleCreateSerializer(data=data)
-        if serializer.is_valid():
-            mesure = serializer.save()
-            log_activity(request.user, 'ADD_MESURE', 'Technique', str(technique.id),
-                        {'mesure_nom': mesure.nom})
-            return Response(MesureDeControleSerializer(mesure).data, 
-                          status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, methods=['post'])
-    def import_techniques(self, request):
-        """Import de techniques depuis un fichier CSV/Excel"""
-        
-        if 'file' not in request.FILES:
-            return Response(
-                {'error': 'Fichier requis'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        uploaded_file = request.FILES['file']
-        
-        # Vérifier l'extension du fichier
-        file_extension = uploaded_file.name.split('.')[-1].lower()
-        if file_extension not in ['csv', 'xlsx', 'xls']:
-            return Response(
-                {'error': 'Format de fichier non supporté. Utilisez CSV, XLSX ou XLS'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        try:
-            # Import selon le type de fichier
-            if file_extension == 'csv':
-                import_result = self._import_techniques_from_csv(uploaded_file, request.user)
-            else:
-                import_result = self._import_techniques_from_excel(uploaded_file, request.user)
-            
-            return Response(import_result, status=status.HTTP_201_CREATED)
-            
-        except Exception as e:
-            logger.error(f"Erreur lors de l'import de techniques: {str(e)}")
-            return Response(
-                {'error': f'Erreur lors de l\'import: {str(e)}'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-    def _import_techniques_from_excel(self, excel_file, user):
-        """Import de techniques depuis un fichier Excel"""
-        import pandas as pd
-        
-        try:
-            # Lire le fichier Excel
-            df = pd.read_excel(excel_file)
-            
-            # Mapping flexible des noms de colonnes
-            column_mapping = {
-                # Variations pour 'controle_nist_code'
-                'controle_nist_code': 'controle_nist_code',
-                'controle_code': 'controle_nist_code',
-                'code_controle': 'controle_nist_code',
-                'controle': 'controle_nist_code',
-                
-                # Variations pour 'technique_code'
-                'technique_code': 'technique_code',
-                'code_technique': 'technique_code',
-                'code': 'technique_code',
-                
-                # Variations pour 'nom'
-                'nom': 'nom',
-                'name': 'nom',
-                'titre': 'nom',
-                
-                # Variations pour 'description'
-                'description': 'description',
-                'desc': 'description',
-                
-                # Variations pour 'type_technique'
-                'type_technique': 'type_technique',
-                'type': 'type_technique',
-                'categorie': 'type_technique',
-                
-                # Variations pour 'complexite'
-                'complexite': 'complexite',
-                'complexity': 'complexite',
-                'niveau': 'complexite'
-            }
-            
-            # Renommer les colonnes selon le mapping
-            df = df.rename(columns=column_mapping)
-            
-            # Vérifier les colonnes OBLIGATOIRES
-            required_columns = ['controle_nist_code', 'nom', 'technique_code']
-            missing_columns = [col for col in required_columns if col not in df.columns]
-            
-            if missing_columns:
-                return {
-                    'message': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}',
-                    'techniques_creees': 0,
-                    'erreurs': [{
-                        'ligne': 1,
-                        'erreur': f'Colonnes obligatoires manquantes: {", ".join(missing_columns)}. Colonnes disponibles: {", ".join(df.columns.tolist())}'
-                    }],
-                    'total_erreurs': 1,
-                    'colonnes_disponibles': df.columns.tolist(),
-                    'colonnes_obligatoires': required_columns
-                }
-            
-            techniques_creees = 0
-            techniques_errors = []
-            
-            # Nettoyer les données avant traitement
-            df = df.fillna('')  # Remplacer NaN par chaîne vide
-            
-            for index, row in df.iterrows():
-                try:
-                    # Récupérer les champs
-                    controle_nist_code = str(row.get('controle_nist_code', '')).strip()
-                    technique_code = str(row.get('technique_code', '')).strip()
-                    nom = str(row.get('nom', '')).strip()
-                    description = str(row.get('description', '')).strip()
-                    type_technique = str(row.get('type_technique', '')).strip()
-                    complexite = str(row.get('complexite', 'MOYEN')).strip()
-                    
-                    # Validation des champs obligatoires
-                    if not all([controle_nist_code, nom, technique_code]):
-                        techniques_errors.append({
-                            'ligne': index + 2,
-                            'erreur': 'Champs obligatoires manquants: controle_nist_code, nom, technique_code',
-                            'donnees_recues': {
-                                'controle_nist_code': controle_nist_code,
-                                'nom': nom,
-                                'technique_code': technique_code
-                            }
-                        })
-                        continue
-                    
-                    # Vérifier que le contrôle NIST existe
-                    try:
-                        controle_nist = ControleNIST.objects.get(code=controle_nist_code)
-                    except ControleNIST.DoesNotExist:
-                        techniques_errors.append({
-                            'ligne': index + 2,
-                            'erreur': f'Contrôle NIST avec le code {controle_nist_code} non trouvé'
-                        })
-                        continue
-                    
-                    # Traitement des champs optionnels
-                    # Description (optionnel)
-                    if not description or description.lower() in ['', 'nan', 'null', 'none']:
-                        description = f"Technique {technique_code}: {nom}"
-                    
-                    # Type de technique (optionnel)
-                    valid_types = ['TECHNIQUE', 'ADMINISTRATIF', 'PHYSIQUE', 'PREVENTIF', 'DETECTIF', 'CORRECTIF']
-                    if not type_technique or type_technique.upper() not in valid_types:
-                        type_technique = 'TECHNIQUE'  # Valeur par défaut
-                    else:
-                        type_technique = type_technique.upper()
-                    
-                    # Valider la complexité (optionnel)
-                    valid_complexites = ['FAIBLE', 'MOYEN', 'ELEVE']
-                    if not complexite or complexite.upper() not in valid_complexites:
-                        complexite = 'MOYEN'  # Valeur par défaut
-                    else:
-                        complexite = complexite.upper()
-                    
-                    # Préparer les données
-                    data = {
-                        'controle_nist': controle_nist,
-                        'technique_code': technique_code,  # Maintenant obligatoire
-                        'nom': nom,
-                        'description': description,  # Maintenant optionnel avec valeur par défaut
-                        'type_technique': type_technique,  # Maintenant optionnel avec valeur par défaut
-                        'complexite': complexite
-                    }
-                    
-                    # Vérifier l'unicité du technique_code (maintenant obligatoire)
-                    if Technique.objects.filter(technique_code=technique_code).exists():
-                        techniques_errors.append({
-                            'ligne': index + 2,
-                            'erreur': f'Une technique avec le code {technique_code} existe déjà'
-                        })
-                        continue
-                    
-                    # Créer la technique
-                    technique = Technique.objects.create(**data)
-                    techniques_creees += 1
-                    
-                    # Log de l'activité
-                    log_activity(
-                        user, 
-                        'IMPORT_TECHNIQUE', 
-                        'Technique', 
-                        str(technique.id),
-                        {
-                            'nom': technique.nom,
-                            'technique_code': technique.technique_code,
-                            'controle_nist_code': controle_nist_code,
-                            'ligne': index + 2
-                        }
-                    )
-                    
-                except Exception as e:
-                    techniques_errors.append({
-                        'ligne': index + 2,
-                        'erreur': str(e)
-                    })
-            
-            return {
-                'message': f'Import terminé: {techniques_creees} techniques créées',
-                'techniques_creees': techniques_creees,
-                'erreurs': techniques_errors,
-                'total_erreurs': len(techniques_errors),
-                'colonnes_detectees': df.columns.tolist()
-            }
-            
-        except Exception as e:
-            raise Exception(f'Erreur lors de la lecture du fichier Excel: {str(e)}')
-
-    def _import_techniques_from_csv(self, csv_file, user):
-        """Import de techniques depuis un fichier CSV"""
-        import csv
-        import io
-        
-        # Lire le fichier CSV
-        file_content = csv_file.read().decode('utf-8')
-        csv_data = csv.DictReader(io.StringIO(file_content))
-        
-        techniques_creees = 0
-        techniques_errors = []
-        
-        for row_num, row in enumerate(csv_data, start=2):
-            try:
-                # Nettoyer et valider les données
-                controle_nist_code = row.get('controle_nist_code', '').strip()
-                technique_code = row.get('technique_code', '').strip()
-                nom = row.get('nom', '').strip()
-                description = row.get('description', '').strip()
-                type_technique = row.get('type_technique', '').strip()
-                complexite = row.get('complexite', 'MOYEN').strip()
-                
-                # Validation des champs requis
-                if not all([controle_nist_code, nom, technique_code]):
-                    techniques_errors.append({
-                        'ligne': row_num,
-                        'erreur': 'Champs requis manquants: controle_nist_code, nom, technique_code'
-                    })
-                    continue
-                
-                # Vérifier que le contrôle NIST existe
-                try:
-                    controle_nist = ControleNIST.objects.get(code=controle_nist_code)
-                except ControleNIST.DoesNotExist:
-                    techniques_errors.append({
-                        'ligne': row_num,
-                        'erreur': f'Contrôle NIST avec le code {controle_nist_code} non trouvé'
-                    })
-                    continue
-                
-                # Vérifier l'unicité du technique_code (maintenant obligatoire)
-                if Technique.objects.filter(technique_code=technique_code).exists():
-                    techniques_errors.append({
-                        'ligne': row_num,
-                        'erreur': f'Une technique avec le code {technique_code} existe déjà'
-                    })
-                    continue
-                
-                # Traitement des champs optionnels
-                # Description (optionnel)
-                if not description or description.lower() in ['', 'nan', 'null', 'none']:
-                    description = f"Technique {technique_code}: {nom}"
-                
-                # Type de technique (optionnel)
-                valid_types = ['TECHNIQUE', 'ADMINISTRATIF', 'PHYSIQUE', 'PREVENTIF', 'DETECTIF', 'CORRECTIF']
-                if not type_technique or type_technique.upper() not in valid_types:
-                    type_technique = 'TECHNIQUE'  # Valeur par défaut
-                else:
-                    type_technique = type_technique.upper()
-                
-                # Complexité (optionnel)
-                valid_complexites = ['FAIBLE', 'MOYEN', 'ELEVE']
-                if not complexite or complexite.upper() not in valid_complexites:
-                    complexite = 'MOYEN'  # Valeur par défaut
-                else:
-                    complexite = complexite.upper()
-                
-                # Créer la technique
-                data = {
-                    'controle_nist': controle_nist,
-                    'technique_code': technique_code,  # Maintenant obligatoire
-                    'nom': nom,
-                    'description': description,
-                    'type_technique': type_technique,
-                    'complexite': complexite
-                }
-                
-                technique = Technique.objects.create(**data)
-                techniques_creees += 1
-                
-                # Log de l'activité
-                log_activity(
-                    user, 
-                    'IMPORT_TECHNIQUE', 
-                    'Technique', 
-                    str(technique.id),
-                    {'nom': technique.nom, 'ligne': row_num}
-                )
-                
-            except Exception as e:
-                techniques_errors.append({
-                    'ligne': row_num,
-                    'erreur': str(e)
-                })
-        
-        return {
-            'message': f'Import terminé: {techniques_creees} techniques créées',
-            'techniques_creees': techniques_creees,
-            'erreurs': techniques_errors,
-            'total_erreurs': len(techniques_errors)
-        }
-
-    @action(detail=False, methods=['get'])
-    def export_techniques(self, request):
-        """Export des techniques au format CSV ou Excel"""
-        
-        format_export = request.query_params.get('format', 'csv').lower()
-        controle_nist = request.query_params.get('controle_nist')
-        type_technique = request.query_params.get('type_technique')
-        complexite = request.query_params.get('complexite')
-        
-        # Filtrer les techniques
-        queryset = self.get_queryset()
-        if controle_nist:
-            queryset = queryset.filter(controle_nist__code=controle_nist)
-        if type_technique:
-            queryset = queryset.filter(type_technique=type_technique)
-        if complexite:
-            queryset = queryset.filter(complexite=complexite)
-        
-        if format_export == 'excel' or format_export == 'xlsx':
-            return self._export_techniques_to_excel(queryset)
-        else:
-            return self._export_techniques_to_csv(queryset)
-
-    def _export_techniques_to_csv(self, queryset):
-        """Export techniques au format CSV"""
-        import csv
-        from django.http import HttpResponse
-        
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="techniques.csv"'
-        
-        writer = csv.writer(response)
-        writer.writerow([
-            'controle_nist_code', 'technique_code', 'nom', 'description', 
-            'type_technique', 'complexite'
-        ])
-        
-        for technique in queryset:
-            writer.writerow([
-                technique.controle_nist.code,
-                technique.technique_code or '',
-                technique.nom,
-                technique.description,
-                technique.type_technique,
-                technique.complexite
-            ])
-        
-        return response
-
-    def _export_techniques_to_excel(self, queryset):
-        """Export techniques au format Excel"""
-        import pandas as pd
-        from django.http import HttpResponse
-        import io
-        
-        # Préparer les données
-        data = []
-        for technique in queryset:
-            data.append({
-                'controle_nist_code': technique.controle_nist.code,
-                'technique_code': technique.technique_code or '',
-                'nom': technique.nom,
-                'description': technique.description,
-                'type_technique': technique.type_technique,
-                'complexite': technique.complexite
-            })
-        
-        df = pd.DataFrame(data)
-        
-        # Créer le fichier Excel en mémoire
-        excel_buffer = io.BytesIO()
-        df.to_excel(excel_buffer, index=False, engine='openpyxl')
-        excel_buffer.seek(0)
-        
-        response = HttpResponse(
-            excel_buffer.read(),
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = 'attachment; filename="techniques.xlsx"'
-        
-        return response
-
-    @action(detail=False, methods=['get'])
-    def template_import_techniques(self, request):
-        """Génère un template Excel pour l'import de techniques"""
-        import pandas as pd
-        from django.http import HttpResponse
-        import io
-        
-        # Données d'exemple
-        template_data = [
-            {
-                'controle_nist_code': 'AC-02',
-                'technique_code': 'AC-02.1',
-                'nom': 'Automated System Account Management',
-                'description': 'Utiliser des mécanismes automatisés pour supporter la gestion des comptes système',
-                'type_technique': 'TECHNIQUE',
-                'complexite': 'MOYEN'
-            },
-            {
-                'controle_nist_code': 'AC-02',
-                'technique_code': 'AC-02.2',
-                'nom': 'Removal of Temporary Emergency Accounts',
-                'description': '',  # Description vide pour montrer que c'est optionnel
-                'type_technique': '',  # Type vide pour montrer que c'est optionnel
-                'complexite': ''  # Complexité vide pour montrer que c'est optionnel
-            },
-            {
-                'controle_nist_code': 'SI-04',
-                'technique_code': 'SI-04.1',
-                'nom': 'System-wide Intrusion Detection System',
-                'description': 'Déployer un système de détection d\'intrusion à l\'échelle du système',
-                'type_technique': 'DETECTIF',
-                'complexite': 'ELEVE'
-            }
-        ]
-        
-        df = pd.DataFrame(template_data)
-        
-        # Créer le fichier Excel en mémoire
-        excel_buffer = io.BytesIO()
-        df.to_excel(excel_buffer, index=False, engine='openpyxl')
-        excel_buffer.seek(0)
-        
-        response = HttpResponse(
-            excel_buffer.read(),
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = 'attachment; filename="template_import_techniques.xlsx"'
-        
-        return response
 
 
 # ============================================================================
 # NIVEAU 7: GESTION DES MESURES DE CONTROLE
 # ============================================================================
 
+
+
 class MesureDeControleViewSet(viewsets.ModelViewSet):
     """Gestion des mesures de contrôle"""
-    queryset = MesureDeControle.objects.select_related('technique', 'technique__controle_nist').all()
+    queryset = MesureDeControle.objects.select_related('technique').all()
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['technique', 'nature_mesure']
@@ -2783,12 +1879,7 @@ class MesureDeControleViewSet(viewsets.ModelViewSet):
                     continue
                 
                 # Vérifier l'unicité du mesure_code
-                if MesureDeControle.objects.filter(mesure_code=mesure_code).exists():
-                    mesures_errors.append({
-                        'ligne': row_num,
-                        'erreur': f'Une mesure avec le code {mesure_code} existe déjà'
-                    })
-                    continue
+                
                 
                 # Traitement des champs optionnels
                 description = row.get('description', '').strip()
@@ -3079,23 +2170,222 @@ class ImplementationMesureViewSet(viewsets.ModelViewSet):
 # CATALOGUES GLOBAUX
 # ============================================================================
 
-class TypeActifViewSet(viewsets.ModelViewSet):
-    """Gestion des types d'actifs"""
-    queryset = TypeActif.objects.all().order_by('nom')
-    serializer_class = TypeActifSerializer
+# ============================================================================
+# MODIFIER: TechniqueViewSet
+# ============================================================================
+
+class TechniqueViewSet(viewsets.ModelViewSet):
+    """Gestion des techniques d'implémentation (maintenant indépendantes)"""
+    queryset = Technique.objects.all()
     permission_classes = [IsAuthenticated]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['nom', 'description']
-    ordering_fields = ['nom', 'created_at']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['type_technique', 'complexite', 'famille', 'priorite']
+    search_fields = ['technique_code', 'nom', 'description']
+    ordering_fields = ['technique_code', 'nom', 'complexite', 'created_at']
+    
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return TechniqueListSerializer
+        elif self.action in ['create', 'update', 'partial_update']:
+            return TechniqueCreateSerializer
+        return TechniqueSerializer
+    
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_activity(self.request.user, 'CREATE', 'Technique', str(instance.id), 
+                    {'technique_code': instance.technique_code, 'nom': instance.nom})
+    
+    @action(detail=True, methods=['get'])
+    def menaces_traitees(self, request, pk=None):
+        """Liste les menaces traitées par cette technique via ses mesures"""
+        technique = self.get_object()
+        
+        # Récupérer toutes les menaces traitées via les mesures
+        menaces_ids = set()
+        mesures_par_menace = {}
+        
+        for mesure in technique.mesures_controle.all():
+            for menace_mesure in mesure.menaces_traitees.select_related('menace').all():
+                menace = menace_mesure.menace
+                if menace.id not in menaces_ids:
+                    menaces_ids.add(menace.id)
+                    mesures_par_menace[menace.id] = []
+                
+                mesures_par_menace[menace.id].append({
+                    'mesure_code': mesure.mesure_code,
+                    'mesure_nom': mesure.nom,
+                    'efficacite': float(menace_mesure.efficacite),
+                    'statut_conformite': menace_mesure.statut_conformite
+                })
+        
+        # Récupérer les objets menaces
+        menaces = Menace.objects.filter(id__in=menaces_ids)
+        
+        result = []
+        for menace in menaces:
+            result.append({
+                'menace': MenaceListSerializer(menace).data,
+                'mesures': mesures_par_menace[menace.id]
+            })
+        
+        return Response({
+            'technique': TechniqueListSerializer(technique).data,
+            'menaces_traitees': result,
+            'total_menaces': len(result)
+        })
+
+
+    @action(detail=False, methods=['post'])
+    def import_techniques(self, request):
+        """
+        Importe des techniques depuis un fichier Excel
+        Format attendu: capability_id, attack_object_id, attack_object_name
+        """
+        if 'file' not in request.FILES:
+            return Response(
+                {'error': 'Aucun fichier fourni'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        file = request.FILES['file']
+        
+        # Vérifier le type de fichier
+        if not file.name.endswith(('.xlsx', '.xls', '.csv')):
+            return Response(
+                {'error': 'Format de fichier non supporté. Utilisez Excel (.xlsx, .xls) ou CSV'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Lire le fichier selon le format
+            if file.name.endswith('.csv'):
+                import csv
+                import io
+                decoded_file = file.read().decode('utf-8')
+                csv_reader = csv.DictReader(io.StringIO(decoded_file))
+                data = list(csv_reader)
+            else:
+                # Excel
+                import pandas as pd
+                df = pd.read_excel(file)
+                data = df.to_dict('records')
+            
+            # Compteurs
+            created_count = 0
+            skipped_count = 0
+            error_count = 0
+            errors = []
+            
+            # Traiter chaque ligne
+            with transaction.atomic():
+                for idx, row in enumerate(data, start=1):
+                    try:
+                        # Extraire les données
+                        # Le fichier contient: capability_id (ex: CM-03), attack_object_id (ex: T1666), attack_object_name
+                        technique_code = row.get('attack_object_id', '').strip()
+                        nom = row.get('attack_object_name', '').strip()
+                        famille = row.get('capability_id', '').strip()  # On utilise capability_id comme famille
+                        
+                        if not technique_code or not nom:
+                            skipped_count += 1
+                            errors.append(f"Ligne {idx}: Données manquantes (technique_code ou nom)")
+                            continue
+                        
+                        # Vérifier si la technique existe déjà
+                        if Technique.objects.filter(technique_code=technique_code).exists():
+                            skipped_count += 1
+                            errors.append(f"Ligne {idx}: Technique {technique_code} existe déjà")
+                            continue
+                        
+                        # Déterminer le type de technique basé sur le code
+                        # Les techniques MITRE ATT&CK sont généralement de type TECHNIQUE
+                        type_technique = 'TECHNIQUE'
+                        
+                        # Déterminer la complexité basée sur le code (heuristique simple)
+                        # Les techniques avec sous-techniques (ex: T1556.009) sont souvent plus complexes
+                        if '.' in technique_code:
+                            complexite = 'ELEVE'
+                        else:
+                            complexite = 'MOYEN'
+                        
+                        # Déterminer la priorité basée sur le code famille (capability_id)
+                        # AC (Access Control), IA (Identification and Authentication) = P1
+                        # SC (System and Communications Protection), SI (System and Information Integrity) = P1
+                        # CM (Configuration Management), CP (Contingency Planning) = P2
+                        # Autres = P2
+                        priorite_mapping = {
+                            'AC': 'P1', 'IA': 'P1', 'SC': 'P1', 'SI': 'P1',
+                            'CM': 'P2', 'CP': 'P2', 'MA': 'P2', 'PE': 'P2',
+                            'PS': 'P3', 'SA': 'P3', 'CA': 'P3'
+                        }
+                        priorite = priorite_mapping.get(famille.split('-')[0] if '-' in famille else famille, 'P2')
+                        
+                        # Créer la technique
+                        Technique.objects.create(
+                            technique_code=technique_code,
+                            nom=nom,
+                            description=f"Technique MITRE ATT&CK: {nom}",
+                            type_technique=type_technique,
+                            complexite=complexite,
+                            famille=famille,
+                            priorite=priorite
+                        )
+                        
+                        created_count += 1
+                        
+                    except Exception as e:
+                        error_count += 1
+                        errors.append(f"Ligne {idx}: {str(e)}")
+            
+            # Préparer la réponse
+            response_data = {
+                'success': True,
+                'message': f'Import terminé: {created_count} créées, {skipped_count} ignorées, {error_count} erreurs',
+                'details': {
+                    'created': created_count,
+                    'skipped': skipped_count,
+                    'errors': error_count,
+                    'total_processed': len(data)
+                }
+            }
+            
+            if errors and len(errors) <= 50:  # Limiter le nombre d'erreurs retournées
+                response_data['error_details'] = errors[:50]
+            
+            log_activity(
+                request.user,
+                'IMPORT_TECHNIQUES',
+                'Technique',
+                '',
+                {
+                    'created': created_count,
+                    'skipped': skipped_count,
+                    'errors': error_count
+                }
+            )
+            
+            return Response(response_data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Erreur lors de l'import: {str(e)}")
+            return Response(
+                {'error': f'Erreur lors de l\'import: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
 
 # api/views.py - Modification de MenaceViewSet
 
+
+# ============================================================================
+# NOUVEAU VIEWSET: MenaceMesureViewSet
+# ============================================================================
+
 class MenaceViewSet(viewsets.ModelViewSet):
-    """Catalogue global des menaces avec vue consolidée"""
-    # Optimiser le queryset pour précharger les relations nécessaires
+    """Catalogue global des menaces avec mesures directement liées"""
     queryset = Menace.objects.prefetch_related(
         'attributs_impactes__attribut_securite__actif__architecture',
-        'controles_nist__controle_nist__techniques__mesures_controle'
+        'mesures_controle__mesure_controle__technique'
     ).all().order_by('nom')
     
     permission_classes = [IsAuthenticated]
@@ -3111,512 +2401,300 @@ class MenaceViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'])
     def vue_complete(self, request, pk=None):
-        """Vue complète d'une menace avec tous ses contrôles, techniques et mesures"""
+        """
+        Vue complète d'une menace avec toutes ses relations:
+        - Mesures de contrôle (via MenaceMesure)
+        - Techniques (via mesures)
+        - Attributs impactés
+        - Métriques consolidées
+        
+        GET /api/v1/menaces/{id}/vue_complete/
+        """
         menace = self.get_object()
-        serializer = MenaceSerializer(menace)
-        return Response(serializer.data)
-    
-    def perform_create(self, serializer):
-        instance = serializer.save()
-        log_activity(self.request.user, 'CREATE', 'Menace', str(instance.id), 
-                    {'nom': instance.nom})
-    
-    def perform_update(self, serializer):
-        instance = serializer.save()
-        log_activity(self.request.user, 'UPDATE', 'Menace', str(instance.id), 
-                    {'nom': instance.nom})
-    
-    @action(detail=True, methods=['post'])
-    def definir_contexte_principal(self, request, pk=None):
-        """Définit le contexte principal (attribut de sécurité) pour cette menace"""
-        menace = self.get_object()
-        attribut_securite_id = request.data.get('attribut_securite_id')
         
-        if not attribut_securite_id:
-            return Response(
-                {'error': 'attribut_securite_id requis'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Serializer de base avec relations préchargées
+        menace_data = MenaceSerializer(menace).data
         
-        try:
-            attribut = AttributSecurite.objects.get(id=attribut_securite_id)
-        except AttributSecurite.DoesNotExist:
-            return Response(
-                {'error': 'Attribut de sécurité non trouvé'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+        # Enrichir avec les techniques et mesures organisées
+        techniques_map = {}
+        mesures_list = []
         
-        # Vérifier que cette menace est bien associée à cet attribut
-        if not menace.attributs_impactes.filter(attribut_securite=attribut).exists():
-            return Response(
-                {'error': 'Cette menace n\'est pas associée à cet attribut de sécurité'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        menace.attribut_securite_principal = attribut
-        menace.save()
-        
-        log_activity(
-            request.user, 
-            'SET_MAIN_CONTEXT', 
-            'Menace', 
-            str(menace.id),
-            {
-                'attribut_securite_id': str(attribut.id),
-                'actif_nom': attribut.actif.nom,
-                'architecture_nom': attribut.actif.architecture.nom
+        # Parcourir les MenaceMesure pour extraire techniques et mesures
+        for menace_mesure in menace.mesures_controle.select_related(
+            'mesure_controle__technique'
+        ).prefetch_related(
+            'mesure_controle__technique__mesures_controle'
+        ).all():
+            
+            mesure = menace_mesure.mesure_controle
+            technique = mesure.technique
+            
+            # Ajouter la technique si pas encore présente
+            if technique.technique_code not in techniques_map:
+                techniques_map[technique.technique_code] = {
+                    'id': str(technique.id),
+                    'technique_code': technique.technique_code,
+                    'nom': technique.nom,
+                    'description': technique.description,
+                    'type_technique': technique.type_technique,
+                    'complexite': technique.complexite,
+                    'famille': technique.famille,
+                    'priorite': technique.priorite,
+                    'efficacite': float(mesure.efficacite) if mesure.efficacite else 0,
+                    'mesures_count': 0,
+                    'mesures_controle': []
+                }
+            
+            # Ajouter la mesure à la technique
+            mesure_data = {
+                'id': str(mesure.id),
+                'mesure_code': mesure.mesure_code,
+                'nom': mesure.nom,
+                'description': mesure.description,
+                'nature_mesure': mesure.nature_mesure,
+                'efficacite': float(mesure.efficacite) if mesure.efficacite else 0,
+                'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre) if mesure.cout_mise_en_oeuvre else 0,
+                'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel) if mesure.cout_maintenance_annuel else 0,
+                'cout_total_3_ans': mesure.cout_total_3_ans,
+                'duree_implementation': mesure.duree_implementation,
+                'ressources_necessaires': mesure.ressources_necessaires,
+                'technique_code': technique.technique_code,
+                'technique_nom': technique.nom,
+                'created_at': mesure.created_at.isoformat() if mesure.created_at else None
             }
+            
+            techniques_map[technique.technique_code]['mesures_controle'].append(mesure_data)
+            techniques_map[technique.technique_code]['mesures_count'] += 1
+            mesures_list.append(mesure_data)
+        
+        # Convertir le dictionnaire de techniques en liste
+        techniques_list = list(techniques_map.values())
+        
+        # Calculer l'efficacité moyenne des techniques
+        for technique in techniques_list:
+            if technique['mesures_count'] > 0:
+                efficacite_moyenne = sum(
+                    m['efficacite'] for m in technique['mesures_controle']
+                ) / technique['mesures_count']
+                technique['efficacite'] = round(efficacite_moyenne, 2)
+        
+        # Ajouter les données enrichies
+        menace_data['techniques'] = techniques_list
+        menace_data['mesures_controle_detaillees'] = mesures_list
+        
+        # Métriques consolidées
+        menace_data['metriques'] = {
+            'total_techniques': len(techniques_list),
+            'total_mesures': len(mesures_list),
+            'efficacite_moyenne': round(
+                sum(m['efficacite'] for m in mesures_list) / len(mesures_list), 2
+            ) if mesures_list else 0,
+            'cout_total_mise_en_oeuvre': sum(
+                m['cout_mise_en_oeuvre'] for m in mesures_list
+            ),
+            'cout_total_3_ans': sum(
+                m['cout_total_3_ans'] for m in mesures_list
+            )
+        }
+        
+        # Log de l'activité
+        log_activity(
+            request.user,
+            'VIEW_MENACE_COMPLETE',
+            'Menace',
+            str(menace.id),
+            {'nom': menace.nom}
         )
         
-        return Response({
-            'message': 'Contexte principal défini avec succès',
-            'contexte': menace.contexte_hierarchique_complet
-        })
+        return Response(menace_data, status=status.HTTP_200_OK)
     
-   
-
     @action(detail=True, methods=['get'])
-    def controles_disponibles(self, request, pk=None):
-        """Recherche les contrôles NIST disponibles (non encore associés à cette menace)"""
+    def mesures_disponibles(self, request, pk=None):
+        """Recherche les mesures de contrôle disponibles (non encore associées à cette menace)"""
         menace = self.get_object()
         
         search_query = request.query_params.get('search', '').strip()
-        famille = request.query_params.get('famille', '')
-        priorite = request.query_params.get('priorite', '')
+        technique_code = request.query_params.get('technique_code', '')
+        nature_mesure = request.query_params.get('nature_mesure', '')
         
-        # Récupérer les IDs des contrôles déjà associés
-        controles_associes_ids = MenaceControle.objects.filter(menace=menace).values_list('controle_nist_id', flat=True)
+        # Récupérer les IDs des mesures déjà associées
+        mesures_associees_ids = MenaceMesure.objects.filter(menace=menace).values_list('mesure_controle_id', flat=True)
         
-        # Rechercher dans tous les contrôles NIST
-        queryset = ControleNIST.objects.exclude(id__in=controles_associes_ids)
+        # Rechercher dans toutes les mesures
+        queryset = MesureDeControle.objects.exclude(id__in=mesures_associees_ids)
         
         # Filtres de recherche
         if search_query:
             queryset = queryset.filter(
-                Q(code__icontains=search_query) |
+                Q(mesure_code__icontains=search_query) |
                 Q(nom__icontains=search_query) |
                 Q(description__icontains=search_query)
             )
         
-        if famille:
-            queryset = queryset.filter(famille=famille)
+        if technique_code:
+            queryset = queryset.filter(technique__technique_code=technique_code)
         
-        if priorite:
-            queryset = queryset.filter(priorite=priorite)
+        if nature_mesure:
+            queryset = queryset.filter(nature_mesure=nature_mesure)
         
         # Limiter les résultats pour la performance
-        queryset = queryset.order_by('code')[:20]
+        queryset = queryset.select_related('technique').order_by('mesure_code')[:20]
         
         # Sérialiser les résultats
-        controles_data = []
-        for controle in queryset:
-            controles_data.append({
-                'id': controle.id,
-                'code': controle.code,
-                'nom': controle.nom,
-                'famille': controle.famille,
-                'priorite': controle.priorite,
-                'description': controle.description[:200] + '...' if len(controle.description) > 200 else controle.description,
-                'techniques_count': controle.techniques.count(),
-                'created_at': controle.created_at.isoformat()
+        mesures_data = []
+        for mesure in queryset:
+            mesures_data.append({
+                'id': mesure.id,
+                'mesure_code': mesure.mesure_code,
+                'nom': mesure.nom,
+                'nature_mesure': mesure.nature_mesure,
+                'efficacite': float(mesure.efficacite),
+                'cout_total_3_ans': mesure.cout_total_3_ans,
+                'description': mesure.description[:200] + '...' if len(mesure.description) > 200 else mesure.description,
+                'technique': {
+                    'code': mesure.technique.technique_code,
+                    'nom': mesure.technique.nom,
+                    'famille': mesure.technique.famille
+                },
+                'created_at': mesure.created_at.isoformat()
             })
         
         return Response({
-            'results': controles_data,
-            'count': len(controles_data),
+            'results': mesures_data,
+            'count': len(mesures_data),
             'menace_id': str(menace.id),
             'search_query': search_query
         })
-    @action(detail=True, methods=['get'])
-    def contextes_disponibles(self, request, pk=None):
-        """Retourne tous les contextes (attributs de sécurité) disponibles pour cette menace"""
-        menace = self.get_object()
-        
-        contextes = []
-        for attr_menace in menace.attributs_impactes.select_related(
-            'attribut_securite__actif__architecture'
-        ).all():
-            attribut = attr_menace.attribut_securite
-            contextes.append({
-                'attribut_securite_id': str(attribut.id),
-                'est_principal': attribut == menace.attribut_securite_principal,
-                'architecture': {
-                    'id': str(attribut.actif.architecture.id),
-                    'nom': attribut.actif.architecture.nom
-                },
-                'actif': {
-                    'id': str(attribut.actif.id),
-                    'nom': attribut.actif.nom,
-                    'criticite': attribut.actif.criticite
-                },
-                'attribut': {
-                    'type_attribut': attribut.type_attribut,
-                    'priorite': attribut.priorite
-                },
-                'risque_dans_ce_contexte': {
-                    'probabilite': float(attr_menace.probabilite),
-                    'impact': float(attr_menace.impact),
-                    'cout_impact': float(attr_menace.cout_impact),
-                    'risque_financier': attr_menace.risque_financier,
-                    'niveau_risque': attr_menace.niveau_risque
-                }
-            })
-        
-        return Response({
-            'menace': menace.nom,
-            'contexte_principal_actuel': menace.contexte_hierarchique_complet,
-            'contextes_disponibles': contextes,
-            'total_contextes': len(contextes)
-        })
-    
-    @action(detail=False, methods=['get'])
-    def par_architecture(self, request):
-        """Menaces groupées par architecture"""
-        architecture_id = request.query_params.get('architecture_id')
-        
-        if architecture_id:
-            # Filtrer par architecture spécifique
-            menaces = self.get_queryset().filter(
-                attribut_securite_principal__actif__architecture_id=architecture_id
-            )
-        else:
-            # Toutes les menaces avec contexte
-            menaces = self.get_queryset().filter(
-                attribut_securite_principal__isnull=False
-            )
-        
-        # Grouper par architecture
-        menaces_par_arch = {}
-        for menace in menaces:
-            arch_nom = menace.architecture_nom
-            if arch_nom not in menaces_par_arch:
-                menaces_par_arch[arch_nom] = {
-                    'architecture': {
-                        'id': str(menace.architecture_id),
-                        'nom': arch_nom
-                    },
-                    'menaces': [],
-                    'risque_financier_total': 0
-                }
-            
-            menace_data = MenaceListSerializer(menace).data
-            menaces_par_arch[arch_nom]['menaces'].append(menace_data)
-            menaces_par_arch[arch_nom]['risque_financier_total'] += menace.risque_financier_calculated or 0
-        
-        # Convertir en liste et trier
-        result = list(menaces_par_arch.values())
-        result.sort(key=lambda x: x['risque_financier_total'], reverse=True)
-        
-        return Response({
-            'architectures_trouvees': len(result),
-            'menaces_par_architecture': result
-        })
-    
-    @action(detail=False, methods=['get']) 
-    def sans_contexte(self, request):
-        """Menaces sans contexte principal défini"""
-        menaces_sans_contexte = self.get_queryset().filter(
-            attribut_securite_principal__isnull=True
-        )
-        
-        # Proposer des contextes pour chaque menace
-        suggestions = []
-        for menace in menaces_sans_contexte:
-            attr_menaces = menace.attributs_impactes.select_related(
-                'attribut_securite__actif__architecture'
-            ).order_by('-risque_financier')
-            
-            if attr_menaces.exists():
-                # Proposer l'attribut avec le plus haut risque
-                meilleur_attr = attr_menaces.first().attribut_securite
-                suggestions.append({
-                    'menace': MenaceListSerializer(menace).data,
-                    'contexte_suggere': {
-                        'attribut_securite_id': str(meilleur_attr.id),
-                        'architecture_nom': meilleur_attr.actif.architecture.nom,
-                        'actif_nom': meilleur_attr.actif.nom,
-                        'type_attribut': meilleur_attr.type_attribut,
-                        'risque_financier': attr_menaces.first().risque_financier
-                    },
-                    'autres_contextes': len(attr_menaces) - 1
-                })
-        
-        return Response({
-            'total_sans_contexte': len(suggestions),
-            'suggestions_contexte': suggestions
-        })
-
-class ControleNISTViewSet(viewsets.ModelViewSet):
-    """Catalogue global des contrôles NIST"""
-    queryset = ControleNIST.objects.all().order_by('code')
-    permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['famille', 'priorite']
-    search_fields = ['code', 'nom', 'description']
-    ordering_fields = ['code', 'nom', 'priorite', 'created_at']
-    
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return ControleNISTListSerializer
-        return ControleNISTSerializer
     
     @action(detail=True, methods=['post'])
-    def ajouter_technique(self, request, pk=None):
-        """Ajoute une nouvelle technique à ce contrôle NIST"""
-        controle = self.get_object()
-        data = request.data.copy()
-        data['controle_nist'] = str(controle.id)
+    def associer_mesure(self, request, pk=None):
+        """Associe une mesure de contrôle à cette menace"""
+        menace = self.get_object()
+        mesure_controle_id = request.data.get('mesure_controle_id')
+        efficacite = request.data.get('efficacite', 0)
+        statut_conformite = request.data.get('statut_conformite', 'NON_CONFORME')
+        commentaires = request.data.get('commentaires', '')
         
-        serializer = TechniqueCreateSerializer(data=data)
-        if serializer.is_valid():
-            technique = serializer.save()
-            log_activity(request.user, 'ADD_TECHNIQUE', 'ControleNIST', str(controle.id),
-                        {'technique_nom': technique.nom})
-            return Response(TechniqueSerializer(technique).data, 
-                          status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=False, methods=['post'])
-    def import_controles(self, request):
-        """Import de contrôles NIST depuis un fichier CSV/Excel"""
-        
-        if 'file' not in request.FILES:
+        if not mesure_controle_id:
             return Response(
-                {'error': 'Fichier requis'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        
-        uploaded_file = request.FILES['file']
-        
-        # Vérifier l'extension du fichier
-        file_extension = uploaded_file.name.split('.')[-1].lower()
-        if file_extension not in ['csv', 'xlsx', 'xls']:
-            return Response(
-                {'error': 'Format de fichier non supporté. Utilisez CSV, XLSX ou XLS'}, 
+                {'error': 'mesure_controle_id requis'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         try:
-            # Import selon le type de fichier
-            if file_extension == 'csv':
-                import_result = self._import_from_csv(uploaded_file, request.user)
-            else:
-                import_result = self._import_from_excel(uploaded_file, request.user)
-            
-            return Response(import_result, status=status.HTTP_201_CREATED)
-            
-        except Exception as e:
-            logger.error(f"Erreur lors de l'import de contrôles NIST: {str(e)}")
+            mesure = MesureDeControle.objects.get(id=mesure_controle_id)
+        except MesureDeControle.DoesNotExist:
             return Response(
-                {'error': f'Erreur lors de l\'import: {str(e)}'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {'error': 'Mesure de contrôle non trouvée'},
+                status=status.HTTP_404_NOT_FOUND
             )
-
-    def _import_from_csv(self, csv_file, user):
-        """Import depuis un fichier CSV"""
-        import csv
-        import io
         
-        # Lire le fichier CSV
-        file_content = csv_file.read().decode('utf-8')
-        csv_data = csv.DictReader(io.StringIO(file_content))
+        # Vérifier si l'association existe déjà
+        if MenaceMesure.objects.filter(menace=menace, mesure_controle=mesure).exists():
+            return Response(
+                {'error': 'Cette mesure est déjà associée à cette menace'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        controles_crees = 0
-        controles_errors = []
-        
-        for row_num, row in enumerate(csv_data, start=2):
-            try:
-                # Nettoyer et valider les données
-                data = {
-                    'code': row.get('code', '').strip(),
-                    'nom': row.get('nom', '').strip(),
-                    'famille': row.get('famille', '').strip(),
-                    'priorite': row.get('priorite', 'P2').strip(),
-                    'description': row.get('description', '').strip()
-                }
-                
-                # Validation des champs requis
-                if not all([data['code'], data['nom'], data['famille'], data['description']]):
-                    controles_errors.append({
-                        'ligne': row_num,
-                        'erreur': 'Champs requis manquants: code, nom, famille, description'
-                    })
-                    continue
-                
-                # Vérifier que le contrôle n'existe pas déjà
-                if ControleNIST.objects.filter(code=data['code']).exists():
-                    controles_errors.append({
-                        'ligne': row_num,
-                        'erreur': f'Le contrôle avec le code {data["code"]} existe déjà'
-                    })
-                    continue
-                
-                # Créer le contrôle NIST
-                controle = ControleNIST.objects.create(**data)
-                controles_crees += 1
-                
-                # Log de l'activité
-                log_activity(
-                    user, 
-                    'IMPORT_CONTROLE', 
-                    'ControleNIST', 
-                    str(controle.id),
-                    {'code': controle.code, 'ligne': row_num}
-                )
-                
-            except Exception as e:
-                controles_errors.append({
-                    'ligne': row_num,
-                    'erreur': str(e)
-                })
-        
-        return {
-            'message': f'Import terminé: {controles_crees} contrôles créés',
-            'controles_crees': controles_crees,
-            'erreurs': controles_errors,
-            'total_erreurs': len(controles_errors)
-        }
-
-    def _import_from_excel(self, excel_file, user):
-        """Import depuis un fichier Excel"""
-        import pandas as pd
-        
-        try:
-            # Lire le fichier Excel
-            df = pd.read_excel(excel_file)
-            
-            controles_crees = 0
-            controles_errors = []
-            
-            for index, row in df.iterrows():
-                try:
-                    # Nettoyer et valider les données
-                    data = {
-                        'code': str(row.get('code', '')).strip(),
-                        'nom': str(row.get('nom', '')).strip(),
-                        'famille': str(row.get('famille', '')).strip(),
-                        'priorite': str(row.get('priorite', 'P2')).strip(),
-                        'description': str(row.get('description', '')).strip()
-                    }
-                    
-                    # Validation des champs requis
-                    if not all([data['code'], data['nom'], data['famille'], data['description']]):
-                        controles_errors.append({
-                            'ligne': index + 2,  # +2 car index commence à 0 et ligne 1 = header
-                            'erreur': 'Champs requis manquants: code, nom, famille, description'
-                        })
-                        continue
-                    
-                    # Vérifier que le contrôle n'existe pas déjà
-                    if ControleNIST.objects.filter(code=data['code']).exists():
-                        controles_errors.append({
-                            'ligne': index + 2,
-                            'erreur': f'Le contrôle avec le code {data["code"]} existe déjà'
-                        })
-                        continue
-                    
-                    # Créer le contrôle NIST
-                    controle = ControleNIST.objects.create(**data)
-                    controles_crees += 1
-                    
-                    # Log de l'activité
-                    log_activity(
-                        user, 
-                        'IMPORT_CONTROLE', 
-                        'ControleNIST', 
-                        str(controle.id),
-                        {'code': controle.code, 'ligne': index + 2}
-                    )
-                    
-                except Exception as e:
-                    controles_errors.append({
-                        'ligne': index + 2,
-                        'erreur': str(e)
-                    })
-            
-            return {
-                'message': f'Import terminé: {controles_crees} contrôles créés',
-                'controles_crees': controles_crees,
-                'erreurs': controles_errors,
-                'total_erreurs': len(controles_errors)
-            }
-            
-        except Exception as e:
-            raise Exception(f'Erreur lors de la lecture du fichier Excel: {str(e)}')
-
-    @action(detail=False, methods=['get'])
-    def export_controles(self, request):
-        """Export des contrôles NIST au format CSV ou Excel"""
-        
-        format_export = request.query_params.get('format', 'csv').lower()
-        famille = request.query_params.get('famille')
-        priorite = request.query_params.get('priorite')
-        
-        # Filtrer les contrôles
-        queryset = self.get_queryset()
-        if famille:
-            queryset = queryset.filter(famille=famille)
-        if priorite:
-            queryset = queryset.filter(priorite=priorite)
-        
-        if format_export == 'excel' or format_export == 'xlsx':
-            return self._export_to_excel(queryset)
-        else:
-            return self._export_to_csv(queryset)
-
-    def _export_to_csv(self, queryset):
-        """Export au format CSV"""
-        import csv
-        from django.http import HttpResponse
-        
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="controles_nist.csv"'
-        
-        writer = csv.writer(response)
-        writer.writerow(['code', 'nom', 'famille', 'priorite', 'description'])
-        
-        for controle in queryset:
-            writer.writerow([
-                controle.code,
-                controle.nom,
-                controle.famille,
-                controle.priorite,
-                controle.description
-            ])
-        
-        return response
-
-    def _export_to_excel(self, queryset):
-        """Export au format Excel"""
-        import pandas as pd
-        from django.http import HttpResponse
-        import io
-        
-        # Préparer les données
-        data = []
-        for controle in queryset:
-            data.append({
-                'code': controle.code,
-                'nom': controle.nom,
-                'famille': controle.famille,
-                'priorite': controle.priorite,
-                'description': controle.description
-            })
-        
-        df = pd.DataFrame(data)
-        
-        # Créer le fichier Excel en mémoire
-        excel_buffer = io.BytesIO()
-        df.to_excel(excel_buffer, index=False, engine='openpyxl')
-        excel_buffer.seek(0)
-        
-        response = HttpResponse(
-            excel_buffer.read(),
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        # Créer l'association
+        association = MenaceMesure.objects.create(
+            menace=menace,
+            mesure_controle=mesure,
+            efficacite=efficacite,
+            statut_conformite=statut_conformite,
+            commentaires=commentaires
         )
-        response['Content-Disposition'] = 'attachment; filename="controles_nist.xlsx"'
         
-        return response
+        log_activity(
+            request.user,
+            'ASSOCIATE_MEASURE',
+            'Menace',
+            str(menace.id),
+            {'mesure_nom': mesure.nom}
+        )
+        
+        serializer = MenaceMesureSerializer(association)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    
+class MenaceMesureViewSet(viewsets.ModelViewSet):
+    """Gestion des associations directes menace-mesure"""
+    queryset = MenaceMesure.objects.select_related('menace', 'mesure_controle').all()
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['menace', 'mesure_controle', 'statut_conformite']
+    ordering_fields = ['efficacite', 'statut_conformite', 'created_at']
+    
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return MenaceMesureCreateSerializer
+        return MenaceMesureSerializer
+    
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_activity(self.request.user, 'CREATE', 'MenaceMesure', str(instance.id), 
+                    {'mesure_code': instance.mesure_controle.mesure_code})
+    
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_activity(self.request.user, 'UPDATE', 'MenaceMesure', str(instance.id), 
+                    {'mesure_code': instance.mesure_controle.mesure_code})
+    
+    @action(detail=False, methods=['post'])
+    def associer_menace_mesure(self, request):
+        """Associe une mesure de contrôle à une menace"""
+        menace_id = request.data.get('menace_id')
+        mesure_controle_id = request.data.get('mesure_controle_id')
+        efficacite = request.data.get('efficacite', 0)
+        statut_conformite = request.data.get('statut_conformite', 'NON_CONFORME')
+        commentaires = request.data.get('commentaires', '')
+        
+        if not all([menace_id, mesure_controle_id]):
+            return Response(
+                {'error': 'menace_id et mesure_controle_id requis'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            menace = Menace.objects.get(id=menace_id)
+            mesure = MesureDeControle.objects.get(id=mesure_controle_id)
+        except (Menace.DoesNotExist, MesureDeControle.DoesNotExist) as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        # Vérifier si l'association existe déjà
+        if MenaceMesure.objects.filter(menace=menace, mesure_controle=mesure).exists():
+            return Response(
+                {'error': 'Cette association existe déjà'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Créer l'association
+        association = MenaceMesure.objects.create(
+            menace=menace,
+            mesure_controle=mesure,
+            efficacite=efficacite,
+            statut_conformite=statut_conformite,
+            commentaires=commentaires
+        )
+        
+        log_activity(
+            request.user,
+            'ASSOCIATE_MENACE_MESURE',
+            'MenaceMesure',
+            str(association.id),
+            {
+                'menace_nom': menace.nom,
+                'mesure_nom': mesure.nom
+            }
+        )
+        
+        serializer = MenaceMesureSerializer(association)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 
 
 
@@ -3656,7 +2734,7 @@ class DashboardViewSet(viewsets.ViewSet):
             'total_actifs': Actif.objects.count(),
             'total_attributs': AttributSecurite.objects.count(),
             'total_menaces': Menace.objects.count(),
-            'total_controles_nist': ControleNIST.objects.count(),
+            
             'total_techniques': Technique.objects.count(),
             'total_mesures': MesureDeControle.objects.count(),
         }
@@ -3674,19 +2752,14 @@ class DashboardViewSet(viewsets.ViewSet):
         })
         
         # Conformité
-        menace_controles = MenaceControle.objects.all()
-        if menace_controles:
-            conformes = menace_controles.filter(statut_conformite='CONFORME').count()
-            taux_conformite = (conformes / menace_controles.count()) * 100
-        else:
-            taux_conformite = 0
+       
         
         implementations_en_cours = ImplementationMesure.objects.filter(
             statut__in=['PLANIFIE', 'EN_COURS']
         ).count()
         
         stats.update({
-            'taux_conformite_moyen': round(taux_conformite, 2),
+            
             'implementations_en_cours': implementations_en_cours
         })
         
@@ -3790,80 +2863,71 @@ class OptimizationViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def optimize_architecture(self, request):
         """
-        Optimise la sélection de mesures de sécurité pour une architecture complète
-        
+        Optimise la sécurité d'une architecture
         POST /api/optimization/optimize_architecture/
-        {
-            "architecture_id": "uuid",
-            "budget_max": 50000.00,  // optionnel
-            "include_implementation_plan": true,  // optionnel
-            "responsable_id": "uuid"  // optionnel
-        }
         """
-        serializer = OptimizationRequestSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        data = serializer.validated_data
-        architecture_id = str(data['architecture_id'])
-        budget_max = float(data['budget_max']) if data.get('budget_max') else None
-        
         try:
-            # Vérifier que l'architecture existe
-            try:
-                architecture = Architecture.objects.get(id=architecture_id)
-            except Architecture.DoesNotExist:
+            architecture_id = request.data.get('architecture_id')
+            budget_max = request.data.get('budget_max')
+            include_implementation_plan = request.data.get('include_implementation_plan', False)
+            
+            if not architecture_id:
                 return Response(
-                    {'error': f'Architecture {architecture_id} non trouvée'}, 
-                    status=status.HTTP_404_NOT_FOUND
+                    {'error': 'architecture_id requis'}, 
+                    status=status.HTTP_400_BAD_REQUEST
                 )
             
-            # Lancer l'optimisation
-            optimization_result = self.optimization_service.optimize_architecture_security(
+            # Convertir budget_max en Decimal si fourni
+            if budget_max is not None:
+                try:
+                    budget_max = Decimal(str(budget_max))
+                except:
+                    return Response(
+                        {'error': 'budget_max doit être un nombre valide'}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
+            # Exécuter l'optimisation
+            from api.services.optimization_service import SecurityOptimizationService
+            
+            optimizer = SecurityOptimizationService()
+            result = optimizer.optimize_architecture_security(
                 architecture_id=architecture_id,
                 budget_max=budget_max
             )
             
-            # Gérer les erreurs d'optimisation
-            if 'error' in optimization_result:
-                return Response(
-                    {'error': optimization_result['error']}, 
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            # ✅ CORRECTION : Convertir les Decimal en float pour la sérialisation JSON
+            def convert_decimals(obj):
+                """Convertit récursivement les Decimal en float"""
+                if isinstance(obj, dict):
+                    return {key: convert_decimals(value) for key, value in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_decimals(item) for item in obj]
+                elif isinstance(obj, Decimal):
+                    return float(obj)
+                else:
+                    return obj
+            
+            result = convert_decimals(result)
+            
+            # Créer plan d'implémentation si demandé
+            if include_implementation_plan and result.get('global_optimization'):
+                implementation_result = optimizer.create_implementation_plan(
+                    optimization_result=result,
+                    responsable_id=request.user.id if request.user.is_authenticated else None
                 )
+                result['implementation_plan'] = implementation_result
             
-            # Créer un plan d'implémentation si demandé
-            if data.get('include_implementation_plan', False):
-                implementation_plan = self.optimization_service.create_implementation_plan(
-                    optimization_result=optimization_result,
-                    responsable_id=str(data['responsable_id']) if data.get('responsable_id') else None
-                )
-                optimization_result['implementation_plan'] = implementation_plan
-            
-            # Log de l'activité
-            log_activity(
-                request.user, 
-                'OPTIMIZATION_RUN', 
-                'Architecture', 
-                architecture_id,
-                {
-                    'optimization_type': optimization_result.get('optimization_type'),
-                    'budget_max': budget_max,
-                    'successful_optimizations': optimization_result.get('successful_optimizations', 0),
-                    'total_cost': optimization_result.get('recommended_measures', {}).get('total_cost', 0)
-                }
-            )
-            
-            # Sérialiser la réponse
-            response_serializer = FullOptimizationResultSerializer(optimization_result)
-            return Response(response_serializer.data, status=status.HTTP_200_OK)
-            
+            return Response(result, status=status.HTTP_200_OK)
+        
         except Exception as e:
-            logger.error(f"Erreur lors de l'optimisation de l'architecture {architecture_id}: {str(e)}")
+            logger.error(f"Erreur lors de l'optimisation: {str(e)}", exc_info=True)
             return Response(
-                {'error': f'Erreur interne: {str(e)}'}, 
+                {'error': str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-    
+
+
     @action(detail=False, methods=['post'])
     def optimize_attribut(self, request):
         """

@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'risk_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='gestion_risques_nist'),
+        'NAME': config('DB_NAME', default='securite'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='eudoxie'),
         'HOST': config('DB_HOST', default='localhost'),

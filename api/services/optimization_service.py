@@ -1,667 +1,630 @@
 # api/services/optimization_service.py
+
+import logging
 import pyomo.environ as pyo
 from decimal import Decimal
 from django.db import transaction
-import logging
-from typing import List, Dict, Optional
-import platform
-import sys
-import io
-from django.conf import settings 
-
-from ..models import (
-    Architecture, Actif, AttributSecurite, AttributMenace, 
-    MenaceControle, MesureDeControle, ImplementationMesure
-)
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
 class SecurityOptimizationService:
-    """Service d'optimisation pour la sélection de mesures de sécurité"""
-    
-    def __init__(self, solver_path: Optional[str] = None):
-        """
-        Initialise le service d'optimisation avec support Windows amélioré
-        et test silencieux des solveurs
-        """
-        self.solver_path = solver_path or getattr(settings, 'PYOMO_SOLVER_PATH', None)
+    def __init__(self):
+        """Initialise le service d'optimisation avec détection automatique du solveur"""
         self.solver = None
         self.solver_name = None
         self.solver_io = None
         
-        is_windows = platform.system() == 'Windows'
+        # Liste des solveurs à essayer dans l'ordre de préférence
+        solvers_to_try = [
+            ('glpk', 'lp'),      # Open source, disponible via pip
+            ('cbc', 'lp'),       # Open source
+            ('ipopt', 'nl'),     # Open source
+            ('bonmin', 'nl'),    # Commercial
+        ]
         
-        solvers_to_try = []
-        
-        if self.solver_path:
-            solvers_to_try.append(('bonmin', self.solver_path, None))
-        
-        if is_windows:
-            solvers_to_try.extend([
-                ('glpk', None, 'lp'),
-                ('cbc', None, None),
-                ('ipopt', None, None),
-            ])
-        else:
-            solvers_to_try.extend([
-                ('glpk', None, None),
-                ('cbc', None, None),
-                ('ipopt', None, None),
-            ])
-        
-        for solver_name, executable, solver_io in solvers_to_try:
+        for solver_name, io_mode in solvers_to_try:
             try:
-                solver_kwargs = {}
-                if executable:
-                    solver_kwargs['executable'] = executable
-                if solver_io:
-                    solver_kwargs['solver_io'] = solver_io
+                test_solver = pyo.SolverFactory(solver_name, validate=False)
                 
-                solver = pyo.SolverFactory(solver_name, **solver_kwargs)
-                
-                if solver.available():
-                    if self._test_solver_silently(solver, solver_name):
-                        self.solver = solver
-                        self.solver_name = solver_name
-                        self.solver_io = solver_io
-                        logger.info(
-                            f"Solveur {solver_name} initialisé et testé avec succès "
-                            f"(mode: {solver_io or 'default'}, OS: {platform.system()})"
-                        )
-                        break
-                        
+                if test_solver.available():
+                    self.solver = test_solver
+                    self.solver_name = solver_name
+                    self.solver_io = io_mode
+                    logger.info(f"✅ Solveur {solver_name} initialisé avec succès")
+                    break
             except Exception as e:
-                logger.debug(f"Échec d'initialisation de {solver_name}: {e}")
+                logger.debug(f"❌ Impossible d'initialiser {solver_name}: {e}")
                 continue
         
         if self.solver is None:
-            logger.warning(
-                "ATTENTION : Aucun solveur d'optimisation disponible. "
-                "Les fonctionnalités d'optimisation seront désactivées. "
-                f"OS: {platform.system()}, "
-                "Pour installer : conda install -c conda-forge glpk"
-            )
+            logger.error("❌ Aucun solveur disponible. Installez GLPK : pip install glpk")
     
-    def _test_solver_silently(self, solver, solver_name: str) -> bool:
-        """Teste un solveur avec un modèle simple sans afficher les erreurs"""
-        try:
-            test_model = pyo.ConcreteModel()
-            test_model.x = pyo.Var([1, 2], domain=pyo.NonNegativeReals)
-            test_model.obj = pyo.Objective(
-                expr=test_model.x[1] + test_model.x[2], 
-                sense=pyo.minimize
+    def _is_measure_valid(self, mesure):
+        """
+        Vérifie si une mesure est valide pour l'optimisation
+        
+        Critères de validation :
+        - Coût total sur 3 ans > 0
+        - Efficacité > 0
+        - Nature de mesure définie
+        """
+        cout_total = mesure.cout_total_3_ans
+        efficacite = mesure.efficacite if mesure.efficacite else Decimal('0')
+        nature_valide = mesure.nature_mesure and mesure.nature_mesure.strip() != ''
+        
+        is_valid = (
+            cout_total > 0 and 
+            efficacite > 0 and 
+            nature_valide
+        )
+        
+        if not is_valid:
+            logger.debug(
+                f"⚠️  Mesure {mesure.mesure_code} INVALIDE : "
+                f"coût_total={cout_total}, "
+                f"efficacité={efficacite}, "
+                f"nature={mesure.nature_mesure}"
             )
-            test_model.constraint = pyo.Constraint(
-                expr=test_model.x[1] + test_model.x[2] >= 1
-            )
-            
-            old_stderr = sys.stderr
-            old_stdout = sys.stdout
-            sys.stderr = io.StringIO()
-            sys.stdout = io.StringIO()
-            
-            try:
-                result = solver.solve(test_model, tee=False, keepfiles=False)
-                
-                if result.solver.termination_condition in [
-                    pyo.TerminationCondition.optimal,
-                    pyo.TerminationCondition.feasible
-                ]:
-                    try:
-                        val1 = pyo.value(test_model.x[1])
-                        val2 = pyo.value(test_model.x[2])
-                        if val1 is not None and val2 is not None:
-                            return True
-                    except:
-                        pass
-                
-                return False
-                    
-            finally:
-                sys.stderr = old_stderr
-                sys.stdout = old_stdout
-                
-        except Exception as e:
-            logger.debug(f"Test du solveur {solver_name} échoué: {e}")
-            return False
+        
+        return is_valid
     
-    def _solve_model(self, model):
-        """Résout un modèle Pyomo avec les bons paramètres selon le solveur"""
-        solve_options = {
-            'tee': False,
-            'keepfiles': False,
+    def _build_complete_measure_object(self, mesure, menace, attr_menace, attribut, menace_mesure=None):
+        """
+        ✅ NOUVELLE MÉTHODE : Construit un objet mesure complet avec TOUTES les informations
+        
+        Args:
+            mesure: Instance de MesureDeControle
+            menace: Instance de Menace
+            attr_menace: Instance de AttributMenace
+            attribut: Instance de AttributSecurite
+            menace_mesure: Instance de MenaceMesure (optionnel)
+        
+        Returns:
+            dict: Objet mesure complet avec tous les détails
+        """
+        return {
+            # ✅ Informations de base de la mesure
+            'id': str(mesure.id),
+            'mesure_code': mesure.mesure_code,
+            'nom': mesure.nom,
+            'description': mesure.description,
+            'nature_mesure': mesure.nature_mesure,
+            'efficacite': float(mesure.efficacite) if mesure.efficacite else 0,
+            'cout_mise_en_oeuvre': float(mesure.cout_mise_en_oeuvre) if mesure.cout_mise_en_oeuvre else 0,
+            'cout_maintenance_annuel': float(mesure.cout_maintenance_annuel) if mesure.cout_maintenance_annuel else 0,
+            'cout_total_3_ans': float(mesure.cout_total_3_ans) if mesure.cout_total_3_ans else 0,
+            'duree_implementation': mesure.duree_implementation,
+            'ressources_necessaires': mesure.ressources_necessaires,
+            
+            # ✅ Attribut de sécurité
+            'attribut_securite': {
+                'id': str(attribut.id),
+                'type_attribut': attribut.type_attribut,
+                'cout_compromission': float(attribut.cout_compromission),
+                'priorite': attribut.priorite,
+                'actif_nom': attribut.actif.nom,
+                'actif_id': str(attribut.actif.id),
+                'risque_financier_attribut': attribut.risque_financier_attribut,
+                'niveau_alerte': attribut.niveau_alerte
+            },
+            
+            # ✅ Technique
+            'technique': {
+                'id': str(mesure.technique.id),
+                'code': mesure.technique.technique_code,
+                'nom': mesure.technique.nom,
+                'type': mesure.technique.type_technique,
+                'complexite': mesure.technique.complexite,
+                'famille': mesure.technique.famille,
+                'priorite': mesure.technique.priorite
+            },
+            
+            # ✅ Menace
+            'menace': {
+                'id': str(menace.id),
+                'nom': menace.nom,
+                'severite': menace.severite,
+                'type_menace': menace.type_menace,
+                'probabilite': float(attr_menace.probabilite),
+                'impact': float(attr_menace.impact),
+                'risque_financier': attr_menace.risque_financier
+            },
+            
+            # ✅ Association menace-mesure (si disponible)
+            'menace_mesure': {
+                'efficacite': float(menace_mesure.efficacite) if menace_mesure and menace_mesure.efficacite else float(mesure.efficacite),
+                'statut_conformite': menace_mesure.statut_conformite if menace_mesure else 'NON_CONFORME'
+            }
         }
-        
-        if self.solver_name == 'glpk':
-            solve_options.update({
-                'symbolic_solver_labels': True,
-            })
-        
-        try:
-            result = self.solver.solve(model, **solve_options)
-            return result
-        except Exception as e:
-            logger.error(f"Erreur lors de la résolution du modèle: {e}")
-            raise
     
-    def optimize_architecture_security(self, architecture_id: str, budget_max: Optional[float] = None) -> Dict:
+    def _optimize_attribut_security(self, attribut):
         """
-        Optimise la sélection de mesures de sécurité pour une architecture complète
+        ✅ OPTIMISATION AVEC CONSTRUCTION D'OBJETS COMPLETS
+        Optimise la sélection de mesures pour un attribut de sécurité
         """
-        if self.solver is None:
-            return {
-                'error': 'Aucun solveur d\'optimisation disponible. Installez un solveur (glpk, cbc, etc.)',
-                'status': 'solver_unavailable',
-                'help': 'Pour installer : conda install -c conda-forge glpk',
-                'platform': platform.system()
-            }
-        
         try:
-            architecture = Architecture.objects.get(id=architecture_id)
+            # Récupérer toutes les menaces de cet attribut
+            menaces = attribut.menaces.select_related('menace').all()
             
-            optimization_results = []
-            
-            # Traiter chaque actif de l'architecture
-            for actif in architecture.actifs.all():
-                logger.info(f"Optimisation de l'actif: {actif.nom}")
-                
-                # Traiter chaque attribut de sécurité
-                for attribut in actif.attributs_securite.all():
-                    if attribut.menaces.exists():
-                        result = self._optimize_attribut_security(attribut)
-                        if result['status'] == 'optimal' and result.get('selected_measures'):
-                            optimization_results.append({
-                                'actif_id': str(actif.id),
-                                'actif_nom': actif.nom,
-                                'actif_criticite': actif.criticite,
-                                'attribut_id': str(attribut.id),
-                                'attribut_type': attribut.type_attribut,
-                                'attribut_priorite': attribut.priorite,
-                                'cout_compromission': float(attribut.cout_compromission),
-                                'optimization_status': result['status'],
-                                'measures_count': result['measures_count'],
-                                'total_cost': result['total_cost'],
-                                'estimated_risk_reduction': result.get('estimated_risk_reduction', 0),
-                                'threats_covered': result.get('threats_covered', 0),
-                                'selected_measures': self._format_selected_measures(result['selected_measures']),
-                                'actif_obj': actif,
-                                'attribut_obj': attribut,
-                                'raw_result': result
-                            })
-            
-            # Optimisation globale si un budget est spécifié
-            if budget_max and optimization_results:
-                global_optimization = self._optimize_global_with_budget(
-                    optimization_results, budget_max, architecture.risque_tolere
-                )
-                
+            if not menaces.exists():
                 return {
-                    'architecture_id': str(architecture_id),
-                    'architecture_nom': architecture.nom,
-                    'optimization_type': 'global_with_budget',
-                    'budget_max': float(budget_max),
-                    'risk_tolerance': float(architecture.risque_tolere),
-                    'solver_used': self.solver_name,
-                    'total_actifs_processed': architecture.actifs.count(),
-                    'total_attributs_processed': sum(a.attributs_securite.count() for a in architecture.actifs.all()),
-                    'successful_optimizations': len(optimization_results),
-                    'individual_results': optimization_results,
-                    'global_optimization': global_optimization,
-                    'summary': self._create_summary(optimization_results, global_optimization)
+                    'status': 'no_menaces',
+                    'message': 'Aucune menace associée à cet attribut',
+                    'attribut_id': str(attribut.id),
+                    'attribut_type': attribut.type_attribut,
+                    'actif_nom': attribut.actif.nom
                 }
             
-            # Retourner les résultats individuels sans budget
-            return {
-                'architecture_id': str(architecture_id),
-                'architecture_nom': architecture.nom,
-                'optimization_type': 'individual_by_attribute',
-                'solver_used': self.solver_name,
-                'total_actifs_processed': architecture.actifs.count(),
-                'total_attributs_processed': sum(a.attributs_securite.count() for a in architecture.actifs.all()),
-                'successful_optimizations': len(optimization_results),
-                'results': optimization_results,
-                'recommended_measures': self._summarize_recommendations(optimization_results)
-            }
+            # ✅ Collecter toutes les mesures disponibles avec TOUS les détails
+            all_measures_complete = []
+            measures_rejected = 0
+            menaces_analyzed = 0
             
-        except Architecture.DoesNotExist:
-            return {'error': f'Architecture {architecture_id} non trouvée'}
-        except Exception as e:
-            logger.error(f"Erreur d'optimisation pour l'architecture {architecture_id}: {str(e)}", exc_info=True)
-            return {'error': f'Erreur d\'optimisation: {str(e)}'}
-    
-    def _format_selected_measures(self, selected_measures: List[Dict]) -> List[Dict]:
-        """Formate les mesures sélectionnées avec tous les détails"""
-        formatted = []
-        
-        for measure_data in selected_measures:
-            measure = measure_data['measure_data']['measure']
+            for attr_menace in menaces:
+                menace = attr_menace.menace
+                menaces_analyzed += 1
+                
+                # Récupérer les mesures via MenaceMesure
+                for menace_mesure in menace.mesures_controle.select_related(
+                    'mesure_controle', 
+                    'mesure_controle__technique'
+                ).all():
+                    mesure = menace_mesure.mesure_controle
+                    
+                    # ✅ FILTRAGE STRICT : Vérifier la validité de la mesure
+                    if not self._is_measure_valid(mesure):
+                        measures_rejected += 1
+                        continue
+                    
+                    # ✅ Construire l'objet mesure COMPLET
+                    complete_measure = self._build_complete_measure_object(
+                        mesure=mesure,
+                        menace=menace,
+                        attr_menace=attr_menace,
+                        attribut=attribut,
+                        menace_mesure=menace_mesure
+                    )
+                    
+                    all_measures_complete.append(complete_measure)
             
-            formatted.append({
-                'measure_id': str(measure.id),
-                'measure_code': measure.mesure_code,
-                'measure_nom': measure.nom,
-                'description': measure.description,
-                'nature_mesure': measure.nature_mesure,
-                'cout_mise_en_oeuvre': float(measure.cout_mise_en_oeuvre),
-                'cout_maintenance_annuel': float(measure.cout_maintenance_annuel),
-                'cout_total_3_ans': float(measure.cout_total_3_ans),
-                'efficacite': float(measure.efficacite),
-                'duree_implementation': measure.duree_implementation,
-                'technique': {
-                    'id': str(measure.technique.id),
-                    'code': measure.technique.technique_code,
-                    'nom': measure.technique.nom,
-                    'type': measure.technique.type_technique,
-                    'complexite': measure.technique.complexite
-                },
-                'controle_nist': {
-                    'id': str(measure.technique.controle_nist.id),
-                    'code': measure.technique.controle_nist.code,
-                    'nom': measure.technique.controle_nist.nom,
-                    'famille': measure.technique.controle_nist.famille,
-                    'priorite': measure.technique.controle_nist.priorite
-                },
-                'menace_info': {
-                    'menace_id': measure_data['measure_data']['menace_id'],
-                    'efficacite_contre_menace': measure_data['measure_data']['menace_efficacity'],
-                    'statut_conformite': measure_data['measure_data']['conformity_status']
-                }
-            })
-        
-        return formatted
-    
-    def _optimize_attribut_security(self, attribut_securite: AttributSecurite) -> Dict:
-        """
-        Optimise la sélection de mesures pour un attribut de sécurité spécifique
-        VERSION SIMPLIFIÉE LINÉAIRE
-        """
-        if self.solver is None:
-            return {
-                'status': 'solver_unavailable',
-                'error': 'Aucun solveur d\'optimisation disponible',
-                'help': 'Pour installer : conda install -c conda-forge glpk'
-            }
-        
-        try:
-            available_measures = self._get_available_measures_for_attribut(attribut_securite)
+            logger.info(
+                f"📊 Attribut {attribut.type_attribut} ({attribut.actif.nom}) : "
+                f"{len(all_measures_complete)} mesures VALIDES, "
+                f"{measures_rejected} mesures REJETÉES, "
+                f"{menaces_analyzed} menaces analysées"
+            )
             
-            if not available_measures:
+            # ✅ Vérifier qu'il y a des mesures valides
+            if not all_measures_complete:
                 return {
-                    'status': 'no_measures',
-                    'message': 'Aucune mesure disponible pour cet attribut'
+                    'status': 'no_valid_measures',
+                    'message': (
+                        f'Aucune mesure avec coût et efficacité valides. '
+                        f'{measures_rejected} mesures rejetées car incomplètes.'
+                    ),
+                    'attribut_id': str(attribut.id),
+                    'attribut_type': attribut.type_attribut,
+                    'actif_nom': attribut.actif.nom,
+                    'menaces_analyzed': menaces_analyzed,
+                    'measures_rejected': measures_rejected
                 }
             
+            # ✅ Dédupliquer les mesures par ID
+            unique_measures = {}
+            for measure in all_measures_complete:
+                measure_id = measure['id']
+                if measure_id not in unique_measures:
+                    unique_measures[measure_id] = measure
+            
+            measures_list = list(unique_measures.values())
+            
+            logger.info(
+                f"✅ {len(measures_list)} mesures UNIQUES validées pour l'optimisation"
+            )
+            
+            # ✅ Créer le modèle d'optimisation
             model = pyo.ConcreteModel()
             
-            measure_ids = [m['measure_id'] for m in available_measures]
-            model.M = pyo.Set(initialize=measure_ids)
-            model.x = pyo.Var(model.M, domain=pyo.Boolean)
+            # Indices des mesures
+            measure_indices = range(len(measures_list))
+            model.measures = pyo.Set(initialize=measure_indices)
+            
+            # Variables de décision binaires
+            model.x = pyo.Var(model.measures, domain=pyo.Binary)
             
             # Fonction objectif : minimiser le coût total
-            model.objective = pyo.Objective(
-                expr=sum(
-                    measure['cost'] * model.x[measure['measure_id']] 
-                    for measure in available_measures
-                ),
-                sense=pyo.minimize
-            )
-            
-            model.constraints = pyo.ConstraintList()
-            
-            # Grouper les mesures par menace
-            measures_by_threat = {}
-            for measure in available_measures:
-                threat_id = measure['menace_id']
-                if threat_id not in measures_by_threat:
-                    measures_by_threat[threat_id] = []
-                measures_by_threat[threat_id].append(measure['measure_id'])
-            
-            # Contrainte : au moins UNE mesure par menace
-            for threat_id, measure_list in measures_by_threat.items():
-                model.constraints.add(
-                    sum(model.x[mid] for mid in measure_list) >= 1
+            def objective_rule(model):
+                return sum(
+                    model.x[i] * measures_list[i]['cout_total_3_ans'] 
+                    for i in model.measures
                 )
+            model.objective = pyo.Objective(rule=objective_rule, sense=pyo.minimize)
             
-            result = self._solve_model(model)
+            # Contrainte : efficacité totale >= seuil minimum (70%)
+            efficacite_minimale = 70.0
             
-            if result.solver.termination_condition == pyo.TerminationCondition.optimal:
-                selected_measures = [
-                    {
-                        'measure_id': measure_id,
-                        'measure_data': next(m for m in available_measures if m['measure_id'] == measure_id),
-                        'selected': pyo.value(model.x[measure_id]) > 0.5
-                    }
-                    for measure_id in model.M
-                    if pyo.value(model.x[measure_id]) > 0.5
-                ]
+            def efficacite_constraint_rule(model):
+                return sum(
+                    model.x[i] * measures_list[i]['efficacite'] 
+                    for i in model.measures
+                ) >= efficacite_minimale
+            
+            model.efficacite_constraint = pyo.Constraint(rule=efficacite_constraint_rule)
+            
+            # ✅ Résoudre le modèle
+            if self.solver is None:
+                return {
+                    'status': 'solver_unavailable',
+                    'message': 'Aucun solveur disponible. Installez GLPK : pip install glpk',
+                    'attribut_id': str(attribut.id)
+                }
+            
+            results = self.solver.solve(model, tee=False)
+            
+            # ✅ Vérifier le statut de la solution
+            if results.solver.termination_condition == pyo.TerminationCondition.optimal:
+                # ✅ Extraire les mesures sélectionnées AVEC TOUS LES DÉTAILS
+                selected_measures = []
+                total_cost = 0
+                total_efficacite = 0
                 
-                total_cost = sum(m['measure_data']['cost'] for m in selected_measures)
+                for i in model.measures:
+                    if pyo.value(model.x[i]) > 0.5:  # Sélectionnée
+                        measure = measures_list[i].copy()
+                        selected_measures.append(measure)
+                        
+                        total_cost += measure['cout_total_3_ans']
+                        total_efficacite += measure['efficacite']
                 
-                # Calculer la réduction de risque estimée
-                total_risk_reduction = 0
-                for m in selected_measures:
-                    efficacity = m['measure_data']['efficacity'] / 100
-                    menace_eff = m['measure_data']['menace_efficacity'] / 100
-                    combined_eff = efficacity * menace_eff
-                    total_risk_reduction += combined_eff
+                logger.info(
+                    f"✅ Solution optimale : {len(selected_measures)} mesures sélectionnées, "
+                    f"coût total = {total_cost:.2f}$, efficacité = {total_efficacite:.2f}%"
+                )
                 
                 return {
                     'status': 'optimal',
-                    'selected_measures': selected_measures,
+                    'attribut_id': str(attribut.id),
+                    'attribut_type': attribut.type_attribut,
+                    'actif_id': str(attribut.actif.id),
+                    'actif_nom': attribut.actif.nom,
+                    'architecture_id': str(attribut.actif.architecture.id),
+                    'architecture_nom': attribut.actif.architecture.nom,
+                    
+                    # ✅ Mesures sélectionnées AVEC TOUS LES DÉTAILS
+                    'mesures': selected_measures,
+                    
                     'total_cost': round(total_cost, 2),
-                    'objective_value': pyo.value(model.objective),
+                    'total_efficacite': round(total_efficacite, 2),
+                    'objective_value': round(pyo.value(model.objective), 2),
                     'measures_count': len(selected_measures),
-                    'estimated_risk_reduction': round(min(total_risk_reduction * 100, 100), 2),
-                    'threats_covered': len(measures_by_threat)
+                    'total_measures_available': len(measures_list),
+                    'measures_rejected': measures_rejected,
+                    'menaces_analyzed': menaces_analyzed,
+                    'risk_threshold': float(attribut.cout_compromission)
+                }
+            
+            else:
+                return {
+                    'status': 'infeasible',
+                    'message': f'Aucune solution trouvée : {results.solver.termination_condition}',
+                    'attribut_id': str(attribut.id),
+                    'measures_analyzed': len(measures_list),
+                    'measures_rejected': measures_rejected
+                }
+        
+        except Exception as e:
+            logger.error(
+                f"❌ Erreur lors de l'optimisation de l'attribut {attribut.id}: {str(e)}",
+                exc_info=True
+            )
+            return {
+                'status': 'error',
+                'error': str(e),
+                'attribut_id': str(attribut.id)
+            }
+    
+    def _optimize_global_budget(self, measures, budget_max):
+        """
+        ✅ Optimisation globale avec contrainte de budget
+        Retourne directement les objets mesures complets au lieu des IDs
+        """
+        try:
+            measures_list = list(measures)
+            
+            if not measures_list:
+                return {
+                    'status': 'no_measures',
+                    'message': 'Aucune mesure disponible pour l\'optimisation globale'
+                }
+            
+            # ✅ CORRECTION: Convertir budget_max en float dès le début
+            budget_max_float = float(budget_max) if budget_max is not None else 0
+            
+            # Créer le modèle d'optimisation
+            model = pyo.ConcreteModel()
+            
+            # Indices des mesures
+            measure_indices = range(len(measures_list))
+            model.measures = pyo.Set(initialize=measure_indices)
+            
+            # Variables de décision binaires
+            model.x = pyo.Var(model.measures, domain=pyo.Binary)
+            
+            # Fonction objectif : maximiser l'efficacité totale
+            def objective_rule(model):
+                return sum(
+                    model.x[i] * measures_list[i]['efficacite'] 
+                    for i in model.measures
+                )
+            model.objective = pyo.Objective(rule=objective_rule, sense=pyo.maximize)
+            
+            # Contrainte de budget
+            def budget_constraint_rule(model):
+                return sum(
+                    model.x[i] * measures_list[i]['cout_total_3_ans'] 
+                    for i in model.measures
+                ) <= budget_max_float  # ✅ Utiliser la version float
+            
+            model.budget_constraint = pyo.Constraint(rule=budget_constraint_rule)
+            
+            # Résoudre le modèle
+            if self.solver is None:
+                return {
+                    'status': 'solver_unavailable',
+                    'message': 'Aucun solveur disponible'
+                }
+            
+            results = self.solver.solve(model, tee=False)
+            
+            # Vérifier le statut de la solution
+            if results.solver.termination_condition == pyo.TerminationCondition.optimal:
+                # ✅ Extraire les mesures sélectionnées COMPLÈTES
+                selected_measures = []
+                total_cost = 0
+                total_efficacite = 0
+                
+                for i in model.measures:
+                    if pyo.value(model.x[i]) > 0.5:  # Sélectionnée
+                        # ✅ VÉRIFICATION: S'assurer que c'est un dict
+                        measure = measures_list[i]
+                        
+                        if isinstance(measure, str):
+                            logger.error(f"❌ La mesure à l'index {i} est une string : {measure[:100]}")
+                            continue
+                        
+                        if not isinstance(measure, dict):
+                            logger.error(f"❌ La mesure à l'index {i} n'est pas un dict : {type(measure)}")
+                            continue
+                        
+                        # ✅ Ajouter l'objet dict complet
+                        selected_measures.append(measure)
+                        
+                        # ✅ Utiliser float() pour éviter les problèmes de types
+                        total_cost += float(measure['cout_total_3_ans'])
+                        total_efficacite += float(measure['efficacite'])
+                
+                # ✅ Calculer le pourcentage avec float
+                budget_used_percentage = (total_cost / budget_max_float * 100) if budget_max_float > 0 else 0
+                
+                logger.info(
+                    f"✅ Optimisation globale réussie : {len(selected_measures)} mesures sélectionnées, "
+                    f"coût = {total_cost:.2f}$, efficacité = {total_efficacite:.2f}%"
+                )
+                
+                return {
+                    'status': 'optimal',
+                    'selected_measures': selected_measures,  # ✅ Liste de dicts complets
+                    'total_cost': round(total_cost, 2),
+                    'budget_used_percentage': round(budget_used_percentage, 2),
+                    'measures_count': len(selected_measures),
+                    'total_measures_analyzed': len(measures_list),
+                    'total_efficacite': round(total_efficacite, 2),
+                    'message': (
+                        'Budget suffisant pour toutes les mesures' 
+                        if total_cost <= budget_max_float 
+                        else 'Optimisation réussie avec contrainte de budget'
+                    )
                 }
             else:
                 return {
-                    'status': 'no_solution',
-                    'termination_condition': str(result.solver.termination_condition),
-                    'message': f'Aucune solution optimale trouvée',
-                    'available_measures_count': len(available_measures),
-                    'threats_count': len(measures_by_threat)
+                    'status': 'infeasible',
+                    'message': f'Aucune solution trouvée : {results.solver.termination_condition}',
+                    'total_measures_analyzed': len(measures_list)
                 }
-                
+        
         except Exception as e:
-            logger.error(f"Erreur lors de l'optimisation de l'attribut {attribut_securite.id}: {str(e)}", exc_info=True)
+            logger.error(f"❌ Erreur optimisation globale: {str(e)}", exc_info=True)
             return {
                 'status': 'error',
                 'error': str(e)
             }
-    
-    def _get_available_measures_for_attribut(self, attribut_securite: AttributSecurite) -> List[Dict]:
-        """Récupère toutes les mesures disponibles pour un attribut de sécurité"""
-        measures = []
         
-        for attr_menace in attribut_securite.menaces.all():
-            menace = attr_menace.menace
-            
-            for menace_controle in menace.controles_nist.all():
-                controle = menace_controle.controle_nist
-                
-                for technique in controle.techniques.all():
-                    for mesure in technique.mesures_controle.all():
-                        measures.append({
-                            'measure_id': str(mesure.id),
-                            'measure': mesure,
-                            'cost': float(mesure.cout_total_3_ans),
-                            'efficacity': float(mesure.efficacite),
-                            'nature': mesure.nature_mesure,
-                            'menace_id': str(menace.id),
-                            'menace_efficacity': float(menace_controle.efficacite),
-                            'conformity_status': menace_controle.statut_conformite
-                        })
         
-        # Supprimer les doublons
-        unique_measures = {}
-        for measure in measures:
-            measure_id = measure['measure_id']
-            if measure_id not in unique_measures:
-                unique_measures[measure_id] = measure
+    def optimize_architecture_security(self, architecture_id, budget_max=None):
+        """
+        ✅ Optimise la sécurité de toute l'architecture avec objets complets
+        """
+        from api.models import Architecture
         
-        return list(unique_measures.values())
-    
-    def _optimize_global_with_budget(self, optimization_results: List[Dict], 
-                                     budget_max: float, risk_tolerance: Decimal) -> Dict:
-        """Optimisation globale avec contrainte budgétaire"""
         try:
-            # Collecter toutes les mesures uniques de tous les résultats  
-            # IMPORTANT: Ne pas utiliser les mesures déjà formatées, elles contiennent des objets Django
-            unique_measures = {}
-            measures_with_context = {}
+            architecture = Architecture.objects.get(id=architecture_id)
             
-            for result in optimization_results:
-                attribut_id = result['attribut_id']
-                actif_id = result['actif_id']
+            logger.info(
+                f"🚀 Début optimisation pour architecture {architecture.nom} "
+                f"(budget max: {budget_max if budget_max else 'illimité'})"
+            )
+            
+            # Résultats pour chaque attribut
+            results = []
+            all_measures_complete = {}  # Pour stocker les mesures complètes
+            
+            total_actifs = 0
+            total_attributs = 0
+            successful_optimizations = 0
+            total_measures_rejected = 0
+            
+            # Pour chaque actif de l'architecture
+            for actif in architecture.actifs.all():
+                total_actifs += 1
                 
-                # Utiliser raw_result qui contient les données brutes
-                raw_selected = result.get('raw_result', {}).get('selected_measures', [])
-                
-                for measure_raw in raw_selected:
-                    measure_data = measure_raw['measure_data']
-                    measure_id = measure_data['measure_id']
+                # Pour chaque attribut de sécurité
+                for attribut in actif.attributs_securite.all():
+                    total_attributs += 1
                     
-                    if measure_id not in unique_measures:
-                        # Stocker uniquement les données primitives nécessaires pour l'optimisation
-                        unique_measures[measure_id] = {
-                            'measure_id': measure_id,
-                            'cost': measure_data['cost'],
-                            'efficacity': measure_data['efficacity']
-                        }
+                    # Optimiser cet attribut
+                    result = self._optimize_attribut_security(attribut)
+                    
+                    if result.get('status') == 'optimal':
+                        successful_optimizations += 1
                         
-                        # Contexte pour l'implémentation
-                        measures_with_context[measure_id] = {
-                            'measure_id': measure_id,
-                            'attribut_id': attribut_id,
-                            'actif_id': actif_id,
-                            'menace_id': measure_data['menace_id'],
-                            'measure_obj': measure_data['measure']  # Objet Django, pour plus tard
-                        }
+                        # ✅ Collecter les mesures complètes
+                        if result.get('mesures'):
+                            for measure in result['mesures']:
+                                measure_id = measure['id']
+                                if measure_id not in all_measures_complete:
+                                    all_measures_complete[measure_id] = measure
+                    
+                    if result.get('measures_rejected'):
+                        total_measures_rejected += result['measures_rejected']
+                    
+                    results.append(result)
             
-            if not unique_measures:
-                return {'status': 'no_measures', 'message': 'Aucune mesure à optimiser'}
-            
-            model = pyo.ConcreteModel()
-            
-            measure_ids = list(unique_measures.keys())
-            model.M = pyo.Set(initialize=measure_ids)
-            model.x = pyo.Var(model.M, domain=pyo.Boolean)
-            
-            # Objectif : maximiser l'efficacité totale
-            model.objective = pyo.Objective(
-                expr=sum(
-                    unique_measures[mid]['efficacity'] * model.x[mid]
-                    for mid in measure_ids
-                ),
-                sense=pyo.maximize
+            logger.info(
+                f"📊 Optimisation terminée : {successful_optimizations}/{total_attributs} attributs optimisés, "
+                f"{total_measures_rejected} mesures rejetées au total"
             )
             
-            # Contrainte budgétaire
-            model.budget_constraint = pyo.Constraint(
-                expr=sum(
-                    unique_measures[mid]['cost'] * model.x[mid] 
-                    for mid in measure_ids
-                ) <= budget_max
-            )
+            # ✅ Préparer les recommandations
+            recommendations = []
+            total_cost = 0
             
-            result = self._solve_model(model)
+            for result in results:
+                if result.get('status') == 'optimal' and result.get('mesures'):
+                    recommendations.append({
+                        'actif': result.get('actif_nom', 'N/A'),
+                        'attribut': result.get('attribut_type', 'N/A'),
+                        'measures_count': result.get('measures_count', 0),
+                        'cost': result.get('total_cost', 0)
+                    })
+                    total_cost += result.get('total_cost', 0)
             
-            if result.solver.termination_condition == pyo.TerminationCondition.optimal:
-                selected = [
-                    mid for mid in measure_ids 
-                    if pyo.value(model.x[mid]) > 0.5
-                ]
-                
-                # Récupérer les détails complets UNIQUEMENT pour les mesures sélectionnées
-                selected_measures_details = []
-                for mid in selected:
-                    context = measures_with_context[mid]
-                    measure_obj = context['measure_obj']
-                    
-                    # Formater en dict avec UNIQUEMENT des types primitifs
-                    selected_measures_details.append({
-                        'measure_id': str(measure_obj.id),
-                        'measure_code': measure_obj.mesure_code,
-                        'measure_nom': measure_obj.nom,
-                        'description': measure_obj.description,
-                        'nature_mesure': measure_obj.nature_mesure,
-                        'cout_mise_en_oeuvre': float(measure_obj.cout_mise_en_oeuvre),
-                        'cout_maintenance_annuel': float(measure_obj.cout_maintenance_annuel),
-                        'cout_total_3_ans': float(measure_obj.cout_total_3_ans),
-                        'efficacite': float(measure_obj.efficacite),
-                        'duree_implementation': measure_obj.duree_implementation,
-                        'technique': {
-                            'id': str(measure_obj.technique.id),
-                            'code': measure_obj.technique.technique_code,
-                            'nom': measure_obj.technique.nom,
-                        },
-                        'controle_nist': {
-                            'id': str(measure_obj.technique.controle_nist.id),
-                            'code': measure_obj.technique.controle_nist.code,
-                            'nom': measure_obj.technique.controle_nist.nom,
-                        }
-                    })
-                
-                total_cost = sum(unique_measures[mid]['cost'] for mid in selected)
-                total_efficacity = sum(unique_measures[mid]['efficacity'] for mid in selected)
-                
-                # Préparer les données d'implémentation avec UNIQUEMENT des IDs
-                implementation_data = {}
-                for mid in selected:
-                    context = measures_with_context[mid]
-                    attr_id = context['attribut_id']
-                    
-                    if attr_id not in implementation_data:
-                        implementation_data[attr_id] = {
-                            'attribut_id': attr_id,
-                            'actif_id': context['actif_id'],
-                            'selected_measures': []
-                        }
-                    
-                    implementation_data[attr_id]['selected_measures'].append({
-                        'measure_id': mid,
-                        'menace_id': context['menace_id']
-                    })
-                
-                return {
-                    'status': 'optimal',
-                    'selected_measures': selected_measures_details,  # Liste de dicts avec types primitifs
-                    'selected_measure_ids': selected,
+            # ✅ Grouper par nature
+            measures_by_nature = {}
+            for measure in all_measures_complete.values():
+                nature = measure.get('nature_mesure', 'INCONNU')
+                measures_by_nature[nature] = measures_by_nature.get(nature, 0) + 1
+            
+            # Compiler les résultats
+            optimization_result = {
+                'architecture_id': str(architecture_id),
+                'architecture_nom': architecture.nom,
+                'optimization_type': 'individual_by_attribute',
+                'budget_max': float(budget_max) if budget_max else None,
+                'total_actifs_processed': total_actifs,
+                'total_attributs_processed': total_attributs,
+                'successful_optimizations': successful_optimizations,
+                'total_measures_rejected': total_measures_rejected,
+                'results': results,
+                'recommended_measures': {
+                    'total_measures': len(all_measures_complete),
                     'total_cost': round(total_cost, 2),
-                    'total_efficacity': round(total_efficacity, 2),
-                    'budget_used_percentage': round((total_cost / budget_max) * 100, 2),
-                    'measures_count': len(selected),
-                    'total_measures_analyzed': len(unique_measures),
-                    'budget_remaining': round(budget_max - total_cost, 2),
-                    '_implementation_data': list(implementation_data.values())
+                    'measures_by_nature': measures_by_nature,
+                    'recommendations': recommendations,
+                    'mesures_completes': list(all_measures_complete.values())  # ✅ Toutes les mesures complètes
                 }
-            else:
-                return {
-                    'status': 'no_solution',
-                    'message': 'Budget insuffisant ou problème infaisable',
-                    'budget_max': budget_max,
-                    'total_measures_analyzed': len(unique_measures)
-                }
-                
-        except Exception as e:
-            logger.error(f"Erreur dans l'optimisation globale: {str(e)}", exc_info=True)
-            return {'status': 'error', 'error': str(e)}
-
-    def _create_summary(self, individual_results: List[Dict], global_result: Dict) -> Dict:
-        """Crée un résumé complet de l'optimisation"""
-        total_measures = len(individual_results)
-        total_cost_individual = sum(r['total_cost'] for r in individual_results)
-        
-        summary = {
-            'total_attributs_optimized': len(individual_results),
-            'total_cost_without_budget': round(total_cost_individual, 2),
-            'measures_by_nature': {},
-            'measures_by_priority': {},
-            'top_controles_nist': []
-        }
-        
-        if global_result.get('status') == 'optimal':
-            summary.update({
-                'total_cost_with_budget': global_result['total_cost'],
-                'budget_savings': round(total_cost_individual - global_result['total_cost'], 2),
-                'measures_selected_with_budget': global_result['measures_count'],
-                'measures_eliminated_by_budget': total_measures - global_result['measures_count']
-            })
-        
-        # Analyser les mesures par nature
-        for result in individual_results:
-            for measure in result['selected_measures']:
-                nature = measure['nature_mesure']
-                summary['measures_by_nature'][nature] = summary['measures_by_nature'].get(nature, 0) + 1
-        
-        return summary
-    
-    def _summarize_recommendations(self, optimization_results: List[Dict]) -> Dict:
-        """Résumé des recommandations d'optimisation"""
-        if not optimization_results:
-            return {
-                'total_measures': 0, 
-                'total_cost': 0, 
-                'measures_by_nature': {},
-                'recommendations': []
             }
+            
+            # Optimisation globale si budget spécifié
+            if budget_max:
+                global_result = self._optimize_global_budget(
+                    all_measures_complete.values(),
+                    budget_max
+                )
+                optimization_result['global_optimization'] = global_result
+            
+            return optimization_result
         
-        total_cost = sum(r['total_cost'] for r in optimization_results)
-        all_measures = []
+        except Exception as e:
+            logger.error(f"❌ Erreur optimisation architecture: {str(e)}", exc_info=True)
+            return {
+                'error': str(e),
+                'architecture_id': str(architecture_id)
+            }
+    
+    def create_implementation_plan(self, optimization_result, responsable_id=None):
+        """
+        ✅ Crée un plan d'implémentation à partir des résultats d'optimisation
+        """
+        from api.models import ImplementationMesure, MesureDeControle, AttributMenace, User
         
-        for result in optimization_results:
-            all_measures.extend(result['selected_measures'])
-        
-        measures_by_nature = {}
-        for measure in all_measures:
-            nature = measure['nature_mesure']
-            measures_by_nature[nature] = measures_by_nature.get(nature, 0) + 1
-        
-        return {
-            'total_measures': len(all_measures),
-            'total_cost': round(total_cost, 2),
-            'measures_by_nature': measures_by_nature,
-            'recommendations': [
-                {
-                    'actif': r['actif_nom'],
-                    'attribut': r['attribut_type'],
-                    'measures_count': r['measures_count'],
-                    'cost': r['total_cost'],
-                    'risk_reduction': r.get('estimated_risk_reduction', 0)
-                }
-                for r in optimization_results
-            ]
-        }
-
-    @transaction.atomic
-    def create_implementation_plan(self, optimization_result: Dict, 
-                                 responsable_id: Optional[str] = None) -> Dict:
-        """Crée un plan d'implémentation basé sur les résultats d'optimisation"""
         try:
-            implementations_created = []
+            responsable = None
+            if responsable_id:
+                try:
+                    responsable = User.objects.get(id=responsable_id)
+                except User.DoesNotExist:
+                    logger.warning(f"Responsable {responsable_id} non trouvé")
             
-            results_to_process = []
+            implementation_ids = []
+            implementations_created = 0
             
-            # Déterminer quelle liste de résultats utiliser
-            if optimization_result.get('optimization_type') == 'global_with_budget':
-                results_to_process = optimization_result.get('individual_results', [])
-            else:
-                results_to_process = optimization_result.get('results', [])
-            
-            for result in results_to_process:
-                actif = result.get('actif_obj')
-                attribut = result.get('attribut_obj')
-                
-                if not actif or not attribut:
+            # Parcourir les résultats d'optimisation
+            for result_item in optimization_result.get('results', []):
+                if result_item.get('status') != 'optimal':
                     continue
                 
-                for measure_data in result.get('selected_measures', []):
-                    measure_id = measure_data['measure_id']
-                    measure = MesureDeControle.objects.get(id=measure_id)
-                    
-                    menace_id = measure_data.get('menace_info', {}).get('menace_id')
-                    if menace_id:
-                        attr_menace = attribut.menaces.filter(menace_id=menace_id).first()
+                # ✅ Utiliser les mesures complètes
+                selected_measures = result_item.get('mesures', [])
+                attribut_id = result_item.get('attribut_id')
+                
+                if not attribut_id or not selected_measures:
+                    continue
+                
+                # Pour chaque mesure sélectionnée
+                for measure in selected_measures:
+                    try:
+                        mesure_controle = MesureDeControle.objects.get(id=measure['id'])
                         
-                        if attr_menace:
-                            implementation = ImplementationMesure.objects.create(
-                                attribut_menace=attr_menace,
-                                mesure_controle=measure,
-                                statut='PLANIFIE',
-                                responsable_id=responsable_id,
-                                commentaires=f'Mesure recommandée par optimisation automatique'
-                            )
-                            implementations_created.append(implementation)
+                        # Trouver l'association attribut-menace appropriée
+                        # ✅ Utiliser l'ID de la menace depuis l'objet mesure complet
+                        menace_id = measure.get('menace', {}).get('id')
+                        
+                        attribut_menace = AttributMenace.objects.filter(
+                            attribut_securite_id=attribut_id,
+                            menace_id=menace_id
+                        ).first()
+                        
+                        if not attribut_menace:
+                            logger.warning(f"Aucune association trouvée pour attribut {attribut_id} et menace {menace_id}")
+                            continue
+                        
+                        # Créer l'implémentation
+                        implementation = ImplementationMesure.objects.create(
+                            attribut_menace=attribut_menace,
+                            mesure_controle=mesure_controle,
+                            statut='PLANIFIE',
+                            responsable=responsable,
+                            date_debut_prevue=timezone.now(),
+                            pourcentage_avancement=Decimal('0.00'),
+                            commentaires=f"Créé automatiquement par optimisation"
+                        )
+                        
+                        implementation_ids.append(str(implementation.id))
+                        implementations_created += 1
+                        
+                    except Exception as e:
+                        logger.error(f"Erreur création implémentation: {str(e)}")
+                        continue
             
             return {
                 'status': 'success',
-                'implementations_created': len(implementations_created),
-                'implementation_ids': [str(impl.id) for impl in implementations_created]
+                'implementations_created': implementations_created,
+                'implementation_ids': implementation_ids
             }
-            
+        
         except Exception as e:
-            logger.error(f"Erreur lors de la création du plan d'implémentation: {str(e)}", exc_info=True)
+            logger.error(f"Erreur création plan d'implémentation: {str(e)}", exc_info=True)
             return {
                 'status': 'error',
                 'error': str(e)

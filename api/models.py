@@ -1,4 +1,3 @@
-# api/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -45,7 +44,6 @@ class TypeActif(BaseModel):
         on_delete=models.PROTECT, 
         related_name='types_actifs',
         help_text="Catégorie parente de ce type d'actif"
-        # Supprimez null=True et blank=True
     )
     nom = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -53,19 +51,17 @@ class TypeActif(BaseModel):
         max_length=20, 
         unique=True, 
         help_text="Code court pour le type (ex: SRV-WEB, SRV-DB, APP-WEB)"
-        # Supprimez null=True et blank=True
     )
     
     class Meta:
         db_table = 'type_actif'
         verbose_name = 'Type d\'actif'
         verbose_name_plural = 'Types d\'actifs'
-        ordering = ['categorie', 'nom']  # Remettez categorie
-        unique_together = ['categorie', 'nom']  # Décommentez
+        ordering = ['categorie', 'nom']
+        unique_together = ['categorie', 'nom']
     
     def __str__(self):
         return f"{self.categorie.code}/{self.code} - {self.nom}"
-    
     
 
 class Architecture(BaseModel):
@@ -76,7 +72,7 @@ class Architecture(BaseModel):
         max_digits=15,
         decimal_places=2, 
         validators=[MinValueValidator(0)],
-        help_text="Coût maximal du risque toléré (en €)",
+        help_text="Coût maximal du risque toléré (en $)",
         default=Decimal('10000.00')
     )
     
@@ -155,7 +151,7 @@ class AttributSecurite(BaseModel):
         max_digits=15,
         decimal_places=2,
         validators=[MinValueValidator(0)],
-        help_text="Coût financier en cas de compromission de cet attribut (en €)",
+        help_text="Coût financier en cas de compromission de cet attribut (en $)",
         default=Decimal('0.00')
     )
     priorite = models.CharField(
@@ -461,81 +457,17 @@ class AttributMenace(BaseModel):
     def __str__(self):
         return f"{self.attribut_securite} → {self.menace.nom}"
 
-class ControleNIST(BaseModel):
-    """Contrôles NIST"""
-    code = models.CharField(max_length=20, unique=True)  
-    nom = models.CharField(max_length=200)
-    description = models.TextField(
-        null=True, 
-        blank=True,
-        help_text="Description détaillée du contrôle NIST"
-    )
-    famille = models.CharField(max_length=100)  
-    priorite = models.CharField(
-        max_length=10,
-        choices=[
-            ('P0', 'P0 - Critique'),
-            ('P1', 'P1 - Haute'),
-            ('P2', 'P2 - Moyenne'),
-            ('P3', 'P3 - Basse')
-        ],
-        default='P2',
-        null=True,  
-        blank=True  
-    )
-    
-    class Meta:
-        db_table = 'controle_nist'
-        verbose_name = 'Contrôle NIST'
-        verbose_name_plural = 'Contrôles NIST'
-    
-    def __str__(self):
-        return f"{self.code} - {self.nom}"
 
-class MenaceControle(BaseModel):
-    """Association entre une menace et les contrôles NIST qui la traitent"""
-    menace = models.ForeignKey(Menace, on_delete=models.CASCADE, related_name='controles_nist')
-    controle_nist = models.ForeignKey(ControleNIST, on_delete=models.CASCADE, related_name='menaces_traitees')
-    
-    efficacite = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-        help_text="Efficacité du contrôle contre cette menace (0-100%)",
-        default=Decimal('0.00')
-    )
-    
-    statut_conformite = models.CharField(
-        max_length=20,
-        choices=[
-            ('NON_CONFORME', 'Non conforme'),
-            ('PARTIELLEMENT', 'Partiellement conforme'),
-            ('CONFORME', 'Conforme'),
-            ('NON_APPLICABLE', 'Non applicable')
-        ],
-        default='NON_CONFORME'
-    )
-    
-    commentaires = models.TextField(blank=True, null=True)
-    
-    class Meta:
-        db_table = 'menace_controle'
-        verbose_name = 'Menace-Contrôle'
-        verbose_name_plural = 'Menaces-Contrôles'
-        unique_together = ['menace', 'controle_nist']
-    
-    def __str__(self):
-        return f"{self.menace.nom} → {self.controle_nist.code}"
+# ============================================================================
+# TECHNIQUES ET MESURES DE CONTRÔLE (INDÉPENDANTES)
+# ============================================================================
 
 class Technique(BaseModel):
-    """Techniques d'implémentation pour un contrôle NIST"""
-    controle_nist = models.ForeignKey(ControleNIST, on_delete=models.CASCADE, related_name='techniques')
+    """Techniques d'implémentation - maintenant indépendantes"""
     technique_code = models.CharField(
         max_length=20, 
         unique=True,
-        null=True, 
-        blank=True, 
-        help_text="Code unique de la technique (ex: AC-2.1, SI-4.a)"
+        help_text="Code unique de la technique (ex: T-001, T-002)"
     )
     nom = models.CharField(max_length=200)
     description = models.TextField()
@@ -559,6 +491,24 @@ class Technique(BaseModel):
         ],
         default='MOYEN'
     )
+    famille = models.CharField(
+        max_length=100,
+        help_text="Famille de la technique (ex: Access Control, System Integrity, etc.)",
+        blank=True,
+        null=True
+    )
+    priorite = models.CharField(
+        max_length=10,
+        choices=[
+            ('P0', 'P0 - Critique'),
+            ('P1', 'P1 - Haute'),
+            ('P2', 'P2 - Moyenne'),
+            ('P3', 'P3 - Basse')
+        ],
+        default='P2',
+        blank=True,
+        null=True
+    )
     
     class Meta:
         db_table = 'technique'
@@ -568,6 +518,7 @@ class Technique(BaseModel):
     def __str__(self):
         return f"{self.technique_code} - {self.nom}"
 
+
 class MesureDeControle(BaseModel):
     """Mesures de contrôle concrètes pour implémenter une technique"""
     technique = models.ForeignKey(Technique, on_delete=models.CASCADE, related_name='mesures_controle')
@@ -575,9 +526,8 @@ class MesureDeControle(BaseModel):
     description = models.TextField()
     mesure_code = models.CharField(
         max_length=30, 
-        null=True, 
-        blank=True, 
-        help_text="Code unique de la mesure (ex: AC-2.1.01, SI-4.a.01)"
+        unique=True,
+        help_text="Code unique de la mesure (ex: M-001, M-002)"
     )
     
     nature_mesure = models.CharField(
@@ -627,7 +577,7 @@ class MesureDeControle(BaseModel):
         verbose_name_plural = 'Mesures de contrôle'
     
     def __str__(self):
-        return f"{self.technique.controle_nist.code} - {self.nom}"
+        return f"{self.mesure_code} - {self.nom}"
     
     @property
     def cout_total_3_ans(self):
@@ -635,6 +585,55 @@ class MesureDeControle(BaseModel):
         cout_mise_en_oeuvre = self.cout_mise_en_oeuvre if self.cout_mise_en_oeuvre is not None else Decimal('0.00')
         cout_maintenance_annuel = self.cout_maintenance_annuel if self.cout_maintenance_annuel is not None else Decimal('0.00')
         return float(cout_mise_en_oeuvre + (cout_maintenance_annuel * 3))
+
+
+# ============================================================================
+# ASSOCIATION DIRECTE MENACE-MESURE (NOUVEAU)
+# ============================================================================
+
+class MenaceMesure(BaseModel):
+    """Association directe entre une menace et une mesure de contrôle"""
+    menace = models.ForeignKey(
+        Menace, 
+        on_delete=models.CASCADE, 
+        related_name='mesures_controle'
+    )
+    mesure_controle = models.ForeignKey(
+        MesureDeControle, 
+        on_delete=models.CASCADE, 
+        related_name='menaces_traitees'
+    )
+    
+    efficacite = models.DecimalField(
+        max_digits=5, 
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Efficacité de cette mesure contre cette menace (0-100%)",
+        default=Decimal('0.00')
+    )
+    
+    statut_conformite = models.CharField(
+        max_length=20,
+        choices=[
+            ('NON_CONFORME', 'Non conforme'),
+            ('PARTIELLEMENT', 'Partiellement conforme'),
+            ('CONFORME', 'Conforme'),
+            ('NON_APPLICABLE', 'Non applicable')
+        ],
+        default='NON_CONFORME'
+    )
+    
+    commentaires = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        db_table = 'menace_mesure'
+        verbose_name = 'Menace-Mesure'
+        verbose_name_plural = 'Menaces-Mesures'
+        unique_together = ['menace', 'mesure_controle']
+    
+    def __str__(self):
+        return f"{self.menace.nom} → {self.mesure_controle.nom}"
+
 
 class ImplementationMesure(BaseModel):
     """Suivi de l'implémentation d'une mesure pour un attribut spécifique"""

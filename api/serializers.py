@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 from decimal import Decimal
 from .models import (
     TypeActif, Architecture, Actif, AttributSecurite, Menace, AttributMenace,
-    ControleNIST, MenaceControle, Technique, MesureDeControle, 
-    ImplementationMesure, LogActivite, CategorieActif, TypeActif, 
+     Technique, MesureDeControle, 
+    ImplementationMesure, LogActivite, CategorieActif, TypeActif, MenaceMesure
 )
 
 
@@ -171,32 +171,36 @@ class ImplementationMesureSerializer(serializers.ModelSerializer):
 class MesureDeControleSerializer(serializers.ModelSerializer):
     technique_code = serializers.CharField(source='technique.technique_code', read_only=True)
     technique_nom = serializers.CharField(source='technique.nom', read_only=True)
-    controle_code = serializers.CharField(source='technique.controle_nist.code', read_only=True)
-    controle_nom = serializers.CharField(source='technique.controle_nist.nom', read_only=True)
+    technique_famille = serializers.CharField(source='technique.famille', read_only=True)
     cout_total_3_ans_calculated = serializers.ReadOnlyField(source='cout_total_3_ans')
     implementations = ImplementationMesureSerializer(many=True, read_only=True)
     implementations_count = serializers.SerializerMethodField()
+    menaces_traitees_count = serializers.SerializerMethodField()
     
     class Meta:
         model = MesureDeControle
         fields = [
-            'id', 'mesure_code', 'nom', 'description', 'nature_mesure',  # mesure_code ajouté
+            'id', 'mesure_code', 'nom', 'description', 'nature_mesure',
             'cout_mise_en_oeuvre', 'cout_maintenance_annuel', 'efficacite',
             'duree_implementation', 'ressources_necessaires',
-            'technique', 'technique_code', 'technique_nom', 'controle_code', 'controle_nom',
+            'technique', 'technique_code', 'technique_nom', 'technique_famille',
             'cout_total_3_ans_calculated', 'implementations', 'implementations_count',
-            'created_at'
+            'menaces_traitees_count', 'created_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
     
     def get_implementations_count(self, obj):
         return obj.implementations.count()
+    
+    def get_menaces_traitees_count(self, obj):
+        return obj.menaces_traitees.count()
+
 
 class MesureDeControleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MesureDeControle
         fields = [
-            'technique', 'mesure_code', 'nom', 'description', 'nature_mesure',  # mesure_code ajouté
+            'technique', 'mesure_code', 'nom', 'description', 'nature_mesure',
             'cout_mise_en_oeuvre', 'cout_maintenance_annuel', 'efficacite',
             'duree_implementation', 'ressources_necessaires'
         ]
@@ -208,35 +212,54 @@ class MesureDeControleCreateSerializer(serializers.ModelSerializer):
     
     def validate_mesure_code(self, value):
         """Valide le format du code mesure"""
-        if value:  # Seulement si un code est fourni
-            # Optionnel: validation du format (ex: AC-2.1.01, SI-4.a.01)
+        if value:
             import re
-            if not re.match(r'^[A-Z]{2,4}-\d+(\.[a-zA-Z0-9]+)*(\.\d+)*$', value):
+            if not re.match(r'^[A-Z]{1,4}-\d{3,4}$', value):
                 raise serializers.ValidationError(
-                    "Le code mesure doit suivre le format: XX-N.x.nn (ex: AC-2.1.01, SI-4.a.01)"
+                    "Le code mesure doit suivre le format: XX-NNN ou XXXX-NNNN (ex: M-001, MEAS-0001)"
                 )
-            
             return value.upper()
         return value
 
+class MenaceMesureSerializer(serializers.ModelSerializer):
+    mesure_nom = serializers.CharField(source='mesure_controle.nom', read_only=True)
+    mesure_code = serializers.CharField(source='mesure_controle.mesure_code', read_only=True)
+    mesure_efficacite = serializers.DecimalField(source='mesure_controle.efficacite', max_digits=5, decimal_places=2, read_only=True)
+    technique_nom = serializers.CharField(source='mesure_controle.technique.nom', read_only=True)
+    technique_code = serializers.CharField(source='mesure_controle.technique.technique_code', read_only=True)
+    mesure_detail = MesureDeControleSerializer(source='mesure_controle', read_only=True)
+    
+    class Meta:
+        model = MenaceMesure
+        fields = [
+            'id', 'menace', 'mesure_controle', 'mesure_nom', 'mesure_code',
+            'mesure_efficacite', 'technique_nom', 'technique_code',
+            'efficacite', 'statut_conformite', 'commentaires',
+            'mesure_detail', 'created_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+class MenaceMesureCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenaceMesure
+        fields = ['menace', 'mesure_controle', 'efficacite', 'statut_conformite', 'commentaires']
 # ============================================================================
 # SERIALIZERS POUR TECHNIQUES
 # ============================================================================
 
 class TechniqueSerializer(serializers.ModelSerializer):
-    controle_code = serializers.CharField(source='controle_nist.code', read_only=True)
-    controle_nom = serializers.CharField(source='controle_nist.nom', read_only=True)
     mesures_controle = MesureDeControleSerializer(many=True, read_only=True)
     mesures_count = serializers.SerializerMethodField()
     cout_moyen_mesures = serializers.SerializerMethodField()
+    menaces_traitees_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Technique
         fields = [
-            'id', 'technique_code', 'nom', 'description', 'type_technique', 'complexite',
-            'controle_nist', 'controle_code', 'controle_nom',
+            'id', 'technique_code', 'nom', 'description', 'type_technique', 
+            'complexite', 'famille', 'priorite',
             'mesures_controle', 'mesures_count', 'cout_moyen_mesures',
-            'created_at'
+            'menaces_traitees_count', 'created_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
     
@@ -249,135 +272,70 @@ class TechniqueSerializer(serializers.ModelSerializer):
             return 0
         total_cout = sum(float(mesure.cout_mise_en_oeuvre) for mesure in mesures)
         return round(total_cout / len(mesures), 2)
+    
+    def get_menaces_traitees_count(self, obj):
+        """Compte le nombre de menaces traitées par cette technique via ses mesures"""
+        menaces_ids = set()
+        for mesure in obj.mesures_controle.all():
+            menaces_ids.update(mesure.menaces_traitees.values_list('menace_id', flat=True))
+        return len(menaces_ids)
+
 
 class TechniqueCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Technique
-        fields = ['controle_nist', 'technique_code', 'nom', 'description', 'type_technique', 'complexite']
+        fields = ['technique_code', 'nom', 'description', 'type_technique', 'complexite', 'famille', 'priorite']
     
     def validate_technique_code(self, value):
         """Valide le format du code technique"""
         if not value:
             raise serializers.ValidationError("Le code technique est requis.")
         
-        # Optionnel: validation du format (ex: AC-2.1, SI-4.a)
         import re
-        if not re.match(r'^[A-Z]{2,4}-\d+(\.[a-zA-Z0-9]+)*$', value):
+        if not re.match(r'^[A-Z]{1,4}-\d{3,4}$', value):
             raise serializers.ValidationError(
-                "Le code technique doit suivre le format: XX-N.x (ex: AC-2.1, SI-4.a)"
+                "Le code technique doit suivre le format: XX-NNN ou XXXX-NNNN (ex: T-001, TECH-0001)"
             )
         
         return value.upper()
-# ============================================================================
-# SERIALIZERS POUR CONTROLES NIST
-# ============================================================================
 
-class ControleNISTSerializer(serializers.ModelSerializer):
-    techniques = TechniqueSerializer(many=True, read_only=True)
-    menaces_traitees = serializers.SerializerMethodField()
-    techniques_count = serializers.SerializerMethodField()
-    mesures_count_total = serializers.SerializerMethodField()
-    cout_total_implementation = serializers.SerializerMethodField()
-    efficacite_moyenne = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = ControleNIST
-        fields = [
-            'id', 'code', 'nom', 'description', 'famille', 'priorite',
-            'techniques', 'menaces_traitees', 'techniques_count', 'mesures_count_total',
-            'cout_total_implementation', 'efficacite_moyenne', 'created_at'
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
-    
-    def get_menaces_traitees(self, obj):
-        """Retourne les menaces traitées par ce contrôle"""
-        menaces_links = obj.menaces_traitees.select_related('menace').all()
-        return [{
-            'menace_id': link.menace.id,
-            'menace_nom': link.menace.nom,
-            'menace_severite': link.menace.severite,
-            'efficacite': float(link.efficacite),
-            'statut_conformite': link.statut_conformite,
-            'commentaires': link.commentaires
-        } for link in menaces_links]
-    
-    def get_techniques_count(self, obj):
-        return obj.techniques.count()
-    
-    def get_mesures_count_total(self, obj):
-        return sum(tech.mesures_controle.count() for tech in obj.techniques.all())
-    
-    def get_cout_total_implementation(self, obj):
-        """Coût total de toutes les mesures du contrôle"""
-        total = 0
-        for technique in obj.techniques.all():
-            for mesure in technique.mesures_controle.all():
-                total += mesure.cout_total_3_ans
-        return round(total, 2)
-    
-    def get_efficacite_moyenne(self, obj):
-        """Efficacité moyenne des mesures du contrôle"""
-        mesures = []
-        for technique in obj.techniques.all():
-            mesures.extend(technique.mesures_controle.all())
-        
-        if not mesures:
-            return 0
-        
-        efficacites = [float(m.efficacite) for m in mesures if m.efficacite]
-        return round(sum(efficacites) / len(efficacites), 2) if efficacites else 0
 
-class ControleNISTListSerializer(serializers.ModelSerializer):
-    techniques_count = serializers.SerializerMethodField()
+class TechniqueListSerializer(serializers.ModelSerializer):
+    mesures_count = serializers.SerializerMethodField()
     menaces_traitees_count = serializers.SerializerMethodField()
     
     class Meta:
-        model = ControleNIST
+        model = Technique
         fields = [
-            'id', 'code', 'nom', 'description', 'famille', 'priorite',
-            'techniques_count', 'menaces_traitees_count', 'created_at'
+            'id', 'technique_code', 'nom', 'type_technique', 'complexite',
+            'famille', 'priorite', 'mesures_count', 'menaces_traitees_count',
+            'created_at'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at']
     
-    def get_techniques_count(self, obj):
-        return obj.techniques.count()
+    def get_mesures_count(self, obj):
+        return obj.mesures_controle.count()
     
     def get_menaces_traitees_count(self, obj):
-        return obj.menaces_traitees.count()
+        menaces_ids = set()
+        for mesure in obj.mesures_controle.all():
+            menaces_ids.update(mesure.menaces_traitees.values_list('menace_id', flat=True))
+        return len(menaces_ids)
 
-# ============================================================================
-# SERIALIZERS POUR MENACE-CONTROLE
-# ============================================================================
 
-class MenaceControleSerializer(serializers.ModelSerializer):
-    controle_code = serializers.CharField(source='controle_nist.code', read_only=True)
-    controle_nom = serializers.CharField(source='controle_nist.nom', read_only=True)
-    controle_famille = serializers.CharField(source='controle_nist.famille', read_only=True)
-    controle_detail = ControleNISTSerializer(source='controle_nist', read_only=True)
-    
-    class Meta:
-        model = MenaceControle
-        fields = [
-            'id', 'menace', 'controle_nist', 'controle_code', 'controle_nom', 
-            'controle_famille', 'efficacite', 'statut_conformite', 'commentaires',
-            'controle_detail', 'created_at'
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
 
-class MenaceControleCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MenaceControle
-        fields = ['menace', 'controle_nist', 'efficacite', 'statut_conformite', 'commentaires']
+
+
 
 # ============================================================================
 # SERIALIZERS POUR MENACES
 # ============================================================================
 
 class MenaceSerializer(serializers.ModelSerializer):
-    controles_nist = MenaceControleSerializer(many=True, read_only=True)
+    mesures_controle = MenaceMesureSerializer(many=True, read_only=True)
     attributs_impactes_count = serializers.SerializerMethodField()
     
-    # Informations hiérarchiques ajoutées
+    # Informations hiérarchiques
     architecture_id = serializers.SerializerMethodField()
     architecture_nom = serializers.SerializerMethodField()
     actif_id = serializers.SerializerMethodField()
@@ -386,9 +344,8 @@ class MenaceSerializer(serializers.ModelSerializer):
     attribut_type = serializers.SerializerMethodField()
     
     # Métriques consolidées
-    total_controles = serializers.SerializerMethodField()
-    total_techniques = serializers.SerializerMethodField()
     total_mesures = serializers.SerializerMethodField()
+    total_techniques = serializers.SerializerMethodField()
     cout_total_protection = serializers.SerializerMethodField()
     taux_conformite = serializers.SerializerMethodField()
     
@@ -397,14 +354,14 @@ class MenaceSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'nom', 'description', 'type_menace', 'severite',
             
-            # Hiérarchie parent ajoutée
+            # Hiérarchie parent
             'architecture_id', 'architecture_nom',
             'actif_id', 'actif_nom', 
             'attribut_securite_id', 'attribut_type',
             
             # Relations et métriques
-            'controles_nist', 'attributs_impactes_count',
-            'total_controles', 'total_techniques', 'total_mesures',
+            'mesures_controle', 'attributs_impactes_count',
+            'total_mesures', 'total_techniques',
             'cout_total_protection', 'taux_conformite',
             'created_at'
         ]
@@ -412,7 +369,6 @@ class MenaceSerializer(serializers.ModelSerializer):
     
     def _get_attribut_principal(self, obj):
         """Méthode helper pour récupérer l'attribut principal"""
-        # Prendre le premier attribut associé (par ordre de création ou d'importance)
         attr_menace = obj.attributs_impactes.select_related(
             'attribut_securite__actif__architecture'
         ).first()
@@ -446,36 +402,47 @@ class MenaceSerializer(serializers.ModelSerializer):
     def get_attributs_impactes_count(self, obj):
         return obj.attributs_impactes.count()
     
-    def get_total_controles(self, obj):
-        return obj.controles_nist.count()
+    def get_total_mesures(self, obj):
+        return obj.mesures_controle.count()
     
     def get_total_techniques(self, obj):
-        total = 0
-        for controle_link in obj.controles_nist.all():
-            total += controle_link.controle_nist.techniques.count()
-        return total
-    
-    def get_total_mesures(self, obj):
-        total = 0
-        for controle_link in obj.controles_nist.all():
-            for technique in controle_link.controle_nist.techniques.all():
-                total += technique.mesures_controle.count()
-        return total
+        """Compte les techniques uniques via les mesures"""
+        techniques_ids = set()
+        for menace_mesure in obj.mesures_controle.select_related('mesure_controle__technique').all():
+            techniques_ids.add(menace_mesure.mesure_controle.technique.id)
+        return len(techniques_ids)
     
     def get_cout_total_protection(self, obj):
         total = 0
-        for controle_link in obj.controles_nist.all():
-            for technique in controle_link.controle_nist.techniques.all():
-                for mesure in technique.mesures_controle.all():
-                    total += mesure.cout_total_3_ans
+        for menace_mesure in obj.mesures_controle.select_related('mesure_controle').all():
+            total += menace_mesure.mesure_controle.cout_total_3_ans
         return round(total, 2)
     
     def get_taux_conformite(self, obj):
-        controles = obj.controles_nist.all()
-        if not controles:
+        mesures = obj.mesures_controle.all()
+        if not mesures:
             return 0
-        conformes = controles.filter(statut_conformite='CONFORME').count()
-        return round((conformes / controles.count()) * 100, 2)
+        conformes = mesures.filter(statut_conformite='CONFORME').count()
+        return round((conformes / mesures.count()) * 100, 2)
+
+
+class MenaceListSerializer(serializers.ModelSerializer):
+    attributs_impactes_count = serializers.SerializerMethodField()
+    mesures_count = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Menace
+        fields = [
+            'id', 'nom', 'description', 'type_menace', 'severite',
+            'attributs_impactes_count', 'mesures_count', 'created_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_attributs_impactes_count(self, obj):
+        return obj.attributs_impactes.count()
+    
+    def get_mesures_count(self, obj):
+        return obj.mesures_controle.count()
 
 # Serializer pour la création/modification avec gestion du contexte principal
 class MenaceCreateSerializer(serializers.ModelSerializer):
@@ -495,25 +462,6 @@ class MenaceCreateSerializer(serializers.ModelSerializer):
                     "L'attribut de sécurité spécifié n'existe pas."
                 )
         return value
-
-
-class MenaceListSerializer(serializers.ModelSerializer):
-    attributs_impactes_count = serializers.SerializerMethodField()
-    controles_count = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Menace
-        fields = [
-            'id', 'nom', 'description', 'type_menace', 'severite',
-            'attributs_impactes_count', 'controles_count', 'created_at'
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
-    
-    def get_attributs_impactes_count(self, obj):
-        return obj.attributs_impactes.count()
-    
-    def get_controles_count(self, obj):
-        return obj.controles_nist.count()
 
 
 
@@ -550,27 +498,30 @@ class AttributMenaceSerializer(serializers.ModelSerializer):
         """Retourne les 3 meilleures solutions (ratio efficacité/coût)"""
         solutions = []
         
-        for controle_link in obj.menace.controles_nist.all():
-            for technique in controle_link.controle_nist.techniques.all():
-                for mesure in technique.mesures_controle.all():
-                    if mesure.efficacite and mesure.cout_total_3_ans > 0:
-                        ratio_efficacite_cout = float(mesure.efficacite) / mesure.cout_total_3_ans
-                        solutions.append({
-                            'mesure_id': mesure.id,
-                            'mesure_nom': mesure.nom,
-                            'technique_nom': technique.nom,
-                            'controle_code': controle_link.controle_nist.code,
-                            'efficacite': float(mesure.efficacite),
-                            'cout_3_ans': mesure.cout_total_3_ans,
-                            'ratio_efficacite_cout': round(ratio_efficacite_cout, 4),
-                            'duree_implementation': mesure.duree_implementation,
-                            'nature_mesure': mesure.nature_mesure,
-                            'statut_conformite': controle_link.statut_conformite
-                        })
+        # Parcourir directement les mesures de contrôle liées à la menace
+        for menace_mesure in obj.menace.mesures_controle.select_related('mesure_controle__technique').all():
+            mesure = menace_mesure.mesure_controle
+            
+            if mesure.efficacite and mesure.cout_total_3_ans > 0:
+                ratio_efficacite_cout = float(mesure.efficacite) / mesure.cout_total_3_ans
+                solutions.append({
+                    'mesure_id': mesure.id,
+                    'mesure_nom': mesure.nom,
+                    'mesure_code': mesure.mesure_code,
+                    'technique_nom': mesure.technique.nom,
+                    'technique_code': mesure.technique.technique_code,
+                    'efficacite': float(mesure.efficacite),
+                    'cout_3_ans': mesure.cout_total_3_ans,
+                    'ratio_efficacite_cout': round(ratio_efficacite_cout, 4),
+                    'duree_implementation': mesure.duree_implementation,
+                    'nature_mesure': mesure.nature_mesure,
+                    'statut_conformite': menace_mesure.statut_conformite
+                })
         
         # Trier par ratio efficacité/coût décroissant et prendre les 3 premiers
         solutions.sort(key=lambda x: x['ratio_efficacite_cout'], reverse=True)
         return solutions[:3]
+
 
 class AttributMenaceCreateSerializer(serializers.ModelSerializer):
     # Champs de l'association
@@ -614,71 +565,62 @@ class AttributMenaceCreateSerializer(serializers.ModelSerializer):
 
 class AttributSecuriteSerializer(serializers.ModelSerializer):
     actif_nom = serializers.CharField(source='actif.nom', read_only=True)
-    actif_architecture = serializers.CharField(source='actif.architecture.nom', read_only=True)
-    menaces = AttributMenaceSerializer(many=True, read_only=True)
-    risque_financier_attribut = serializers.ReadOnlyField()
-    ratio_risque_cout = serializers.ReadOnlyField()
-    niveau_alerte = serializers.ReadOnlyField()
-    
-    # Analyses consolidées
-    cout_protection_recommande = serializers.SerializerMethodField()
-    economies_potentielles = serializers.SerializerMethodField()
+    actif_code = serializers.CharField(source='actif.actif_code', read_only=True)
+    menaces = serializers.SerializerMethodField()
     
     class Meta:
         model = AttributSecurite
-        fields = [
-            'id', 'actif', 'actif_nom', 'actif_architecture', 'type_attribut',
-            'cout_compromission', 'priorite', 'risque_financier_attribut',
-            'ratio_risque_cout', 'niveau_alerte', 'menaces',
-            'cout_protection_recommande', 'economies_potentielles',
-            'created_at'
-        ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        fields = '__all__'
     
-    def get_cout_protection_recommande(self, obj):
-        """Estime le coût de protection recommandé"""
-        cout_total = 0
-        menaces_traitees = set()
+    def get_menaces(self, obj):
+        """
+        Retourne les menaces avec leurs mesures de contrôle
         
-        for menace_link in obj.menaces.all():
-            if menace_link.menace.id not in menaces_traitees:
-                menaces_traitees.add(menace_link.menace.id)
+        IMPORTANT: obj.menaces.all() retourne des AttributMenace (relation M2M through)
+        Il faut donc accéder à attr_menace.menace pour avoir l'objet Menace
+        """
+        menaces_data = []
+        
+        # ✅ Itérer sur les AttributMenace
+        for attr_menace in obj.menaces.all():
+            # ✅ Extraire l'objet Menace
+            menace = attr_menace.menace
+            
+            # Récupérer les mesures de contrôle via MenaceMesure
+            mesures_controle = []
+            for menace_mesure in menace.mesures_controle.select_related('mesure_controle__technique').all():
+                mesure = menace_mesure.mesure_controle
+                mesures_controle.append({
+                    'id': str(mesure.id),
+                    'mesure_code': mesure.mesure_code,
+                    'nom': mesure.nom,
+                    'technique_code': mesure.technique.technique_code,
+                    'technique_nom': mesure.technique.nom,
+                    'efficacite': float(mesure.efficacite),
+                    'nature_mesure': mesure.nature_mesure
+                })
+            
+            menaces_data.append({
+                # Données de la menace
+                'id': str(menace.id),
+                'nom': menace.nom,
+                'severite': menace.severite,
+                'type_menace': menace.type_menace,
+                'description': menace.description,
                 
-                # Trouver la mesure la plus efficace pour cette menace
-                controles = menace_link.menace.controles_nist.all()
-                for controle_link in controles:
-                    for technique in controle_link.controle_nist.techniques.all():
-                        mesures = technique.mesures_controle.all()
-                        if mesures:
-                            # Prendre la mesure avec le meilleur ratio efficacité/coût
-                            meilleure_mesure = min(
-                                mesures,
-                                key=lambda m: m.cout_total_3_ans / max(float(m.efficacite), 1),
-                                default=None
-                            )
-                            if meilleure_mesure:
-                                cout_total += meilleure_mesure.cout_total_3_ans
-                                break
+                # Données de l'association AttributMenace
+                'probabilite': float(attr_menace.probabilite),
+                'impact': float(attr_menace.impact),
+                'cout_impact': float(attr_menace.cout_impact),
+                'niveau_risque': attr_menace.niveau_risque,
+                'risque_financier': attr_menace.risque_financier,
+                
+                # Mesures de contrôle disponibles
+                'mesures_count': len(mesures_controle),
+                'mesures_controle': mesures_controle[:5]  # Limiter à 5 pour performance
+            })
         
-        return round(cout_total, 2)
-    
-    def get_economies_potentielles(self, obj):
-        """Calcule les économies potentielles"""
-        risque_actuel = obj.risque_financier_attribut
-        cout_protection = self.get_cout_protection_recommande(obj)
-        
-        # Supposer une réduction de 80% du risque après protection
-        risque_apres_protection = risque_actuel * 0.2
-        reduction_risque = risque_actuel - risque_apres_protection
-        
-        return {
-            'reduction_risque_annuelle': round(reduction_risque, 2),
-            'cout_protection_3_ans': cout_protection,
-            'benefice_net_3_ans': round((reduction_risque * 3) - cout_protection, 2),
-            'roi_pourcentage': round(
-                (((reduction_risque * 3) - cout_protection) / cout_protection) * 100, 2
-            ) if cout_protection > 0 else 0
-        }
+        return menaces_data
 
 class AttributSecuriteListSerializer(serializers.ModelSerializer):
     actif_nom = serializers.CharField(source='actif.nom', read_only=True)
@@ -880,7 +822,7 @@ class DashboardStatsSerializer(serializers.Serializer):
     total_actifs = serializers.IntegerField()
     total_attributs = serializers.IntegerField()
     total_menaces = serializers.IntegerField()
-    total_controles_nist = serializers.IntegerField()
+    
     total_techniques = serializers.IntegerField()
     total_mesures = serializers.IntegerField()
     
@@ -890,7 +832,7 @@ class DashboardStatsSerializer(serializers.Serializer):
     budget_risque_total = serializers.DecimalField(max_digits=15, decimal_places=2)
     
     # Conformité
-    taux_conformite_moyen = serializers.DecimalField(max_digits=5, decimal_places=2)
+   
     implementations_en_cours = serializers.IntegerField()
     
     # Répartitions
@@ -941,26 +883,43 @@ class OptimizedMeasureSerializer(serializers.Serializer):
     controle_code = serializers.CharField()
     selected = serializers.BooleanField()
 
+# api/serializers.py
+
+# Trouvez cette section et remplacez-la :
+
 class AttributOptimizationResultSerializer(serializers.Serializer):
     """Serializer pour le résultat d'optimisation d'un attribut"""
-    actif_id = serializers.UUIDField()
-    actif_nom = serializers.CharField()
-    attribut_id = serializers.UUIDField()
-    attribut_type = serializers.CharField()
-    status = serializers.CharField()
+    # ✅ TOUS les champs sont maintenant optionnels (required=False)
+    actif_id = serializers.UUIDField(required=False)
+    actif_nom = serializers.CharField(required=False)
+    architecture_id = serializers.UUIDField(required=False)
+    architecture_nom = serializers.CharField(required=False)
+    attribut_id = serializers.UUIDField(required=False)  # ✅ Aussi optionnel
+    attribut_type = serializers.CharField(required=False)  # ✅ Aussi optionnel
+    status = serializers.CharField(required=False)  # ✅ Aussi optionnel
+    
+    # Résultats
     selected_measures = OptimizedMeasureSerializer(many=True, required=False)
     total_cost = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    total_efficacite = serializers.DecimalField(max_digits=5, decimal_places=2, required=False)
     objective_value = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
     measures_count = serializers.IntegerField(required=False)
-    risk_threshold = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    total_measures_available = serializers.IntegerField(required=False)
+    measures_rejected = serializers.IntegerField(required=False)
     menaces_analyzed = serializers.IntegerField(required=False)
+    risk_threshold = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    
+    # Messages et erreurs
+    message = serializers.CharField(required=False)
     error = serializers.CharField(required=False)
+
 
 class GlobalOptimizationResultSerializer(serializers.Serializer):
     """Serializer pour le résultat d'optimisation globale"""
-    status = serializers.CharField()
+    status = serializers.CharField(required=False)  # ✅ Aussi optionnel
     selected_measures = serializers.ListField(child=serializers.UUIDField(), required=False)
     total_cost = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
+    total_efficacite = serializers.DecimalField(max_digits=5, decimal_places=2, required=False)
     budget_used_percentage = serializers.DecimalField(max_digits=5, decimal_places=2, required=False)
     measures_count = serializers.IntegerField(required=False)
     total_measures_analyzed = serializers.IntegerField(required=False)
@@ -983,13 +942,14 @@ class OptimizationSummarySerializer(serializers.Serializer):
 
 class FullOptimizationResultSerializer(serializers.Serializer):
     """Serializer pour le résultat complet d'optimisation"""
-    architecture_id = serializers.UUIDField()
-    optimization_type = serializers.CharField()
-    budget_max = serializers.DecimalField(max_digits=15, decimal_places=2, required=False)
-    total_solutions_analyzed = serializers.IntegerField(required=False)
+    architecture_id = serializers.UUIDField(required=False)  # ✅ Optionnel
+    architecture_nom = serializers.CharField(required=False)
+    optimization_type = serializers.CharField(required=False)  # ✅ Optionnel
+    budget_max = serializers.DecimalField(max_digits=15, decimal_places=2, required=False, allow_null=True)
     total_actifs_processed = serializers.IntegerField(required=False)
     total_attributs_processed = serializers.IntegerField(required=False)
     successful_optimizations = serializers.IntegerField(required=False)
+    total_measures_rejected = serializers.IntegerField(required=False)
     
     # Résultats individuels
     results = AttributOptimizationResultSerializer(many=True, required=False)
